@@ -62,7 +62,12 @@
     "@radix-ui/react-tooltip": "catalog:",
     "@tailwindcss/postcss": "catalog:",
     "class-variance-authority": "catalog:",
+    "clsx": "catalog:",
+    "date-fns": "^4.1.0",
+    "fumadocs-core": "catalog:",
+    "fumadocs-ui": "catalog:",
     "lucide-react": "catalog:",
+    "react-day-picker": "^9.14.0",
     "recharts": "catalog:",
     "tailwind-merge": "catalog:",
     "tw-animate-css": "catalog:"
