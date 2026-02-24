@@ -88,7 +88,7 @@ export function DatePicker({
             )}
             type="button"
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <i className="fa-duotone fa-calendar-range" />
             {date ? (
               format(date, "PPP")
             ) : (
