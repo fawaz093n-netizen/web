@@ -10,6 +10,9 @@ import { Button, type ButtonProps } from "./button";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
+// Re-export types for consumers
+export type { DateRange, Matcher } from "react-day-picker";
+
 export interface DatePickerProps {
   /**
    * The selected date (for single date picker)

@@ -5,8 +5,8 @@ import {
   DatePickerSingle,
   DatePickerRange,
   createDateRangePresets,
+  type DateRange,
 } from "@prisma-docs/eclipse";
-import type { DateRange } from "react-day-picker";
 
 export function DatePickerSingleExample() {
   const [date, setDate] = useState<Date>();
