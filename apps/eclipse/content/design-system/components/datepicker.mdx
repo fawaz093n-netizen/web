@@ -7,6 +7,9 @@ import {
   DatePickerSingleExample,
   DatePickerRangeExample,
   DatePickerRangeWithPresetsExample,
+  DatePickerErrorExample,
+  DatePickerDisabledExample,
+  DatePickerWithValidationExample,
 } from "../../../src/components/date-picker-examples";
 
 ### Usage
@@ -122,6 +125,9 @@ export function UnifiedExample() {
 - `disabled` - Disabled dates (can be a function, date, or array) (optional)
 - `className` - Custom className for the trigger button (optional)
 - `align` - Align popover content: `"start"`, `"center"`, or `"end"` (default: `"start"`)
+- `isErrored` - Whether the date picker is in an error state (optional, default: `false`)
+- `disabledBtn` - Whether the trigger button is disabled (optional, default: `false`)
+- `dateFormat` - Date format string for displaying dates using date-fns format tokens (optional)
 
 #### Single Date Mode Props
 
@@ -316,24 +322,160 @@ const disabledDates = [
 />
 ```
 
-### Formatting
+### Error State
 
-The component uses `date-fns` for date formatting:
-
-- **Single date**: `PPP` format (e.g., "April 29, 2024")
-- **Date range**: `LLL dd, y` format (e.g., "Apr 01, 2024 - Apr 30, 2024")
-
-To customize formatting, you can format the dates in your component:
+Use the `isErrored` prop to indicate validation errors:
 
 ```tsx
-import { format } from "date-fns";
+import { DatePickerSingle } from "@prisma-docs/eclipse";
+import { useState } from "react";
 
+export function FormWithValidation() {
+  const [date, setDate] = useState<Date>();
+  const [submitted, setSubmitted] = useState(false);
+
+  const hasError = submitted && !date;
+
+  return (
+    <div className="space-y-2">
+      <DatePickerSingle
+        date={date}
+        onDateChange={setDate}
+        placeholder="Select a date"
+        isErrored={hasError}
+      />
+      {hasError && (
+        <p className="text-sm text-foreground-error">
+          Date is required
+        </p>
+      )}
+    </div>
+  );
+}
+```
+
+**Live Example (Static Error State):**
+
+<div className="my-4 max-w-md">
+  <DatePickerErrorExample />
+</div>
+
+**Live Example (With Validation):**
+
+<div className="my-4 max-w-md">
+  <DatePickerWithValidationExample />
+</div>
+
+The error state adds a red ring (`ring-2 ring-stroke-error`) to the button and changes the text and icon color to `text-foreground-error` to indicate the validation error.
+
+### Disabled State
+
+Use the `disabledBtn` prop to disable the entire date picker button:
+
+```tsx
 <DatePickerSingle
   date={date}
   onDateChange={setDate}
-  placeholder={date ? format(date, "MM/dd/yyyy") : "Select date"}
+  placeholder="Disabled picker"
+  disabledBtn={true}
 />
 ```
+
+**Live Example:**
+
+<div className="my-4 max-w-md">
+  <DatePickerDisabledExample />
+</div>
+
+**Use Cases:**
+- Disable based on permissions
+- Disable while data is loading
+- Disable when form is submitting
+- Conditional disabling based on other form fields
+
+```tsx
+function ConditionalDatePicker() {
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [date, setDate] = useState<Date>();
+
+  return (
+    <div className="space-y-4">
+      <label>
+        <input
+          type="checkbox"
+          checked={isSubscribed}
+          onChange={(e) => setIsSubscribed(e.target.checked)}
+        />
+        Enable premium features
+      </label>
+      
+      <DatePickerSingle
+        date={date}
+        onDateChange={setDate}
+        placeholder="Premium feature - select date"
+        disabledBtn={!isSubscribed}
+      />
+    </div>
+  );
+}
+```
+
+### Formatting
+
+The component uses `date-fns` for date formatting. You can customize the format using the `dateFormat` prop:
+
+**Default Formats:**
+- **Single date**: `PPP` format (e.g., "April 29, 2024")
+- **Date range**: `LLL dd, y` format (e.g., "Apr 01, 2024 - Apr 30, 2024")
+
+**Custom Formats:**
+
+```tsx
+// European format: dd/MM/yyyy
+<DatePickerSingle
+  date={date}
+  onDateChange={setDate}
+  dateFormat="dd/MM/yyyy"
+  placeholder="Select date"
+/>
+// Output: "17/02/2026"
+
+// US format: MM/dd/yyyy
+<DatePickerSingle
+  date={date}
+  onDateChange={setDate}
+  dateFormat="MM/dd/yyyy"
+/>
+// Output: "02/17/2026"
+
+// ISO format: yyyy-MM-dd
+<DatePickerSingle
+  date={date}
+  onDateChange={setDate}
+  dateFormat="yyyy-MM-dd"
+/>
+// Output: "2026-02-17"
+
+// Custom verbose format
+<DatePickerRange
+  dateRange={dateRange}
+  onDateRangeChange={setDateRange}
+  dateFormat="EEEE, MMMM do, yyyy"
+/>
+// Output: "Tuesday, February 17th, 2026 - Friday, February 20th, 2026"
+```
+
+**Common date-fns Format Tokens:**
+- `dd` - Day of month (01-31)
+- `MM` - Month (01-12)
+- `yyyy` - Full year (2026)
+- `yy` - 2-digit year (26)
+- `MMM` - Short month name (Feb)
+- `MMMM` - Full month name (February)
+- `do` - Day with ordinal (17th)
+- `EEEE` - Full day name (Tuesday)
+- `PPP` - Long localized date (February 17th, 2026)
+- `P` - Short localized date (02/17/2026)
 
 ### Best Practices
 
@@ -346,6 +488,9 @@ import { format } from "date-fns";
 - Add **validation** to ensure date ranges make sense
 - Show **clear labels** above date pickers in forms
 - Use **consistent date formats** across your application
+- Use `isErrored` prop with validation messages for better UX
+- Use `disabledBtn` for conditional access or loading states
+- Choose appropriate `dateFormat` based on your user's locale and preferences
 
 ### Accessibility
 
@@ -397,19 +542,28 @@ import { useForm, Controller } from "react-hook-form";
 import { DatePickerSingle } from "@prisma-docs/eclipse";
 
 function MyForm() {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, formState: { errors } } = useForm();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Controller
         control={control}
         name="eventDate"
+        rules={{ required: "Event date is required" }}
         render={({ field }) => (
-          <DatePickerSingle
-            date={field.value}
-            onDateChange={field.onChange}
-            placeholder="Select event date"
-          />
+          <div className="space-y-2">
+            <DatePickerSingle
+              date={field.value}
+              onDateChange={field.onChange}
+              placeholder="Select event date"
+              isErrored={!!errors.eventDate}
+            />
+            {errors.eventDate && (
+              <p className="text-sm text-foreground-error">
+                {errors.eventDate.message}
+              </p>
+            )}
+          </div>
         )}
       />
     </form>

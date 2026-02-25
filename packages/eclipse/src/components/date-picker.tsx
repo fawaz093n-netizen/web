@@ -57,6 +57,23 @@ export interface DatePickerProps {
    * Align popover content
    */
   align?: "start" | "center" | "end";
+  /**
+   * Whether the date picker is in an error state
+   */
+  isErrored?: boolean;
+  /**
+   * Whether the trigger button is disabled
+   */
+  disabledBtn?: boolean;
+  /**
+   * Date format string for displaying dates (date-fns format)
+   * @default "PPP" for single mode (e.g., "February 17th, 2026")
+   * @default "LLL dd, y" for range mode (e.g., "Feb 17, 2026")
+   * @example "dd/MM/yyyy" → "17/02/2026"
+   * @example "MM/dd/yyyy" → "02/17/2026"
+   * @example "yyyy-MM-dd" → "2026-02-17"
+   */
+  dateFormat?: string;
 }
 
 export function DatePicker({
@@ -70,6 +87,9 @@ export function DatePicker({
   disabled,
   className,
   align = "start",
+  isErrored = false,
+  disabledBtn = false,
+  dateFormat,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -80,17 +100,25 @@ export function DatePicker({
         <PopoverTrigger asChild>
           <Button
             variant="default"
-            size="xl"
+            size="lg"
             className={cn(
-              "w-full justify-start text-left font-normal",
-              !date && "text-muted-foreground",
+              "w-full p-1.5 text-left font-normal bg-background-default border-stroke-neutral font-family-mono text-foreground-neutral",
+              !date && "text-foreground-neutral-weak",
+              isErrored && "border-stroke-error text-foreground-error",
+              disabledBtn &&
+                "cursor-not-allowed text-foreground-neutral-weaker bg-background-neutral-weak",
               className,
             )}
             type="button"
           >
-            <i className="fa-duotone fa-calendar-range" />
+            <i
+              className={cn(
+                "text-foreground-neutral-weak fa-duotone fa-calendar-range mr-2 flex h-full items-center translate-y-px text-md",
+                (isErrored || disabledBtn) && "text-inherit",
+              )}
+            />
             {date ? (
-              format(date, "PPP")
+              format(date, dateFormat || "P")
             ) : (
               <span>{placeholder || "Pick a date"}</span>
             )}
@@ -119,23 +147,31 @@ export function DatePicker({
         <PopoverTrigger asChild>
           <Button
             variant="default"
-            size="xl"
+            size="lg"
             className={cn(
-              "w-full justify-start text-left font-normal",
-              !dateRange && "text-muted-foreground",
+              "w-full p-1.5 justify-start text-left font-normal bg-background-default border-stroke-neutral font-family-mono text-foreground-neutral",
+              !dateRange && "text-foreground-neutral-weak",
+              isErrored && "border-stroke-error text-foreground-error",
+              disabledBtn &&
+                "cursor-not-allowed text-foreground-neutral-weaker bg-background-neutral-weak",
               className,
             )}
             type="button"
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <i
+              className={cn(
+                "text-foreground-neutral-weak fa-duotone fa-calendar-range mr-2 flex h-full items-center translate-y-px text-md",
+                (isErrored || disabledBtn) && "text-inherit",
+              )}
+            />
             {dateRange?.from ? (
               dateRange.to ? (
                 <>
-                  {format(dateRange.from, "LLL dd, y")} -{" "}
-                  {format(dateRange.to, "LLL dd, y")}
+                  {format(dateRange.from, dateFormat || "dd/MM/yyyy")} -{" "}
+                  {format(dateRange.to, dateFormat || "dd/MM/yyyy")}
                 </>
               ) : (
-                format(dateRange.from, "LLL dd, y")
+                format(dateRange.from, dateFormat || "dd/MM/yyyy")
               )
             ) : (
               <span>{placeholder || "Pick a date range"}</span>
