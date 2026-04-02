@@ -65,11 +65,7 @@ export function createSiteStructuredData() {
   };
 }
 
-export function createFaqStructuredData(
-  pagePath: string,
-  faqs: FaqEntry[],
-  name: string,
-) {
+export function createFaqStructuredData(pagePath: string, faqs: FaqEntry[], name: string) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -84,6 +80,42 @@ export function createFaqStructuredData(
         text: toPlainText(faq.answer),
       },
     })),
+  };
+}
+
+export function createSoftwareApplicationStructuredData({
+  path,
+  name,
+  description,
+  applicationCategory = "DeveloperApplication",
+  operatingSystem = "Cross-platform",
+}: {
+  path: string;
+  name: string;
+  description: string;
+  applicationCategory?: string;
+  operatingSystem?: string;
+}) {
+  const url = absoluteUrl(path);
+  const baseUrl = getBaseUrl();
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": `${url}#software`,
+    name,
+    description,
+    url,
+    applicationCategory,
+    operatingSystem,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    provider: {
+      "@id": `${baseUrl}#organization`,
+    },
   };
 }
 

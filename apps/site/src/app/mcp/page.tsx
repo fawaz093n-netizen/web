@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/json-ld";
+import { createSoftwareApplicationStructuredData } from "@/lib/structured-data";
 import type { Metadata } from "next";
 
 import { type McpAgent, McpAgentsSection } from "./_components/mcp-agents-section";
@@ -5,6 +7,13 @@ import { type McpCapability, McpCapabilitiesSection } from "./_components/mcp-ca
 import { McpCtaSection } from "./_components/mcp-cta-section";
 import { type McpHeroFeature, McpHeroSection } from "./_components/mcp-hero-section";
 import { McpVideoSection } from "./_components/mcp-video-section";
+
+const mcpStructuredData = createSoftwareApplicationStructuredData({
+  path: "/mcp",
+  name: "Prisma MCP Server",
+  description:
+    "AI-powered database management via Model Context Protocol. Manage databases with natural language in Claude, Codex, Cursor, Warp, ChatGPT and other AI agents.",
+});
 
 export const metadata: Metadata = {
   title: "Prisma MCP Server — AI-Powered Database Management",
@@ -175,6 +184,7 @@ const capabilities: McpCapability[] = [
 export default function McpPage() {
   return (
     <main className="relative flex-1 w-full -mt-24 flex flex-col overflow-x-hidden bg-[linear-gradient(0deg,var(--color-background-default)_95%,var(--color-background-ppg)_100%)] text-foreground-neutral">
+      <JsonLd id="mcp-software-application" data={mcpStructuredData} />
       <div className="relative z-1 flex flex-col">
         <McpHeroSection docsHref={DOCS_MCP} features={heroFeatures} />
         <McpVideoSection />

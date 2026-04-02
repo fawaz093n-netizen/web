@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/json-ld";
+import { createSoftwareApplicationStructuredData } from "@/lib/structured-data";
 import type { Metadata } from "next";
 import { Button } from "@prisma/eclipse";
 import Image from "next/image";
@@ -39,8 +41,7 @@ const featureRows = [
     description:
       "Access your database anywhere. Work locally for rapid development or use Console for team collaboration. Switch seamlessly between solo and team workflows.",
     imageSrc: "/illustrations/studio/laptop.svg",
-    imageAlt:
-      "Prisma Studio interface showing local and collaborative workflows",
+    imageAlt: "Prisma Studio interface showing local and collaborative workflows",
     imageWidth: 522,
     imageHeight: 295,
   },
@@ -50,8 +51,7 @@ const featureRows = [
     description:
       "Browse your database visually with powerful filters and search. Spot patterns instantly and get insights for debugging or schema changes, no SQL needed.",
     imageSrc: "/illustrations/studio/explore.svg",
-    imageAlt:
-      "Prisma Studio data exploration interface with highlighted filters",
+    imageAlt: "Prisma Studio data exploration interface with highlighted filters",
     imageWidth: 546,
     imageHeight: 275,
   },
@@ -87,6 +87,13 @@ const featureRows = [
   },
 ] as const;
 
+const studioStructuredData = createSoftwareApplicationStructuredData({
+  path: "/studio",
+  name: "Prisma Studio",
+  description:
+    "Visual database browser and editor for Prisma. Explore and manipulate your data with an intuitive interface, locally or in the Prisma Data Platform.",
+});
+
 export const metadata: Metadata = {
   title: "Prisma Studio — Visual Database Browser & Editor",
   description:
@@ -120,6 +127,7 @@ export const metadata: Metadata = {
 export default function StudioPage() {
   return (
     <main className="flex-1 w-full -mt-24 bg-background-default text-foreground-neutral">
+      <JsonLd id="studio-software-application" data={studioStructuredData} />
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-[linear-gradient(180deg,var(--color-background-orm)_0%,var(--color-background-default)_72%)] px-4 pt-60 pb-12">
         <div className="pointer-events-none absolute inset-x-1/2 top-20 h-[780px] w-[1664px] -translate-x-1/2 rounded-full bg-[repeating-radial-gradient(circle_at_top,rgba(99,102,241,0.28)_0,rgba(99,102,241,0.28)_2px,transparent_2px,transparent_42px)] opacity-45 mask-[linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_78%)]" />
@@ -140,8 +148,8 @@ export default function StudioPage() {
             </div>
 
             <p className="m-0 max-w-[650px] text-lg leading-8 text-foreground-neutral md:text-xl">
-              The ultimate tool for exploring and editing data in your Prisma
-              project. Work locally or team up inside the Prisma Console.
+              The ultimate tool for exploring and editing data in your Prisma project. Work locally
+              or team up inside the Prisma Console.
             </p>
 
             <div className="flex flex-col items-center gap-4 sm:flex-row">
@@ -155,11 +163,7 @@ export default function StudioPage() {
                 <span>Explore Studio in Prisma Console</span>
                 <i className="fa-regular fa-arrow-up-right ml-2" />
               </Button>
-              <Button
-                variant="default-stronger"
-                size="2xl"
-                href={STUDIO_DOCS_URL}
-              >
+              <Button variant="default-stronger" size="2xl" href={STUDIO_DOCS_URL}>
                 <span>Try locally</span>
                 <i className="fa-regular fa-arrow-down ml-2" />
               </Button>
@@ -185,10 +189,7 @@ export default function StudioPage() {
             >
               <div className="flex items-start gap-4">
                 <div className="flex size-12 items-center justify-center rounded-md bg-background-orm p-3">
-                  <i
-                    className={`${card.icon} text-lg text-foreground-orm`}
-                    aria-hidden="true"
-                  />
+                  <i className={`${card.icon} text-lg text-foreground-orm`} aria-hidden="true" />
                 </div>
                 <div>
                   <h2 className="m-0 text-xl leading-7 text-foreground-neutral font-sans-display [font-variation-settings:'wght'_800]">
@@ -232,9 +233,8 @@ export default function StudioPage() {
                 See how Studio works
               </h2>
               <p className="m-0 mt-4 text-base leading-6 text-foreground-neutral-weak">
-                Access Prisma Studio on your local machine during development,
-                or in the Platform Console to collaborate on data with your
-                team.
+                Access Prisma Studio on your local machine during development, or in the Platform
+                Console to collaborate on data with your team.
               </p>
             </div>
 
@@ -274,8 +274,7 @@ export default function StudioPage() {
                   Try it out!
                 </h2>
                 <p className="m-0 mt-4 text-base leading-6 text-foreground-neutral-weak">
-                  Take Studio for a spin with a local pre-seeded database and
-                  example project.
+                  Take Studio for a spin with a local pre-seeded database and example project.
                 </p>
               </div>
 
@@ -332,17 +331,10 @@ function FeatureRow({
         <h2 className="m-0 mt-2 text-4xl leading-10 text-foreground-neutral font-sans-display [font-variation-settings:'wght'_900]">
           {title}
         </h2>
-        <p className="m-0 mt-4 text-base leading-8 text-foreground-neutral-weak">
-          {description}
-        </p>
+        <p className="m-0 mt-4 text-base leading-8 text-foreground-neutral-weak">{description}</p>
       </div>
 
-      <StudioFeatureImage
-        src={imageSrc}
-        alt={imageAlt}
-        width={imageWidth}
-        height={imageHeight}
-      />
+      <StudioFeatureImage src={imageSrc} alt={imageAlt} width={imageWidth} height={imageHeight} />
     </div>
   );
 }
