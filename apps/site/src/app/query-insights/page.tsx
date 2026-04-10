@@ -47,10 +47,7 @@ export default async function Page() {
           <div className="flex flex-col gap-4 items-center text-center">
             <div className="flex items-center gap-2 text-foreground-ppg-weak uppercase tracking-widest text-sm font-sans-display font-black">
               <span>Query insights</span>
-              <i
-                className="fa-solid fa-brain-circuit"
-                aria-hidden="true"
-              ></i>
+              <i className="fa-solid fa-brain-circuit" aria-hidden="true"></i>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl stretch-display mb-0 text-center mt-0 font-sans-display text-foreground-neutral max-w-4xl mx-auto">
               AI-powered insights
@@ -62,28 +59,24 @@ export default async function Page() {
             in production, and generate a structured AI prompt to improve them.
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
-          <Button asChild variant="ppg" size="2xl">
-                <a href="/postgres">
-                  <span>Get Started</span>
-                  <i
-                    className="fa-regular fa-arrow-right ml-2"
-                    aria-hidden="true"
-                  />
-                </a>
-              </Button>
-              <Button
-                asChild
-                variant="default-strong"
-                size="2xl"
-              >
-                <a href="/docs/postgres/faq#query-insights">
-                  <span>Read the docs</span>
-                  <i
-                    className="fa-regular fa-book-open ml-2"
-                    aria-hidden="true"
-                  />
-                </a>
-              </Button>
+            <Button asChild variant="ppg" size="2xl">
+              <a href="/postgres">
+                <span>Get Started</span>
+                <i
+                  className="fa-regular fa-arrow-right ml-2"
+                  aria-hidden="true"
+                />
+              </a>
+            </Button>
+            <Button asChild variant="default-strong" size="2xl">
+              <a href="/docs/postgres/faq#query-insights">
+                <span>Read the docs</span>
+                <i
+                  className="fa-regular fa-book-open ml-2"
+                  aria-hidden="true"
+                />
+              </a>
+            </Button>
           </div>
           <i className="text-xs text-foreground-neutral-weaker text-center mx-auto!">
             Query Insights is <span className="underline">included</span> with
@@ -194,11 +187,6 @@ export default async function Page() {
                 visualType: "image" as const,
                 content: (
                   <div className="text-center md:text-left content">
-                    <Badge
-                      label="Coming soon"
-                      color="success"
-                      className="mb-4!"
-                    />
                     <h3 className="m-0! font-mona-sans font-sans-display stretch-display text-3xl! md:text-[40px]! text-foreground-neutral">
                       Generate an AI prompt to fix it
                     </h3>
@@ -236,11 +224,7 @@ export default async function Page() {
                   />
                 </a>
               </Button>
-              <Button
-                asChild
-                variant="default-strong"
-                size="2xl"
-              >
+              <Button asChild variant="default-strong" size="2xl">
                 <a href="/docs/postgres/faq#query-insights">
                   <span>Read the docs</span>
                   <i
