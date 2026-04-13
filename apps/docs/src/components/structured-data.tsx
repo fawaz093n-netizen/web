@@ -1,11 +1,11 @@
 import { getBaseUrl, withDocsBasePath } from "@/lib/urls";
 import type { InferPageType } from "fumadocs-core/source";
-import type { source, sourceV6 } from "@/lib/source";
+import type { source } from "@/lib/source";
 import { JsonLd } from "@prisma-docs/ui/components/json-ld";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-type DocsPage = InferPageType<typeof source> | InferPageType<typeof sourceV6>;
+type DocsPage = InferPageType<typeof source>;
 
 interface StructuredDataProps {
   page: DocsPage;
@@ -20,8 +20,8 @@ function toIsoDate(value: Date | string | undefined) {
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 }
 
-function getContentDirectory(page: DocsPage) {
-  return page.url.startsWith("/v6") ? "content/docs.v6" : "content/docs";
+function getContentDirectory(_page: DocsPage) {
+  return "content/docs";
 }
 
 function getSectionTitle(page: DocsPage, slugs: string[]) {
