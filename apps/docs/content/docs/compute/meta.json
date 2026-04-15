@@ -1,0 +1,17 @@
+{
+  "title": "Compute",
+  "root": true,
+  "icon": "Cpu",
+  "pages": [
+    "---Introduction---",
+    "index",
+    "---Quickstart---",
+    "quickstart-nextjs",
+    "quickstart-bun",
+    "---CLI---",
+    "cli",
+    "logs",
+    "---More---",
+    "limitations"
+  ]
+}

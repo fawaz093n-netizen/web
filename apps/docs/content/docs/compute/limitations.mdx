@@ -1,0 +1,42 @@
+---
+title: Known limitations
+description: What is and isn't supported in Prisma Compute during Early Access.
+badge: early-access
+url: /compute/limitations
+metaTitle: Known limitations | Prisma Compute
+metaDescription: A running list of known limitations in Prisma Compute during the Early Access window.
+---
+
+Prisma Compute is moving fast during Early Access. This page is the running list of known limitations — keep it close while you're building.
+
+## Runtime
+
+- **Next.js apps require `output: "standalone"`.** Set this in `next.config.ts` / `next.config.mjs` before your first deploy. See the [Next.js quickstart](/compute/quickstart-nextjs#2-enable-standalone-output).
+- **First-class framework support** for this release covers **Next.js** and **Bun/Hono** only.
+
+## CLI
+
+- **Two CLIs coexist.** `@looma/prisma-cli` (unified `prisma app …`) is the direction of travel; `@prisma/compute-cli` (original `compute …`) is the fallback for features or fixes that haven't reached the new CLI yet.
+- **First deploy bootstraps local project context** automatically when no project is linked. Subsequent deploys reuse the saved selection, so the scaffolding flags aren't required each time.
+
+## Log streaming
+
+- **10-minute stream cap.** A single log stream disconnects after ~10 minutes — reconnect, optionally with `--cursor`, to continue.
+- **One concurrent stream per version.** Only one client can stream a given compute version at a time.
+
+See [Stream logs](/compute/logs) for reconnection patterns.
+
+## Environment variables
+
+- `env update` (or `app update-env`) **cuts a new compute version**. The old version stays live until the new one is healthy.
+- There is no bulk import from a `.env` file yet — pass `--env KEY=VALUE` for each variable, or repeat the flag.
+
+## Out of scope for EA
+
+These are intentionally deferred until after the EA window closes:
+
+- Canary / traffic-split deploys.
+- Multi-region routing controls.
+- Console UI parity with the CLI (some actions are CLI-only today — the Console may offer a "copy this command" affordance instead).
+
+If you hit something that isn't listed here and isn't documented elsewhere, share it in `#product-compute` so we can fold it in.

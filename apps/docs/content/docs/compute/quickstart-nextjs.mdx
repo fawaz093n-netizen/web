@@ -1,0 +1,93 @@
+---
+title: Next.js quickstart
+description: Create a Next.js app and deploy it to Prisma Compute.
+badge: early-access
+url: /compute/quickstart-nextjs
+metaTitle: Next.js quickstart | Prisma Compute
+metaDescription: Create a Next.js app, configure standalone output, and deploy it to Prisma Compute with the Prisma CLI.
+---
+
+This quickstart walks through creating a fresh Next.js app and deploying it to Prisma Compute. Commands are shown for both CLIs that are usable during Early Access.
+
+## 1. Create the app
+
+```bash
+pnpm create next-app@latest my-next-app --yes
+cd my-next-app
+```
+
+## 2. Enable standalone output
+
+Prisma Compute currently requires Next.js's standalone build output. Update `next.config.ts` (or `next.config.mjs`):
+
+```typescript
+const nextConfig = {
+  output: "standalone",
+};
+
+export default nextConfig;
+```
+
+## 3. Authenticate
+
+### Using `@looma/prisma-cli`
+
+```bash
+npx @looma/prisma-cli auth login
+```
+
+### Using `@prisma/compute-cli`
+
+```bash
+bunx @prisma/compute-cli login
+```
+
+:::note
+
+In CI or non-interactive environments, set `PRISMA_API_TOKEN` instead of running `auth login`.
+
+:::
+
+## 4. Deploy
+
+### Using `@looma/prisma-cli`
+
+```bash
+npx @looma/prisma-cli app deploy --app my-next-app --build-type nextjs --http-port 3000
+```
+
+### Using `@prisma/compute-cli`
+
+```bash
+bunx @prisma/compute-cli deploy --service-name my-next-app --build-type nextjs --http-port 3000
+```
+
+The first deploy bootstraps the local project context when no project is linked yet. After that, redeploys reuse the saved selection:
+
+```bash
+npx @looma/prisma-cli app deploy --http-port 3000
+# or
+bunx @prisma/compute-cli deploy --http-port 3000
+```
+
+## 5. Inspect the deployment
+
+### Using `@looma/prisma-cli`
+
+```bash
+npx @looma/prisma-cli app list-deploys
+npx @looma/prisma-cli app show-deploy <deployment-id>
+```
+
+### Using `@prisma/compute-cli`
+
+```bash
+bunx @prisma/compute-cli versions list
+bunx @prisma/compute-cli versions show <version-id>
+```
+
+## Next steps
+
+- [Manage environment variables](/compute/cli#environment-variables)
+- [Stream logs from your deployment](/compute/logs)
+- [Known limitations](/compute/limitations)

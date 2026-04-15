@@ -1,0 +1,167 @@
+---
+title: CLI reference
+description: Authenticate, deploy, and manage environment variables for Prisma Compute from the CLI.
+badge: early-access
+url: /compute/cli
+metaTitle: CLI reference | Prisma Compute
+metaDescription: Reference for the Prisma Compute CLIs. Authentication, deploy, and environment variable commands for @looma/prisma-cli and @prisma/compute-cli.
+---
+
+Two CLIs currently target Prisma Compute during Early Access. This page documents the commands needed day-to-day: install, authenticate, deploy, and manage environment variables.
+
+| Package | Binary | Typical invocation |
+|---|---|---|
+| [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli) | `prisma` | `npx @looma/prisma-cli …` |
+| [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli) | `compute` | `bunx @prisma/compute-cli …` |
+
+## Authentication
+
+Run an interactive browser flow once per machine. Credentials are stored locally.
+
+### Using `@looma/prisma-cli`
+
+```bash
+npx @looma/prisma-cli auth login
+npx @looma/prisma-cli auth whoami
+npx @looma/prisma-cli auth logout
+```
+
+### Using `@prisma/compute-cli`
+
+```bash
+bunx @prisma/compute-cli login
+bunx @prisma/compute-cli logout
+```
+
+For CI, scripts, and agents, set `PRISMA_API_TOKEN` in the environment instead of running the interactive flow.
+
+## Deploy
+
+### Using `@looma/prisma-cli`
+
+```bash
+npx @looma/prisma-cli app deploy [options]
+```
+
+| Option | Description |
+|---|---|
+| `--app <name>` | App name |
+| `--entry <path>` | Entry point path for Bun or auto-detected deploys |
+| `--build-type <type>` | `auto`, `bun`, or `nextjs` (default: `auto`) |
+| `--http-port <port>` | HTTP port the deployed app listens on |
+| `--env <KEY=VALUE>` | Environment variable (repeat for multiple) |
+| `--json` | Emit structured JSON output |
+
+### Using `@prisma/compute-cli`
+
+```bash
+bunx @prisma/compute-cli deploy [options]
+```
+
+| Option | Description |
+|---|---|
+| `--project <id>` | Project ID |
+| `--service <id>` | Compute service ID |
+| `--service-name <name>` | Name for a new compute service |
+| `--region <region>` | Region for a new compute service |
+| `--path <path>` | App directory (default: `.`) |
+| `--entrypoint <file>` | File to run at startup (falls back to `package.json` `main`) |
+| `--build-type <type>` | `auto`, `bun`, or `nextjs` (default: `auto`) |
+| `--http-port <port>` | HTTP port the app listens on (default: `8080`) |
+| `--env <KEY=VALUE>` | Environment variable (repeat for multiple) |
+| `--unset-env <KEY>` | Remove an environment variable (repeat for multiple) |
+| `--skip-build` | Deploy a pre-built artifact |
+| `--skip-promote` | Deploy without promoting to the service endpoint |
+| `--destroy-old-version` | Delete the previous version after stopping it |
+| `--json` | Output JSON |
+
+## Environment variables
+
+You can set environment variables two ways: inline with `deploy`, or with a dedicated update command that creates a new version without rebuilding source.
+
+### Set variables during a deploy
+
+Repeat `--env` for each variable. Values are stored on the platform and injected into the running version.
+
+#### Using `@looma/prisma-cli`
+
+```bash
+npx @looma/prisma-cli app deploy \
+  --app my-app \
+  --env DATABASE_URL=postgresql://example \
+  --env NODE_ENV=production
+```
+
+#### Using `@prisma/compute-cli`
+
+```bash
+bunx @prisma/compute-cli deploy \
+  --env DATABASE_URL=postgresql://example \
+  --env NODE_ENV=production
+```
+
+### Update variables without rebuilding
+
+Use this when you only need to rotate or add a secret. Both commands cut a **new compute version** — the previous version stays live until the new one is healthy.
+
+#### Using `@looma/prisma-cli`
+
+```bash
+npx @looma/prisma-cli app update-env --env DATABASE_URL=postgresql://example
+npx @looma/prisma-cli app update-env --app my-app --env STRIPE_KEY=sk_live_…
+```
+
+List the current values:
+
+```bash
+npx @looma/prisma-cli app list-env
+npx @looma/prisma-cli app list-env --app my-app
+```
+
+#### Using `@prisma/compute-cli`
+
+```bash
+bunx @prisma/compute-cli env update --env DATABASE_URL=postgresql://example
+bunx @prisma/compute-cli env update \
+  --env STRIPE_KEY=sk_live_… \
+  --env NODE_ENV=production
+```
+
+### Remove variables
+
+Pass `--unset-env KEY` (repeat for multiple) on either `deploy` or `env update` with `@prisma/compute-cli`:
+
+```bash
+bunx @prisma/compute-cli env update --unset-env LEGACY_FLAG --unset-env DEBUG
+```
+
+## Versions and services
+
+`@prisma/compute-cli` exposes primitives for managing versions and services directly:
+
+```bash
+bunx @prisma/compute-cli versions list
+bunx @prisma/compute-cli versions show <version-id>
+bunx @prisma/compute-cli versions start <version-id>
+bunx @prisma/compute-cli versions stop <version-id>
+bunx @prisma/compute-cli versions promote <version-id>
+bunx @prisma/compute-cli versions delete <version-id>
+
+bunx @prisma/compute-cli services list
+bunx @prisma/compute-cli projects list
+```
+
+With `@looma/prisma-cli`, equivalent operations live under `app`:
+
+```bash
+npx @looma/prisma-cli app list-deploys
+npx @looma/prisma-cli app show-deploy <deployment-id>
+npx @looma/prisma-cli app promote <deployment-id>
+npx @looma/prisma-cli app rollback
+npx @looma/prisma-cli app remove
+```
+
+## See also
+
+- [Stream logs](/compute/logs) — tail logs for a compute version or deployment.
+- [Known limitations](/compute/limitations) — what's still in flight during EA.

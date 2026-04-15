@@ -1,0 +1,88 @@
+---
+title: Stream logs
+description: Tail logs for a Prisma Compute version or deployment.
+badge: early-access
+url: /compute/logs
+metaTitle: Stream logs | Prisma Compute
+metaDescription: Stream logs from Prisma Compute versions and deployments using the Prisma CLI. Tail, replay, and resume log streams during Early Access.
+---
+
+Prisma Compute can stream logs for any compute version directly to your terminal.
+
+## Stream logs for a compute version
+
+### Using `@prisma/compute-cli`
+
+```bash
+bunx @prisma/compute-cli logs <compute-version-id>
+```
+
+| Option | Description |
+|---|---|
+| `--tail <n>` | Number of recent lines to show (default: `100`) |
+| `--from-start` | Start from the beginning of the log buffer instead of tailing |
+| `--cursor <offset>` | Resume from a byte-offset cursor returned by a previous stream |
+| `--json` | Output each log record as a JSON line |
+
+Examples:
+
+```bash
+# Tail the last 200 lines and follow
+bunx @prisma/compute-cli logs v_042 --tail 200
+
+# Replay from the start of the available buffer
+bunx @prisma/compute-cli logs v_042 --from-start
+
+# Resume from where an earlier stream left off
+bunx @prisma/compute-cli logs v_042 --cursor 104857600
+
+# Emit structured JSON for pipelines or agents
+bunx @prisma/compute-cli logs v_042 --json
+```
+
+### Using `@looma/prisma-cli`
+
+```bash
+npx @looma/prisma-cli app logs
+npx @looma/prisma-cli app logs --deployment <deployment-id>
+npx @looma/prisma-cli app logs --tail 200
+```
+
+| Option | Description |
+|---|---|
+| `--app <name>` | App name |
+| `--deployment <id>` | Specific deployment to stream |
+| `--tail <n>` | Number of recent lines to show |
+| `--from-start` | Start from the beginning of the log buffer |
+| `--cursor <offset>` | Resume from a prior log cursor |
+| `--json` | Emit structured JSON output |
+
+## Find a compute version ID
+
+If you don't know the ID to pass to `logs`:
+
+```bash
+# With @prisma/compute-cli
+bunx @prisma/compute-cli versions list
+
+# With @looma/prisma-cli
+npx @looma/prisma-cli app list-deploys
+```
+
+## Limitations during Early Access
+
+:::warning
+
+Log streaming has hard limits in the EA build. Plan around them when debugging:
+
+- **10-minute stream cap** — a single `logs` stream disconnects after ~10 minutes. Reconnect (optionally with `--cursor`) to continue.
+- **One concurrent stream per version** — only one client can stream a given compute version at a time. A second stream will fail or bump the first.
+
+:::
+
+These limits will be relaxed after EA. For now, prefer short, targeted log sessions and reach for `--tail` to grab a bounded recent window instead of long-lived streams.
+
+## See also
+
+- [CLI reference](/compute/cli)
+- [Known limitations](/compute/limitations)

@@ -1,0 +1,54 @@
+---
+title: Prisma Compute
+description: Deploy Next.js and Bun applications to Prisma Compute from the CLI.
+badge: early-access
+url: /compute
+metaTitle: Prisma Compute
+metaDescription: Prisma Compute is a simple, reliable app hosting runtime tightly integrated with Prisma Postgres. Deploy, observe, and manage apps from the terminal.
+---
+
+Prisma Compute is a simple, reliable app hosting runtime for Next.js and Bun applications, built with tight integration to Prisma Postgres and designed for a CLI-first, AI-native workflow.
+
+## What you get
+
+- **One-command deploys** for Next.js and Bun apps.
+- **Two CLIs** currently coexist during EA:
+  - [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli) — the new unified Prisma CLI (`prisma app …`).
+  - [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli) — the original compute CLI (`compute …`).
+- **Environment variables** managed from the CLI on every deploy or as a standalone update.
+- **Log streaming** for any compute version.
+- **Tight Prisma Postgres integration** — build against a managed Postgres without leaving the Prisma toolchain.
+
+## Getting started
+
+<Cards>
+  <Card href="/compute/quickstart-nextjs" title="Next.js quickstart">
+    Create a Next.js app and ship it to Compute in a few commands.
+  </Card>
+  <Card href="/compute/quickstart-bun" title="Bun quickstart">
+    Deploy a minimal Bun HTTP server to Compute.
+  </Card>
+</Cards>
+
+## Reference
+
+<Cards>
+  <Card href="/compute/cli" title="CLI reference">
+    Install, authenticate, deploy, and manage environment variables from the terminal.
+  </Card>
+  <Card href="/compute/logs" title="Stream logs">
+    Tail logs for a specific compute version or deployment.
+  </Card>
+  <Card href="/compute/limitations" title="Known limitations">
+    What is and isn't supported during the EA window.
+  </Card>
+</Cards>
+
+## Which CLI should I use?
+
+Both CLIs target the same platform. For EA:
+
+- Start with **`@looma/prisma-cli`** if you want the unified `prisma app` experience that we are standardizing on for Prisma 8.
+- Fall back to **`@prisma/compute-cli`** if you hit an edge case, or for features that have only landed on the original CLI yet.
+
+Every quickstart and reference page on this site shows the equivalent command in both CLIs side by side.
