@@ -80,7 +80,20 @@ export function UtmPersistence() {
       const isModifiedClick =
         event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
 
-      if (isInternalLink && anchor.target !== "_blank" && !isModifiedClick) {
+      // Paths proxied to other apps via rewrites — must use full navigation
+      // so the server-side rewrite kicks in instead of client-side routing.
+      const isProxiedPath =
+        targetUrl.pathname === "/docs" ||
+        targetUrl.pathname.startsWith("/docs/") ||
+        targetUrl.pathname === "/blog" ||
+        targetUrl.pathname.startsWith("/blog/");
+
+      if (
+        isInternalLink &&
+        !isProxiedPath &&
+        anchor.target !== "_blank" &&
+        !isModifiedClick
+      ) {
         event.preventDefault();
         router.push(nextHref);
         return;

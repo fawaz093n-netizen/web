@@ -76,18 +76,29 @@ export function UtmPersistence() {
       }
 
       const nextHref = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
-      const internalPathname =
-        targetUrl.pathname === BLOG_PREFIX
-          ? "/"
-          : targetUrl.pathname.replace(new RegExp(`^${BLOG_PREFIX}(?:/|$)`), "/");
-      const nextInternalHref =
-        `${internalPathname}${targetUrl.search}${targetUrl.hash}`;
+      const isBlogPath =
+        targetUrl.pathname === BLOG_PREFIX ||
+        targetUrl.pathname.startsWith(`${BLOG_PREFIX}/`);
       const isModifiedClick =
         event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
 
-      if (isInternalLink && anchor.target !== "_blank" && !isModifiedClick) {
+      if (
+        isInternalLink &&
+        isBlogPath &&
+        anchor.target !== "_blank" &&
+        !isModifiedClick
+      ) {
+        const internalPathname =
+          targetUrl.pathname === BLOG_PREFIX
+            ? "/"
+            : targetUrl.pathname.replace(
+                new RegExp(`^${BLOG_PREFIX}(?:/|$)`),
+                "/",
+              );
         event.preventDefault();
-        router.push(nextInternalHref);
+        router.push(
+          `${internalPathname}${targetUrl.search}${targetUrl.hash}`,
+        );
         return;
       }
 
