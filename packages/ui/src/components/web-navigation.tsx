@@ -42,31 +42,36 @@ interface WebNavigationProps {
   buttonVariant?: "ppg" | "orm" | undefined;
 }
 
+function appendUtmParams(base: string, utm?: WebNavigationProps["utm"]) {
+  if (!utm) return base;
+  const url = new URL(base);
+  for (const [key, value] of Object.entries(utm)) {
+    if (key.startsWith("utm_") && value) {
+      url.searchParams.set(key, value);
+    }
+  }
+  return url.toString();
+}
+
 function buildConsoleHref(
   pathname: "/login" | "/sign-up",
   utm?: WebNavigationProps["utm"],
   preserveExactUtm = false,
 ) {
-  if (!utm) {
-    return `https://console.prisma.io${pathname}`;
-  }
+  const href = appendUtmParams(`https://console.prisma.io${pathname}`, utm);
 
-  const href = new URL(`https://console.prisma.io${pathname}`);
-
-  for (const [key, value] of Object.entries(utm)) {
-    if (key.startsWith("utm_") && value) {
-      href.searchParams.set(key, value);
+  if (!preserveExactUtm) {
+    const url = new URL(href);
+    if (!url.searchParams.has("utm_campaign")) {
+      url.searchParams.set(
+        "utm_campaign",
+        pathname === "/login" ? "login" : "signup",
+      );
+      return url.toString();
     }
   }
 
-  if (!preserveExactUtm && !href.searchParams.has("utm_campaign")) {
-    href.searchParams.set(
-      "utm_campaign",
-      pathname === "/login" ? "login" : "signup",
-    );
-  }
-
-  return href.toString();
+  return href;
 }
 
 export function WebNavigation({
@@ -78,8 +83,8 @@ export function WebNavigation({
   const [mobileView, setMobileView] = useState(false);
   const loginHref = buildConsoleHref("/login", utm, preserveExactUtm);
   const signupHref = buildConsoleHref("/sign-up", utm, preserveExactUtm);
-  const logoHref = preserveExactUtm && utm
-    ? `https://www.prisma.io?${new URLSearchParams(Object.entries(utm).filter(([k, v]) => k.startsWith("utm_") && v)).toString()}`
+  const logoHref = preserveExactUtm
+    ? appendUtmParams("https://www.prisma.io", utm)
     : "https://www.prisma.io";
 
   useEffect(() => {
