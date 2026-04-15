@@ -7,10 +7,10 @@ metaTitle: Prisma Compute
 metaDescription: Internal one-page reference for deploying Next.js and Bun apps to Prisma Compute, managing environment variables, and streaming logs.
 ---
 
-App hosting for Next.js and Bun, driven from the CLI. Two CLIs are usable today — pick whichever you prefer:
+App hosting for Next.js and Bun, driven from the CLI. Two CLIs are usable today, pick whichever you prefer:
 
-- [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli) — new unified `prisma app …` surface.
-- [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli) — original `compute …` surface.
+- [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli): new unified `prisma app` surface.
+- [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli): original `compute` surface.
 
 ## Quickstart
 
@@ -80,7 +80,7 @@ bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
   </CodeBlockTab>
 </CodeBlockTabs>
 
-The first deploy bootstraps project context. Re-deploys reuse the saved selection — `app deploy` (or `deploy`) is enough.
+The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `app deploy` (or `deploy`) is enough.
 
 In CI, set `PRISMA_API_TOKEN` instead of running `auth login`.
 
@@ -113,7 +113,7 @@ bunx @prisma/compute-cli versions show <version-id>
 
 Set them inline on a deploy, or update without rebuilding (cuts a new version).
 
-**During a deploy** — repeat `--env` per variable:
+**During a deploy**, repeat `--env` per variable:
 
 <CodeBlockTabs defaultValue="looma">
   <CodeBlockTabsList>
@@ -140,7 +140,7 @@ bunx @prisma/compute-cli deploy \
   </CodeBlockTab>
 </CodeBlockTabs>
 
-**Without rebuilding** — same flag shape, dedicated command. Old version stays live until the new one is healthy:
+**Without rebuilding**: same flag shape, dedicated command. Old version stays live until the new one is healthy.
 
 <CodeBlockTabs defaultValue="looma">
   <CodeBlockTabsList>
@@ -150,7 +150,7 @@ bunx @prisma/compute-cli deploy \
   <CodeBlockTab value="looma">
 
 ```bash
-npx @looma/prisma-cli app update-env --env STRIPE_KEY=sk_live_…
+npx @looma/prisma-cli app update-env --env STRIPE_KEY=sk_live_xxx
 npx @looma/prisma-cli app list-env
 ```
 
@@ -158,7 +158,7 @@ npx @looma/prisma-cli app list-env
   <CodeBlockTab value="compute">
 
 ```bash
-bunx @prisma/compute-cli env update --env STRIPE_KEY=sk_live_…
+bunx @prisma/compute-cli env update --env STRIPE_KEY=sk_live_xxx
 bunx @prisma/compute-cli env update --unset-env LEGACY_FLAG
 ```
 
@@ -201,8 +201,8 @@ EA log limits: ~10-min stream cap (reconnect with `--cursor`), one concurrent st
 
 - Next.js apps must use `output: "standalone"`.
 - First-class support for **Next.js** and **Bun/Hono** only.
-- `env update` / `app update-env` cuts a new compute version — old version stays live until the new one is healthy.
-- No bulk `.env` import yet — repeat `--env KEY=VALUE`.
+- `env update` / `app update-env` cuts a new compute version. The old version stays live until the new one is healthy.
+- No bulk `.env` import yet, repeat `--env KEY=VALUE` for each variable.
 - Logs: 10-min stream cap, one concurrent stream per version.
 
 ## Useful CLI inventory
@@ -241,6 +241,6 @@ compute projects list
   </CodeBlockTab>
 </CodeBlockTabs>
 
-Need a flag that isn't here? Run `--help` on the relevant command — both CLIs have stable, browsable help output.
+Need a flag that isn't here? Run `--help` on the relevant command. Both CLIs have stable, browsable help output.
 
 Questions or breakage during EA: `#product-compute`.
