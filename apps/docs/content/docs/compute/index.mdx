@@ -1,54 +1,246 @@
 ---
 title: Prisma Compute
-description: Deploy Next.js and Bun applications to Prisma Compute from the CLI.
+description: One-page internal reference for deploying apps to Prisma Compute during EA.
 badge: early-access
 url: /compute
 metaTitle: Prisma Compute
-metaDescription: Prisma Compute is a simple, reliable app hosting runtime tightly integrated with Prisma Postgres. Deploy, observe, and manage apps from the terminal.
+metaDescription: Internal one-page reference for deploying Next.js and Bun apps to Prisma Compute, managing environment variables, and streaming logs.
 ---
 
-Prisma Compute is a simple, reliable app hosting runtime for Next.js and Bun applications, built with tight integration to Prisma Postgres and designed for a CLI-first, AI-native workflow.
+App hosting for Next.js and Bun, driven from the CLI. Two CLIs are usable today — pick whichever you prefer:
 
-## What you get
+- [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli) — new unified `prisma app …` surface.
+- [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli) — original `compute …` surface.
 
-- **One-command deploys** for Next.js and Bun apps.
-- **Two CLIs** currently coexist during EA:
-  - [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli) — the new unified Prisma CLI (`prisma app …`).
-  - [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli) — the original compute CLI (`compute …`).
-- **Environment variables** managed from the CLI on every deploy or as a standalone update.
-- **Log streaming** for any compute version.
-- **Tight Prisma Postgres integration** — build against a managed Postgres without leaving the Prisma toolchain.
+## Quickstart
 
-## Getting started
+Pick your starter and run the steps below.
 
-<Cards>
-  <Card href="/compute/quickstart-nextjs" title="Next.js quickstart">
-    Create a Next.js app and ship it to Compute in a few commands.
-  </Card>
-  <Card href="/compute/quickstart-bun" title="Bun quickstart">
-    Deploy a minimal Bun HTTP server to Compute.
-  </Card>
-</Cards>
+<Tabs items={['Next.js', 'Bun']}>
 
-## Reference
+<Tab value="next.js">
 
-<Cards>
-  <Card href="/compute/cli" title="CLI reference">
-    Install, authenticate, deploy, and manage environment variables from the terminal.
-  </Card>
-  <Card href="/compute/logs" title="Stream logs">
-    Tail logs for a specific compute version or deployment.
-  </Card>
-  <Card href="/compute/limitations" title="Known limitations">
-    What is and isn't supported during the EA window.
-  </Card>
-</Cards>
+```bash
+pnpm create next-app@latest my-app --yes
+cd my-app
+```
 
-## Which CLI should I use?
+Enable standalone output in `next.config.ts`:
 
-Both CLIs target the same platform. For EA:
+```typescript
+const nextConfig = { output: "standalone" };
+export default nextConfig;
+```
 
-- Start with **`@looma/prisma-cli`** if you want the unified `prisma app` experience that we are standardizing on for Prisma 8.
-- Fall back to **`@prisma/compute-cli`** if you hit an edge case, or for features that have only landed on the original CLI yet.
+</Tab>
 
-Every quickstart and reference page on this site shows the equivalent command in both CLIs side by side.
+<Tab value="bun">
+
+```bash
+mkdir my-app && cd my-app && bun init --yes
+```
+
+Replace `index.ts`:
+
+```typescript
+Bun.serve({
+  port: Number(process.env.PORT ?? 3000),
+  fetch() {
+    return new Response("Hello from Compute");
+  },
+});
+```
+
+</Tab>
+
+</Tabs>
+
+Authenticate, then deploy:
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli auth login
+npx @looma/prisma-cli app deploy --app my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli login
+bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+The first deploy bootstraps project context. Re-deploys reuse the saved selection — `app deploy` (or `deploy`) is enough.
+
+In CI, set `PRISMA_API_TOKEN` instead of running `auth login`.
+
+## Inspect a deployment
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli app list-deploys
+npx @looma/prisma-cli app show-deploy <deployment-id>
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli versions list
+bunx @prisma/compute-cli versions show <version-id>
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+## Environment variables
+
+Set them inline on a deploy, or update without rebuilding (cuts a new version).
+
+**During a deploy** — repeat `--env` per variable:
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli app deploy \
+  --env DATABASE_URL=postgresql://example \
+  --env NODE_ENV=production
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli deploy \
+  --env DATABASE_URL=postgresql://example \
+  --env NODE_ENV=production
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+**Without rebuilding** — same flag shape, dedicated command. Old version stays live until the new one is healthy:
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli app update-env --env STRIPE_KEY=sk_live_…
+npx @looma/prisma-cli app list-env
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli env update --env STRIPE_KEY=sk_live_…
+bunx @prisma/compute-cli env update --unset-env LEGACY_FLAG
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+## Logs
+
+Stream logs for a specific compute version (or deployment):
+
+<CodeBlockTabs defaultValue="compute">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli logs <compute-version-id>
+bunx @prisma/compute-cli logs <compute-version-id> --tail 200
+bunx @prisma/compute-cli logs <compute-version-id> --from-start
+bunx @prisma/compute-cli logs <compute-version-id> --cursor <byte-offset>
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli app logs
+npx @looma/prisma-cli app logs --deployment <deployment-id>
+npx @looma/prisma-cli app logs --tail 200
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+EA log limits: ~10-min stream cap (reconnect with `--cursor`), one concurrent stream per version.
+
+## Limitations
+
+- Next.js apps must use `output: "standalone"`.
+- First-class support for **Next.js** and **Bun/Hono** only.
+- `env update` / `app update-env` cuts a new compute version — old version stays live until the new one is healthy.
+- No bulk `.env` import yet — repeat `--env KEY=VALUE`.
+- Logs: 10-min stream cap, one concurrent stream per version.
+
+## Useful CLI inventory
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+prisma auth login | logout | whoami
+prisma project ...
+prisma app build | run | deploy | update-env | list-env
+prisma app show | open | logs
+prisma app list-deploys | show-deploy <id> | promote <id> | rollback | remove
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+compute login | logout
+compute deploy [--project --service --service-name --region --path
+                --entrypoint --build-type auto|bun|nextjs --http-port
+                --env KEY=VALUE --unset-env KEY
+                --skip-build --skip-promote --destroy-old-version --json]
+compute logs <version-id> [--tail --from-start --cursor --json]
+compute env update [--env --unset-env --http-port]
+compute versions list | show | start | stop | promote | delete | destroy
+compute services list
+compute projects list
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+Need a flag that isn't here? Run `--help` on the relevant command — both CLIs have stable, browsable help output.
+
+Questions or breakage during EA: `#product-compute`.
