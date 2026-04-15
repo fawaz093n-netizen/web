@@ -5,44 +5,43 @@ import { register } from "node:module";
 register("fumadocs-mdx/node/loader", import.meta.url);
 
 const { source } = await import("@/lib/source");
-const v7Pages = source.getPages().map((page) => {
+
+const pages = source.getPages().map((page) => {
   return {
     value: { slug: page.slugs },
     hashes: getHeadings(page),
   };
 });
 
-const ormLatestAliasPages = source
-  .getPages()
-  .filter((page) => page.slugs[0] === "orm" && page.slugs[1] === "latest")
-  .map((page) => {
-    const aliasSlug = ["orm", ...page.slugs.slice(2)];
-    return {
-      value: { slug: aliasSlug.length > 1 ? aliasSlug : ["orm"] },
-      hashes: getHeadings(page),
-    };
-  });
+// const ormLatestAliasPages = source
+//   .getPages()
+//   .filter((page) => page.slugs[0] === 'orm' && page.slugs[1] === 'latest')
+//   .map((page) => {
+//     const aliasSlug = ['orm', ...page.slugs.slice(2)];
+//     return {
+//       value: { slug: aliasSlug.length > 1 ? aliasSlug : ['orm'] },
+//       hashes: getHeadings(page),
+//     };
+//   });
+//
+// const ormV6AliasPages = source
+//   .getPages()
+//   .filter((page) => page.slugs[0] === 'orm' && page.slugs[1] === 'v6')
+//   .map((page) => {
+//     const aliasSlug = ['orm', ...page.slugs.slice(2)];
+//     return {
+//       value: { slug: aliasSlug.length > 1 ? aliasSlug : ['orm'] },
+//       hashes: getHeadings(page),
+//     };
+//   });
 
-const ormV6AliasPages = source
-  .getPages()
-  .filter((page) => page.slugs[0] === "orm" && page.slugs[1] === "v6")
-  .map((page) => {
-    const aliasSlug = ["orm", ...page.slugs.slice(2)];
-    return {
-      value: { slug: aliasSlug.length > 1 ? aliasSlug : ["orm"] },
-      hashes: getHeadings(page),
-    };
-  });
-
-console.log(
-  `Found ${v7Pages.length} current files and ${ormLatestAliasPages.length + ormV6AliasPages.length} ORM alias routes`,
-);
+console.log(`Found ${pages.length} current files`);
 
 async function checkLinks() {
   const scanned = await scanURLs({
     preset: "next",
     populate: {
-      "(docs)/(default)/[[...slug]]": [...v7Pages, ...ormLatestAliasPages, ...ormV6AliasPages],
+      "(docs)/(default)/[[...slug]]": [...pages],
     },
   });
 
@@ -68,7 +67,7 @@ function getHeadings({ data }: InferPageType<typeof source>): string[] {
 function getFiles() {
   console.log("Validating Files");
 
-  const v7Promises = source.getPages().map(
+  const docsPages = source.getPages().map(
     async (page): Promise<FileObject> => ({
       path: page.absolutePath ?? "",
       content: await page.data.getText("raw"),
@@ -77,7 +76,7 @@ function getFiles() {
     }),
   );
 
-  return Promise.all(v7Promises);
+  return Promise.all(docsPages);
 }
 
 void checkLinks();
