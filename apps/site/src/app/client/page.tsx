@@ -130,8 +130,8 @@ const twoCol = [
           means you can rest assured that your code works as expected, every
           time.
         </p>
-        <Button href="/studio" variant="orm" size="3xl" className="w-fit">
-          Get started in 5 minutes
+        <Button asChild variant="orm" size="3xl" className="w-fit">
+          <a href="https://www.prisma.io/studio">Get started in 5 minutes</a>
         </Button>
       </div>
     ),
@@ -161,8 +161,8 @@ const twoCol = [
           leverages the capabilities of Prisma Client to write raw SQL queries
           that are type-checked at compile time.
         </p>
-        <Button href="/typedsql" variant="orm" size="3xl" className="w-fit">
-          Learn more about TypedSQL
+        <Button asChild variant="orm" size="3xl" className="w-fit">
+          <a href="https://www.prisma.io/typedsql">Learn more about TypedSQL</a>
         </Button>
       </div>
     ),
@@ -343,9 +343,11 @@ export default function Client() {
                 tables, filter, paginate, traverse relations and edit your data
                 with safety.
               </p>
-              <Button href="/studio" variant="orm" size="3xl" className="w-fit">
-                Learn more about Prisma Studio
-                <i className="fa-regular fa-arrow-right ml-2" />
+              <Button asChild variant="orm" size="3xl" className="w-fit">
+                <a href="https://www.prisma.io/studio">
+                  Learn more about Prisma Studio
+                  <i className="fa-regular fa-arrow-right ml-2" />
+                </a>
               </Button>
             </div>
             <div className="grid grid-rows-[auto_auto_1fr_auto]">

@@ -70,16 +70,20 @@ export function PageFooterCta({
                 return (
                   <Button
                     key={btn.url}
-                    href={btn.url}
+                    asChild
                     variant={i === 0 ? color : "default-stronger"}
                     size="2xl"
-                    {...(btn.external && {
-                      target: "_blank",
-                      rel: "noopener noreferrer",
-                    })}
                   >
-                    {btn.text}
-                    <i className="fa-regular fa-arrow-right ml-2" />
+                    <a
+                      href={btn.url}
+                      {...(btn.external && {
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                      })}
+                    >
+                      {btn.text}
+                      <i className="fa-regular fa-arrow-right ml-2" />
+                    </a>
                   </Button>
                 );
               })}
