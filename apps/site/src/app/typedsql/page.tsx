@@ -1,5 +1,6 @@
 import { createPageMetadata } from "@/lib/page-metadata";
 import { Button } from "@prisma/eclipse";
+import { PageFooterCta } from "@/components/page-footer-cta";
 import { CardSection } from "@/components/homepage/card-section/card-section";
 import { VideoSection } from "@/components/typedsql/video-section";
 import { ExpandCapabilities } from "@/components/typedsql/expand-capabilities";
@@ -164,36 +165,22 @@ export default function TypedSQLPage() {
         <VideoSection />
       </div>
       <ExpandCapabilities />
-      <div className="bg-[url('/illustrations/homepage/footer_grid.svg')] bg-contain bg-center before:inset-x-30 before:inset-y-[45%] before:absolute relative before:content-[''] before:pointer-events-none before:-z-1 rounded-full before:bg-indigo-400 before:blur-[100px]">
-        <div className="my-8 p-6 md:my-12 md:p-12">
-          <div className="flex flex-col mx-auto w-fit items-center justify-center gap-8">
-            <div className="flex flex-col items-center text-center gap-4">
-              <h2 className="text-3xl text-foreground-neutral font-sans-display stretch-display">
-                Raw SQL with type-safety and autocompletion
-              </h2>
-              <p className="text-foreground-neutral-weak max-w-xl">
-                TypedSQL gives you even more flexibility and control in your
-                database queries. Start using TypedSQL in any new or existing
-                Prisma project.
-              </p>
-            </div>
-            <div className="flex flex-col md:flex-row gap-6">
-              <Button asChild variant="orm" size="2xl">
-                <a href="https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/typedsql">
-                  Try TypedSQL
-                  <i className="fa-regular fa-arrow-right" />
-                </a>
-              </Button>
-              <Button asChild variant="default-strong" size="2xl">
-                <a href="https://github.com/prisma/prisma-examples/tree/latest/orm/typedsql">
-                  See an example
-                  <i className="fa-regular fa-arrow-right" />
-                </a>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageFooterCta
+        color="orm"
+        title="Raw SQL with<br/>type-safety and autocompletion"
+        description="TypedSQL gives you even more flexibility and control in your database queries. Start using TypedSQL in any new or existing Prisma project."
+        btns={[
+          {
+            url: "https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/typedsql",
+            text: "Try TypedSQL",
+          },
+          {
+            url: "https://github.com/prisma/prisma-examples/tree/latest/orm/typedsql",
+            text: "See an example",
+            external: true,
+          },
+        ]}
+      />
     </main>
   );
 }
