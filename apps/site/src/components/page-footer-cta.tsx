@@ -54,7 +54,7 @@ export function PageFooterCta({
                       key={btn.url}
                       consolePath={btn.consolePath ?? "/sign-up"}
                       defaultUtm={btn.defaultUtm}
-                      variant={i === 0 ? color : "default-stronger"}
+                      variant={i === 0 ? color : "default-strong"}
                       size="2xl"
                       {...(btn.external && {
                         target: "_blank",
@@ -71,7 +71,7 @@ export function PageFooterCta({
                   <Button
                     key={btn.url}
                     asChild
-                    variant={i === 0 ? color : "default-stronger"}
+                    variant={i === 0 ? color : "default-strong"}
                     size="2xl"
                   >
                     <a
