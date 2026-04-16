@@ -363,14 +363,11 @@ export default function Client() {
                 full control and ultimate flexibility — from local development
                 to production environments.
               </p>
-              <Button
-                href="/migrate"
-                variant="orm"
-                size="3xl"
-                className="w-fit"
-              >
-                Learn more about Prisma Migrate
-                <i className="fa-regular fa-arrow-right ml-2" />
+              <Button asChild variant="orm" size="3xl" className="w-fit">
+                <a href="https://www.prisma.io/migrate">
+                  Learn more about Prisma Migrate
+                  <i className="fa-regular fa-arrow-right ml-2" />
+                </a>
               </Button>
             </div>
           </div>
