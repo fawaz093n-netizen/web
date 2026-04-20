@@ -19,7 +19,7 @@ function Takeover({ className, ...props }: React.ComponentProps<"div">) {
 const takeoverMenuVariants = cva("p-6 w-full", {
   variants: {
     variant: {
-      default: "flex justify-between align-center",
+      default: "flex justify-between items-center",
       wizard: "",
     },
   },
@@ -47,12 +47,20 @@ function TakeoverMenu({
     >
       {variant === "default" ? (
         <>
-          <div className="p-1.5" onClick={() => onBack?.()}>
+          <button
+            className="p-1.5"
+            onClick={() => onBack?.()}
+            aria-label="Go back"
+          >
             <i className="text-foreground-neutral-weak fa-regular fa-arrow-left" />
-          </div>
-          <div className="p-1.5" onClick={() => onClose?.()}>
+          </button>
+          <button
+            className="p-1.5"
+            onClick={() => onClose?.()}
+            aria-label="Close"
+          >
             <i className="text-foreground-neutral-weak fa-regular fa-xmark" />
-          </div>
+          </button>
         </>
       ) : (
         props.children
