@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 844 474" width="844" height="474" role="img" aria-label="Placeholder hero graphic. Replace before publishing.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0c1117"/>
+      <stop offset="100%" stop-color="#101a25"/>
+    </linearGradient>
+  </defs>
+  <rect width="844" height="474" fill="url(#bg)"/>
+  <line x1="422" y1="40" x2="422" y2="434" stroke="#2a3644" stroke-width="1" stroke-dasharray="4 6"/>
+  <g fill="#71e3c2" font-family="Inter, system-ui, sans-serif" font-weight="700">
+    <text x="120" y="255" font-size="44" fill="#4ade80">Supabase</text>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif" font-weight="700">
+    <text x="560" y="255" font-size="44" fill="#16a394">Prisma Postgres</text>
+  </g>
+  <text x="422" y="410" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#64748b">PLACEHOLDER. Final art from design team.</text>
+</svg>
