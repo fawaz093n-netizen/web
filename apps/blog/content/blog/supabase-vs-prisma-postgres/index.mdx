@@ -20,6 +20,8 @@ Quick note before we start: Supabase is also an Auth, Storage, Realtime, and Edg
 
 ## The snapshot
 
+_Verified against [Supabase docs](https://supabase.com/docs) and [Prisma docs](https://www.prisma.io/docs/postgres) as of April 2026. Pricing and platform details change — confirm with the [Supabase pricing](https://supabase.com/pricing) and [Prisma pricing](https://www.prisma.io/pricing) pages before committing._
+
 | | Supabase | Prisma Postgres |
 |---|---|---|
 | **Cold starts** | Free projects auto-pause after inactivity | 🟢 **Zero cold starts. Always-on, even on free.** |
@@ -28,7 +30,7 @@ Quick note before we start: Supabase is also an Auth, Storage, Realtime, and Edg
 | **Query diagnostics** | `pg_stat_statements` views in the dashboard | 🟢 **Query Insights, built in, with AI fix suggestions.** |
 | **AI / MCP** | MCP server available | **Native MCP, `npx prisma init --db`, `npm create db`.** |
 | **Core offering** | Full BaaS (DB, Auth, Storage, Realtime, Edge Functions) | Focused Postgres with ORM, Studio, Query Insights |
-| **Postgres version** | Postgres 17 on new projects (15 on older ones) | Postgres 17 |
+| **Postgres version** | Postgres 17 on new projects, 15 on older ones ([upgrade guide](https://supabase.com/docs/guides/platform/upgrading)) | Postgres 17 |
 | **Architecture** | Dedicated Postgres instance per project | 🟢 Unikernels on bare metal, thousands of DBs per host |
 | **ORM integration** | Any ORM, no first-party | 🟢 First-party Prisma ORM |
 | **Direct Postgres protocol** | Yes, via pooler and direct connection | Yes, GA. `psql`, TablePlus, Hyperdrive, Kysely |
@@ -166,7 +168,7 @@ Prisma Postgres was built around AI agents from day one:
 
 - A native MCP server that ships with the Prisma CLI and works with Cursor, Claude Code, Windsurf, and the OpenAI Agents SDK
 - Scaffold a schema and provision a database from a single prompt with `npx prisma init --db`
-- Spin up a throwaway DB for an AI-generated app with `npm create db` in seconds
+- Spin up a throwaway DB for an AI-generated app with `npx create-db@latest` in seconds
 
 See [Announcing Prisma's MCP Server](/announcing-prisma-s-mcp-server-vibe-code-with-prisma-postgres) and [Prisma Postgres for AI Coding Agents](/announcing-prisma-postgres-for-ai-coding-agents).
 
