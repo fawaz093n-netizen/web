@@ -3,7 +3,14 @@ title: CodeBlock
 description: A syntax-highlighted code block component with copy functionality and tab support for displaying code examples.
 ---
 
-import { CodeBlock, CodeBlockTabs, CodeBlockTabsList, CodeBlockTabsTrigger, CodeBlockTab, Pre } from "@prisma/eclipse";
+import {
+  CodeBlock,
+  CodeBlockTabs,
+  CodeBlockTabsList,
+  CodeBlockTabsTrigger,
+  CodeBlockTab,
+  Pre,
+} from "@prisma/eclipse";
 import { File } from "lucide-react";
 
 ### Usage
@@ -30,7 +37,9 @@ export function main() {
 **Live Example:**
 
 ```js title="config.js"
-export function main() {'{'}
+export function main() {
+  "{";
+}
 console.log("Starting application...");
 ```
 
@@ -67,20 +76,12 @@ import { CodeBlock, Pre } from "@prisma/eclipse";
 
 export function LineNumbersCodeBlock() {
   return (
-    <CodeBlock 
-      title="counter.ts"
-      data-line-numbers
-      data-line-numbers-start={1}
-    >
+    <CodeBlock title="counter.ts" data-line-numbers data-line-numbers-start={1}>
       <Pre>
         <code>
-          let count = 0;
-          
-          function increment() {'{'}
-            count++;
-            console.log(count);
-          {'}'}
-          
+          let count = 0; function increment() {"{"}
+          count++; console.log(count);
+          {"}"}
           increment();
         </code>
       </Pre>
@@ -109,14 +110,9 @@ import { CodeBlock, Pre } from "@prisma/eclipse";
 
 export function ThemedCodeBlock() {
   return (
-    <CodeBlock 
-      title="themed.tsx"
-      keepBackground={true}
-    >
+    <CodeBlock title="themed.tsx" keepBackground={true}>
       <Pre>
-        <code className="language-tsx">
-          // Syntax highlighted code here
-        </code>
+        <code className="language-tsx">// Syntax highlighted code here</code>
       </Pre>
     </CodeBlock>
   );
@@ -130,6 +126,7 @@ export function ThemedCodeBlock() {
 The main code block container with optional title bar and copy button.
 
 **Props:**
+
 - `title` - Title displayed in the header (string, optional)
 - `icon` - Icon shown next to the title (ReactNode | string, optional)
 - `allowCopy` - Enable copy to clipboard button (boolean, default: true)
@@ -146,6 +143,7 @@ The main code block container with optional title bar and copy button.
 Pre-formatted text wrapper for code content.
 
 **Props:**
+
 - All standard HTML `<pre>` attributes
 - `className` - Additional CSS classes (optional)
 
@@ -154,6 +152,7 @@ Pre-formatted text wrapper for code content.
 Container for tabbed code blocks. Supports both single-axis tabs and multi-axis tabs with variants.
 
 **Props:**
+
 - `defaultValue` - Default active tab (string, optional)
 - `value` - Controlled active tab (string, optional)
 - `onValueChange` - Tab change callback ((value: string) => void, optional)
@@ -167,6 +166,7 @@ Container for tabbed code blocks. Supports both single-axis tabs and multi-axis 
 Container for tab triggers.
 
 **Props:**
+
 - `className` - Additional CSS classes (optional)
 - All standard HTML attributes
 
@@ -175,6 +175,7 @@ Container for tab triggers.
 Individual tab trigger button.
 
 **Props:**
+
 - `value` - Tab identifier (string, required)
 - `children` - Tab label content (ReactNode, required)
 - `className` - Additional CSS classes (optional)
@@ -185,6 +186,7 @@ Individual tab trigger button.
 Content panel for a code block tab. When using multi-axis tabs, specify the `variant` prop.
 
 **Props:**
+
 - `value` - Tab identifier matching trigger (string, required)
 - `variant` - Variant identifier for multi-axis tabs (string, optional)
 - `className` - Additional CSS classes (optional)
@@ -239,32 +241,42 @@ Use the `variants` prop to add a secondary dropdown axis. This is perfect for sh
   {/* ── pnpm ── */}
   <CodeBlockTab value="pnpm" variant="TypeScript">
     <CodeBlock title="install.sh">
-      <Pre><code>pnpm add @prisma/client{'\n'}pnpm prisma generate</code></Pre>
+      <Pre>
+        <code>pnpm add @prisma/client{"\n"}pnpm prisma generate</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 
   <CodeBlockTab value="pnpm" variant="JavaScript">
     <CodeBlock title="install.sh">
-      <Pre><code>pnpm add @prisma/client{'\n'}pnpm prisma generate</code></Pre>
+      <Pre>
+        <code>pnpm add @prisma/client{"\n"}pnpm prisma generate</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 
   <CodeBlockTab value="pnpm" variant="Python">
     <CodeBlock title="install.sh">
-      <Pre><code>pip install prisma{'\n'}prisma generate</code></Pre>
+      <Pre>
+        <code>pip install prisma{"\n"}prisma generate</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 
   {/* ── npm ── */}
   <CodeBlockTab value="npm" variant="TypeScript">
     <CodeBlock title="install.sh">
-      <Pre><code>npm install @prisma/client{'\n'}npx prisma generate</code></Pre>
+      <Pre>
+        <code>npm install @prisma/client{"\n"}npx prisma generate</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 
   <CodeBlockTab value="npm" variant="JavaScript">
     <CodeBlock title="install.sh">
-      <Pre><code>npm install @prisma/client{'\n'}npx prisma generate</code></Pre>
+      <Pre>
+        <code>npm install @prisma/client{"\n"}npx prisma generate</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 
@@ -273,13 +285,17 @@ Use the `variants` prop to add a secondary dropdown axis. This is perfect for sh
   {/* ── yarn ── */}
   <CodeBlockTab value="yarn" variant="TypeScript">
     <CodeBlock title="install.sh">
-      <Pre><code>yarn add @prisma/client{'\n'}yarn prisma generate</code></Pre>
+      <Pre>
+        <code>yarn add @prisma/client{"\n"}yarn prisma generate</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 
   <CodeBlockTab value="yarn" variant="JavaScript">
     <CodeBlock title="install.sh">
-      <Pre><code>yarn add @prisma/client{'\n'}yarn prisma generate</code></Pre>
+      <Pre>
+        <code>yarn add @prisma/client{"\n"}yarn prisma generate</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 
@@ -378,12 +394,16 @@ For simpler use cases without variants, the component works as before:
   </CodeBlockTabsList>
   <CodeBlockTab value="ts">
     <CodeBlock title="example.ts">
-      <Pre><code>const greeting: string = "Hello!";</code></Pre>
+      <Pre>
+        <code>const greeting: string = "Hello!";</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
   <CodeBlockTab value="js">
     <CodeBlock title="example.js">
-      <Pre><code>const greeting = "Hello!";</code></Pre>
+      <Pre>
+        <code>const greeting = "Hello!";</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 </CodeBlockTabs>
@@ -399,17 +419,22 @@ For simpler use cases without variants, the component works as before:
   </CodeBlockTabsList>
   <CodeBlockTab value="ts">
     <CodeBlock title="example.ts">
-      <Pre><code>const greeting: string = "Hello!";</code></Pre>
+      <Pre>
+        <code>const greeting: string = "Hello!";</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
   <CodeBlockTab value="js">
     <CodeBlock title="example.js">
-      <Pre><code>const greeting = "Hello!";</code></Pre>
+      <Pre>
+        <code>const greeting = "Hello!";</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 </CodeBlockTabs>
 
 **API Examples**
+
 ```tsx
 <CodeBlockTabs defaultValue="curl">
   <CodeBlockTabsList>
@@ -418,55 +443,53 @@ For simpler use cases without variants, the component works as before:
   </CodeBlockTabsList>
   <CodeBlockTab value="curl">
     <CodeBlock title="request.sh">
-      <Pre><code>curl -X POST https://api.example.com/data</code></Pre>
+      <Pre>
+        <code>curl -X POST https://api.example.com/data</code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
   <CodeBlockTab value="javascript">
     <CodeBlock title="request.js">
-      <Pre><code>fetch('https://api.example.com/data', {'{'} method: 'POST' {'}'})</code></Pre>
+      <Pre>
+        <code>
+          fetch('https://api.example.com/data', {"{"} method: 'POST' {"}"})
+        </code>
+      </Pre>
     </CodeBlock>
   </CodeBlockTab>
 </CodeBlockTabs>
 ```
 
 **Configuration Files**
+
 ```tsx
 <CodeBlock title="package.json" icon="📦">
   <Pre>
     <code>
-      {'{'}
-        "name": "my-project",
-        "version": "1.0.0"
-      {'}'}
+      {"{"}
+      "name": "my-project", "version": "1.0.0"
+      {"}"}
     </code>
   </Pre>
 </CodeBlock>
 ```
 
 **Tutorial Steps**
+
 ```tsx
-<CodeBlock 
-  title="step-1.ts" 
-  data-line-numbers 
-  data-line-numbers-start={1}
->
+<CodeBlock title="step-1.ts" data-line-numbers data-line-numbers-start={1}>
   <Pre>
-    <code>
-      // Step 1: Initialize the client
-      const client = new Client();
-    </code>
+    <code>// Step 1: Initialize the client const client = new Client();</code>
   </Pre>
 </CodeBlock>
 ```
 
 **Terminal Output**
+
 ```tsx
 <CodeBlock title="Terminal" allowCopy={false}>
   <Pre>
-    <code>
-      $ npm install prisma
-      ✓ Installed successfully
-    </code>
+    <code>$ npm install prisma ✓ Installed successfully</code>
   </Pre>
 </CodeBlock>
 ```
@@ -476,26 +499,31 @@ For simpler use cases without variants, the component works as before:
 The CodeBlock component works seamlessly with syntax highlighters:
 
 **With Shiki (Recommended)**
+
 ```tsx
-import { codeToHtml } from 'shiki';
+import { codeToHtml } from "shiki";
 
 const html = await codeToHtml(code, {
-  lang: 'typescript',
-  theme: 'github-dark'
+  lang: "typescript",
+  theme: "github-dark",
 });
 
 <CodeBlock title="example.ts" keepBackground>
   <div dangerouslySetInnerHTML={{ __html: html }} />
-</CodeBlock>
+</CodeBlock>;
 ```
 
 **With Rehype Code**
-```mdx
-```tsx title="example.ts"
+
+`````mdx
+````tsx title="example.ts"
 const greeting = "Hello, World!";
 console.log(greeting);
 \```
-```
+````
+`````
+
+`````
 
 ### Accessibility
 
@@ -510,14 +538,14 @@ console.log(greeting);
 
 CodeBlock is designed to work seamlessly with Fumadocs MDX:
 
-```mdx
+````mdx
 ---
 title: My Documentation Page
 ---
 
 Here's a code example:
 
-```typescript title="example.ts"
+````typescript title="example.ts"
 const greeting = "Hello, World!";
 console.log(greeting);
 \```
@@ -531,7 +559,9 @@ const greeting: string = "Hello, World!";
 ```javascript tab="JavaScript" title="example.js"
 const greeting = "Hello, World!";
 \```
-```
+`````
+
+````
 
 ### Custom Actions
 
@@ -543,7 +573,7 @@ import { Download } from "lucide-react";
 
 export function CustomActionsCodeBlock() {
   return (
-    <CodeBlock 
+    <CodeBlock
       title="config.json"
       Actions={({ className, children }) => (
         <div className={className}>
@@ -561,3 +591,4 @@ export function CustomActionsCodeBlock() {
   );
 }
 ```
+````

@@ -520,7 +520,6 @@ If you are using SQLite or MySQL, you can still embed Studio, but your `/api/stu
 
 To do this, create a new folder called `api` inside the `app` directory. Inside it, add a `studio` folder with a `route.ts` file. This file will handle all requests sent to `/api/studio` and act as the bridge between the Studio component in your frontend and the database in your backend:
 
-
 ```typescript title="app/api/studio/route.ts" tab="PostgreSQL"
 import "dotenv/config";
 import { createPrismaPostgresHttpClient } from "@prisma/studio-core/data/ppg";

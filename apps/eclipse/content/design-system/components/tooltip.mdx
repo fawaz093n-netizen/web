@@ -12,12 +12,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipExample, Button } from 
 The Tooltip component displays helpful information when users hover over or focus on an element.
 
 ```tsx
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-} from "@prisma/eclipse";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@prisma/eclipse";
 
 export function BasicTooltip() {
   return (
@@ -53,13 +48,7 @@ export function BasicTooltip() {
 Use the `asChild` prop to apply the tooltip to a button component.
 
 ```tsx
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger,
-  Button 
-} from "@prisma/eclipse";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Button } from "@prisma/eclipse";
 
 export function ButtonTooltip() {
   return (
@@ -105,13 +94,7 @@ export function ButtonTooltip() {
 Control where the tooltip appears using the `side` prop.
 
 ```tsx
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger,
-  Button 
-} from "@prisma/eclipse";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Button } from "@prisma/eclipse";
 
 export function PositionedTooltips() {
   return (
@@ -202,13 +185,7 @@ export function PositionedTooltips() {
 Control the delay before the tooltip appears using the `delayDuration` prop on the Tooltip component.
 
 ```tsx
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger,
-  Button 
-} from "@prisma/eclipse";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Button } from "@prisma/eclipse";
 
 export function DelayedTooltip() {
   return (
@@ -262,13 +239,7 @@ export function DelayedTooltip() {
 Tooltips can contain rich content including formatted text, links, and icons.
 
 ```tsx
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger,
-  Button 
-} from "@prisma/eclipse";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Button } from "@prisma/eclipse";
 
 export function RichTooltip() {
   return (
@@ -312,13 +283,7 @@ export function RichTooltip() {
 When using multiple tooltips, wrap them all in a single `TooltipProvider` for better performance.
 
 ```tsx
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger,
-  Button 
-} from "@prisma/eclipse";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Button } from "@prisma/eclipse";
 
 export function MultipleTooltips() {
   return (
@@ -361,13 +326,7 @@ export function MultipleTooltips() {
 When applying tooltips to disabled elements, wrap the element in a `span` with the tooltip trigger.
 
 ```tsx
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger,
-  Button 
-} from "@prisma/eclipse";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Button } from "@prisma/eclipse";
 
 export function DisabledTooltip() {
   return (
@@ -497,9 +456,7 @@ Show full text for truncated content:
 <TooltipProvider>
   <Tooltip>
     <TooltipTrigger asChild>
-      <p className="truncate max-w-xs">
-        This is a very long text that will be truncated...
-      </p>
+      <p className="truncate max-w-xs">This is a very long text that will be truncated...</p>
     </TooltipTrigger>
     <TooltipContent>
       <p>This is a very long text that will be truncated in the UI</p>
@@ -576,9 +533,7 @@ export function App() {
 export function Toolbar() {
   return (
     <TooltipProvider>
-      <div className="flex gap-2">
-        {/* Multiple tooltips here */}
-      </div>
+      <div className="flex gap-2">{/* Multiple tooltips here */}</div>
     </TooltipProvider>
   );
 }

@@ -448,18 +448,15 @@ export const prerender = false;
   <body>
     <main>
       <h1>Sign Up</h1>
-      <form id="signup-form"> // [!code ++]
-        <input type="text" name="name" placeholder="Name" required /> // [!code ++]
+      <form id="signup-form">
+        // [!code ++] <input type="text" name="name" placeholder="Name" required /> // [!code ++]
         <input type="email" name="email" placeholder="Email" required /> // [!code ++]
-        <input // [!code ++]
-          required // [!code ++]
-          type="password" // [!code ++]
-          name="password" // [!code ++]
-          placeholder="Password" // [!code ++]
-        /> // [!code ++]
+        <input required type="password" name="password" placeholder="Password" /> // [!code ++]
         <button type="submit">Sign up</button> // [!code ++]
-      </form> // [!code ++]
-      <p>Already have an account? <a href="/sign-in">Sign in here</a>.</p> // [!code ++]
+      </form>
+      // [!code ++]
+      <p>Already have an account? <a href="/sign-in">Sign in here</a>.</p>
+      // [!code ++]
     </main>
   </body>
 </html>
@@ -602,17 +599,14 @@ export const prerender = false;
   <body>
     <main>
       <h1>Sign In</h1>
-      <form id="signin-form"> // [!code ++]
-        <input type="email" name="email" placeholder="Email" required /> // [!code ++]
-        <input // [!code ++]
-          required // [!code ++]
-          type="password" // [!code ++]
-          name="password" // [!code ++]
-          placeholder="Password" // [!code ++]
-        /> // [!code ++]
+      <form id="signin-form">
+        // [!code ++] <input type="email" name="email" placeholder="Email" required /> // [!code ++]
+        <input required type="password" name="password" placeholder="Password" /> // [!code ++]
         <button type="submit">Sign In</button> // [!code ++]
-      </form> // [!code ++]
-      <p>Don't have an account? <a href="/sign-up">Sign up here</a>.</p> // [!code ++]
+      </form>
+      // [!code ++]
+      <p>Don't have an account? <a href="/sign-up">Sign up here</a>.</p>
+      // [!code ++]
     </main>
   </body>
 </html>

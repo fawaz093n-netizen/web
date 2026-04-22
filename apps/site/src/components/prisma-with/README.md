@@ -44,9 +44,7 @@ Create a JSON file in `src/data/prisma-with/[tech-name].json` following the stru
   },
   "why": {
     "title": "Why Prisma and Next.js?",
-    "cards": [
-      { "icon": "fa-regular fa-bolt", "title": "Fast", "description": "..." }
-    ]
+    "cards": [{ "icon": "fa-regular fa-bolt", "title": "Fast", "description": "..." }]
   },
   "how": {
     "title": "How they fit together",
@@ -139,6 +137,7 @@ export default async function NextJsPage() {
 Main layout component that orchestrates all sections.
 
 **Props:**
+
 - `data: PrismaWithData` - Complete page data from JSON
 - `codeExamples: Record<string, string>` - Code snippets keyed by tab value
 
@@ -167,6 +166,7 @@ import { Hero, WhySection, HowSection } from "@/components/prisma-with";
 ## Styling
 
 All components use:
+
 - Tailwind CSS utilities
 - Eclipse design system components (`@prisma/eclipse`)
 - CSS variables for theming (light/dark mode compatible)

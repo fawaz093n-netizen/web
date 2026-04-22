@@ -35,7 +35,7 @@ Import the examples in MDX files:
 ```tsx
 import { BasicBarChartExample } from "@/components/chart-examples/interactive-examples";
 
-<BasicBarChartExample />
+<BasicBarChartExample />;
 ```
 
 Or import from the index file:

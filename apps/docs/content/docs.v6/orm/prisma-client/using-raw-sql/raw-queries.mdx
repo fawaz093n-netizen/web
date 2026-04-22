@@ -359,22 +359,22 @@ In the `result` object, the database values have been mapped to the correspondin
 
 The following table shows the conversion between types used in the database and the JavaScript type returned by the raw query:
 
-| Database type           | JavaScript type                                                                                                                 |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Text                    | `String`                                                                                                                        |
-| 32-bit integer          | `Number`                                                                                                                        |
-| 32-bit unsigned integer | `BigInt`                                                                                                                        |
-| Floating point number   | `Number`                                                                                                                        |
-| Double precision number | `Number`                                                                                                                        |
-| 64-bit integer          | `BigInt`                                                                                                                        |
-| Decimal / numeric       | `Decimal`                                                                                                                       |
-| Bytes                   | `Uint8Array` (before v6, `Buffer`)                                                                                              |
-| Json                    | `Object`                                                                                                                        |
-| DateTime                | `Date`                                                                                                                          |
-| Date                    | `Date`                                                                                                                          |
-| Time                    | `Date`                                                                                                                          |
-| Uuid                    | `String`                                                                                                                        |
-| Xml                     | `String`                                                                                                                        |
+| Database type           | JavaScript type                    |
+| ----------------------- | ---------------------------------- |
+| Text                    | `String`                           |
+| 32-bit integer          | `Number`                           |
+| 32-bit unsigned integer | `BigInt`                           |
+| Floating point number   | `Number`                           |
+| Double precision number | `Number`                           |
+| 64-bit integer          | `BigInt`                           |
+| Decimal / numeric       | `Decimal`                          |
+| Bytes                   | `Uint8Array` (before v6, `Buffer`) |
+| Json                    | `Object`                           |
+| DateTime                | `Date`                             |
+| Date                    | `Date`                             |
+| Time                    | `Date`                             |
+| Uuid                    | `String`                           |
+| Xml                     | `String`                           |
 
 Note that the exact name for each database type will vary between databases – for example, the boolean type is known as `boolean` in PostgreSQL and `STRING` in CockroachDB. See the [Scalar types reference](/v6/orm/reference/prisma-schema-reference#model-field-scalar-types) for full details of type names for each database.
 

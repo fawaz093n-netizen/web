@@ -344,8 +344,15 @@ export default function ORM() {
                 <h4 className="text-2xl text-center md:text-left font-sans-display stretch-display text-foreground-neutral">
                   {stat.title}
                 </h4>
-                <p className="text-center md:text-left text-foreground-neutral-weak">{stat.description}</p>
-                <Button asChild variant="default-strong" size="xl" className="w-fit mx-auto md:mx-0">
+                <p className="text-center md:text-left text-foreground-neutral-weak">
+                  {stat.description}
+                </p>
+                <Button
+                  asChild
+                  variant="default-strong"
+                  size="xl"
+                  className="w-fit mx-auto md:mx-0"
+                >
                   <a href={stat.btn.url}>
                     {stat.btn.label} {stat.btn.icon && <i className={stat.btn.icon} />}
                   </a>

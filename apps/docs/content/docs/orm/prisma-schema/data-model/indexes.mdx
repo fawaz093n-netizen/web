@@ -32,7 +32,6 @@ You can configure indexes, unique constraints, and primary key constraints with 
   - Available on the `@id`, `@@id`, `@unique`, `@@unique` and `@@index` attributes
   - Supported in all databases
 
-
 ### Configuring the length of indexes with `length` (MySQL)
 
 The `length` argument is specific to MySQL and allows you to define indexes and constraints on columns of `String` and `Byte` types. For these types, MySQL requires you to specify a maximum length for the subpart of the value to be indexed in cases where the full value would exceed MySQL's limits for index sizes. See [the MySQL documentation](https://dev.mysql.com/doc/refman/8.0/en/innodb-limits.html) for more details.
@@ -87,7 +86,6 @@ The `sort` argument allows you to specify the order that the entries of the inde
 - In MySQL/MariaDB, you can specify sort order (`ASC`/`DESC`) directly in unique constraints and indexes
 - In PostgreSQL, sort order can only be specified on indexes, not on unique constraints
 - In SQL Server, sort order is supported on all constraints and indexes including `@id` and `@@id`
-
 
 For example, in MySQL/MariaDB, the following table using a descending unique constraint:
 
@@ -713,4 +711,3 @@ model Post {
   @@fulltext([title(sort: Desc), content])
 }
 ```
-
