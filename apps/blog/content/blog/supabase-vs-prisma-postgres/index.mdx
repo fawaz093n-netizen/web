@@ -14,9 +14,9 @@ tags:
   - "data-platform"
 ---
 
-Picking a database for your next app? Here is how [Supabase](https://supabase.com) and [Prisma Postgres](https://www.prisma.io/postgres) stack up, head to head.
+Picking a database for your next app? Here's how [Supabase](https://supabase.com) and [Prisma Postgres](https://www.prisma.io/postgres) stack up, head to head.
 
-Quick note before we start: Supabase is also an Auth, Storage, Realtime, and Edge Functions platform. This post focuses on the **database layer**, because that is where the actual choice usually happens.
+Quick note before we start: Supabase is also an Auth, Storage, Realtime, and Edge Functions platform. This post focuses on the **database layer**, because that's usually what you're actually choosing between.
 
 ## The snapshot
 
@@ -41,7 +41,7 @@ Supabase provisions a dedicated Postgres instance per project. You pick a comput
 
 Prisma Postgres runs each database inside a [unikernel](https://www.prisma.io/blog/announcing-prisma-postgres-early-access) on Firecracker microVMs, on bare metal. The unikernel image is tiny (~61 MB vs. ~280 MB for stock Postgres), so thousands of databases share a host without fighting over resources.
 
-**That is how Prisma Postgres delivers zero cold starts and an always-on free tier without charging for it.**
+**That's how Prisma Postgres delivers zero cold starts and an always-on free tier without charging for it.**
 
 Full tour in [Cloudflare, Unikernels, and Bare Metal](/cloudflare-unikernels-and-bare-metal-life-of-a-prisma-postgres-query).
 
@@ -65,7 +65,7 @@ Two patterns:
 :::ppg
 **A concrete example.** A small startup launching an MVP with ~200 active users and a demo that idles overnight and on weekends.
 
-- On **Supabase**, you are on Pro for **$25/mo flat**, even when nothing is happening.
+- On **Supabase**, you're on Pro for **$25/mo flat**, even when nothing is happening.
 - On **Prisma Postgres**, the same app sits inside the free tier (100k operations/mo is generous for an MVP), so your database bill is **$0** until you actually have traction.
 
 When you do scale, $10/mo Starter covers 1M operations, more than enough for early traffic.
@@ -75,11 +75,11 @@ Numbers change. Check the live [Supabase pricing](https://supabase.com/pricing) 
 
 ## Developer experience: ORM, schema, and queries
 
-Supabase has no first-party ORM. You get `supabase-js` and auto-generated REST/GraphQL via PostgREST, plus raw SQL. It is fine. It just stops at the client.
+Supabase has no first-party ORM. You get `supabase-js` and auto-generated REST/GraphQL via PostgREST, plus raw SQL. It's fine. It just stops at the client.
 
 **Prisma Postgres is built around [Prisma ORM](https://www.prisma.io/orm).** One declarative schema. Generated, type-safe client. Migrations in the same workflow. The whole package in one install.
 
-Here is the same query ("get a user with their five most recent posts") in both clients.
+Here's the same query ("get a user with their five most recent posts") in both clients.
 
 ```ts title="prisma-client.ts"
 const user = await prisma.user.findUnique({
@@ -103,9 +103,9 @@ const { data: user } = await supabase
   .single();
 ```
 
-Rename a column in `schema.prisma` and the generated types update everywhere. Your editor lights up the five places you forgot. Your CI refuses to build until they are fixed.
+Rename a column in `schema.prisma` and the generated types update everywhere. Your editor lights up the five places you forgot. Your CI refuses to build until they're fixed.
 
-That is the difference, and it compounds as the codebase grows.
+That's the difference, and it compounds as the codebase grows.
 
 ## Migrations: the quiet differentiator
 
@@ -119,7 +119,7 @@ The [new migration engine](/rethinking-database-migrations) goes further:
 - Idempotent operations
 - Automatic conflict resolution across branches
 
-It is explicitly designed to stay safe when AI agents are the ones generating your migrations, which is increasingly the reality.
+It's designed to stay safe when AI agents generate your migrations, which is happening more and more.
 
 ## Query Insights and observability
 
@@ -172,13 +172,13 @@ Prisma Postgres was built around AI agents from day one:
 
 See [Announcing Prisma's MCP Server](/announcing-prisma-s-mcp-server-vibe-code-with-prisma-postgres) and [Prisma Postgres for AI Coding Agents](/announcing-prisma-postgres-for-ai-coding-agents).
 
-The density model is what makes "provision a database from a prompt" economically viable. Feature and architecture working together.
+The density model is what makes "provision a database from a prompt" cheap enough to actually offer.
 
 ## Wrapping up
 
 Both are solid choices for Postgres-backed apps.
 
-Pick Prisma Postgres if you want a database that stays out of your way, with honest always-on pricing, first-class type-safe tooling, Query Insights on day one, and an AI-ready story from the start.
+Pick Prisma Postgres if you want always-on pricing, type-safe tooling, Query Insights on day one, and AI-native workflows out of the box.
 
 Try it in less than a minute:
 
