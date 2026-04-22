@@ -106,9 +106,11 @@ Update the `.env` file with your PlanetScale connection URL:
 DATABASE_URL="mysql://username:password@host.connect.psdb.cloud/mydb?sslaccept=strict"
 ```
 
+
 ```text title=".env" tab="Postgres"
 DATABASE_URL="postgresql://{username}:{password}@{host}:6432/postgres?sslmode=verify-full"
 ```
+
 
 You can find your connection string in the PlanetScale dashboard.
 
@@ -116,10 +118,10 @@ You can find your connection string in the PlanetScale dashboard.
 
 **PlanetScale Postgres connection types:**
 
-| Type          | Port   | Use case                                                       |
-| ------------- | ------ | -------------------------------------------------------------- |
-| **Direct**    | `5432` | Prisma CLI commands (migrations, introspection), Prisma Studio |
-| **PgBouncer** | `6432` | Application connections, serverless environments               |
+| Type | Port | Use case |
+|------|------|----------|
+| **Direct** | `5432` | Prisma CLI commands (migrations, introspection), Prisma Studio |
+| **PgBouncer** | `6432` | Application connections, serverless environments |
 
 For production applications, we recommend using PgBouncer (port 6432) for application connections.
 

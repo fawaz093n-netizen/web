@@ -32,6 +32,7 @@ The following is an example of a Prisma Schema that specifies:
 - A data model definition with two models (with one relation) and one `enum`
 - Several [native data type attributes](/orm/prisma-schema/data-model/models#native-types-mapping) (`@db.VarChar(255)`, `@db.ObjectId`)
 
+
 ```prisma tab="Relational Databases"
 datasource db {
   provider = "postgresql"
@@ -67,6 +68,7 @@ enum Role {
 }
 ```
 
+
 ```prisma tab="MongoDB"
 datasource db {
   provider = "mongodb"
@@ -101,6 +103,7 @@ enum Role {
   ADMIN
 }
 ```
+
 
 ## Syntax
 

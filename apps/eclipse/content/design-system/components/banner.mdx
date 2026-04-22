@@ -23,18 +23,19 @@ export function BasicBanner() {
 import { Banner } from "@prisma/eclipse";
 
 export function BannerWithIcon() {
-  return <Banner description="Important announcement: New features are available!" showIcon />;
+  return (
+    <Banner 
+      description="Important announcement: New features are available!" 
+      showIcon 
+    />
+  );
 }
 ```
 
 **Live Example:**
 
 <div className="not-prose">
-  <Banner
-    description="Important announcement: New features are available!"
-    showIcon
-    changeLayout={false}
-  />
+  <Banner description="Important announcement: New features are available!" showIcon changeLayout={false} />
 </div>
 
 **Color Variants**

@@ -2,8 +2,9 @@
 title: Upgrade to v4
 description: Comprehensive guide for upgrading to Prisma ORM v4
 url: /guides/upgrade-prisma-orm/v4
-metaTitle: "Upgrade to Prisma ORM 4"
-metaDescription: "Guides on how to upgrade to Prisma ORM 4"
+metaTitle: 'Upgrade to Prisma ORM 4'
+metaDescription: 'Guides on how to upgrade to Prisma ORM 4'
+
 ---
 
 This guide helps you upgrade your project to Prisma ORM 4. Version 4 includes several important changes that may affect your application, so please review this guide carefully before proceeding.
@@ -46,6 +47,7 @@ npm install @prisma/client@4
 npm install -D prisma@4
 npx prisma generate
 ```
+
 
 :::danger
 
@@ -139,12 +141,12 @@ This will update your schema with new capabilities like improved index configura
 
 In Prisma 4, the return types of `queryRaw` and `queryRawUnsafe` have changed:
 
-| Data Type  | Before 4.0.0 | From 4.0.0 |
-| ---------- | ------------ | ---------- |
-| `DateTime` | `String`     | `Date`     |
-| `BigInt`   | `String`     | `BigInt`   |
-| `Bytes`    | `String`     | `Buffer`   |
-| `Decimal`  | `String`     | `Decimal`  |
+| Data Type  | Before 4.0.0  | From 4.0.0    |
+|------------|---------------|---------------|
+| `DateTime` | `String`      | `Date`        |
+| `BigInt`   | `String`      | `BigInt`      |
+| `Bytes`    | `String`      | `Buffer`      |
+| `Decimal`  | `String`      | `Decimal`     |
 
 **Update your code** to handle these type changes, especially if you're using TypeScript or performing type checks.
 
@@ -156,17 +158,17 @@ Prisma 4 changes how JSON null values are handled. If you're working with JSON f
 // Before
 const result = await prisma.model.findMany({
   where: {
-    jsonField: { equals: null },
-  },
+    jsonField: { equals: null }
+  }
 });
 
 // After
-import { Prisma } from "@prisma/client";
+import { Prisma } from '@prisma/client';
 
 const result = await prisma.model.findMany({
   where: {
-    jsonField: { equals: Prisma.JsonNull },
-  },
+    jsonField: { equals: Prisma.JsonNull }
+  }
 });
 ```
 
@@ -231,7 +233,6 @@ model User {
 ### 3. Better Type Safety
 
 Prisma 4 improves type safety with:
-
 - Stricter validation of relation fields
 - Better error messages for common mistakes
 - Improved type inference for complex queries
@@ -287,7 +288,6 @@ Prisma 4 improves type safety with:
 ## Getting Help
 
 If you encounter issues during the upgrade:
-
 1. Check the [GitHub Issues](https://github.com/prisma/prisma/issues) for known problems
 2. Ask for help in the [Prisma Slack](https://slack.prisma.io/)
 3. Open a [GitHub Discussion](https://github.com/prisma/prisma/discussions)

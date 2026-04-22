@@ -14,8 +14,8 @@ tags:
 ---
 
 TypeScript's new [`satisfies`](https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#satisfies)
-operator allows some new, type-safe patterns that previously required lengthy type annotations or tricky workarounds.
-This article covers several use cases where it helps you with common Prisma-related workflows.
+  operator allows some new, type-safe patterns that previously required lengthy type annotations or tricky workarounds.
+  This article covers several use cases where it helps you with common Prisma-related workflows.
 
 ## Table Of Contents
 
@@ -57,7 +57,6 @@ const pricingB = plans.team(10).toFixed(2);
 // ERROR: Property 'enterprise' does not exist on type...
 const pricingC = plans.enterprise(50).toFixed(2);
 ```
-
 If we use an explicit type annotation on `plans`, we can catch the typo earlier, as well as infer the type of the `users` arguments. However, we might run into a different problem:
 
 ```typescript
@@ -78,7 +77,6 @@ const pricingA = plans.personal.toFixed(2);
 // ERROR: This expression is not callable.
 const pricingB = plans.team(10).toFixed(2);
 ```
-
 When we use an explicit type annotation, the type gets "widened", and TypeScript can no longer tell which of our plans have flat pricing and which have per-user pricing. Effectively, we have "lost" some information about our application's types.
 
 What we really need is a way to assert that a value is compatible with some broad / reusable type, while letting TypeScript infer a narrower (more specific) type.
@@ -114,7 +112,6 @@ const pricingA = plans.personal.toFixed(2);
 // No error!
 const pricingB = plans.team(10).toFixed(2);
 ```
-
 Now we catch the typo right at the source, but we don't "lose" any information to type widening.
 
 The rest of this article will cover some real situations where you might use `satisfies` in your Prisma application.
@@ -124,6 +121,8 @@ The rest of this article will cover some real situations where you might use `sa
 Prisma Client uses generic functions to give you type-safe results. The static types of data returned from client methods match the shape you asked for in a query.
 
 This works great when calling a Prisma method directly with inline arguments:
+
+
 
 ```typescript
 import { Prisma } from "@prisma/client";
@@ -144,7 +143,6 @@ const post = await prisma.post.findUnique({
 // TypeScript knows which fields are available:
 console.log(post.author.name);
 ```
-
 ```prisma
 model Post {
   id        String   @id @default(cuid())
@@ -163,6 +161,7 @@ model Author {
 }
 ```
 
+
 However, you might run into some pitfalls:
 
 - If you try to break your query arguments out into smaller objects, type information can get "lost" (widened) and Prisma might not infer the output types correctly.
@@ -173,6 +172,8 @@ The `satisfies` operator can help.
 ### Infer the output type of methods like `findMany` and `create`
 
 One of the most common use cases for the `satisfies` operator with Prisma is to infer the return type of a specific query method like a `findUnique` — including only the selected fields of a model and its relations.
+
+
 
 ```typescript
 import { Prisma } from "@prisma/client";
@@ -196,7 +197,6 @@ const post = await prisma.post.findUnique({
   select: postSelect,
 });
 ```
-
 ```prisma
 model Post {
   id        String   @id @default(cuid())
@@ -215,10 +215,13 @@ model Author {
 }
 ```
 
+
 ### Infer the output type of the `count` method
 
 Prisma Client's `count` method allows you to add a `select` field, in order to count rows with non-null values for
 specified fields. The return type of this method depends on which fields you specified:
+
+
 
 ```typescript
 import { Prisma } from "@prisma/client";
@@ -230,14 +233,16 @@ const countSelect = {
 } satisfies Prisma.UserCountAggregateInputType;
 
 // Infer the resulting payload type
-type MyCountPayload = Prisma.GetScalarType<typeof countSelect, Prisma.UserCountAggregateOutputType>;
+type MyCountPayload = Prisma.GetScalarType<
+  typeof countSelect,
+  Prisma.UserCountAggregateOutputType
+>;
 
 // The result type is equivalent to `MyCountPayload`
 const count = await prisma.user.count({
   select: countSelect,
 });
 ```
-
 ```prisma
 model User {
   id           String @id @default(cuid())
@@ -247,10 +252,13 @@ model User {
 }
 ```
 
+
 ### Infer the output type of the `aggregate` method
 
 We can also get the output shape of the more flexible `aggregate` method, which lets us get the average, min value,
 max value, and counts of various model fields:
+
+
 
 ```typescript
 import { Prisma } from "@prisma/client";
@@ -268,7 +276,6 @@ type MyAggregatePayload = Prisma.GetUserAggregateType<typeof aggregateArgs>;
 // The result type is equivalent to `MyAggregatePayload`
 const aggregate = await prisma.user.aggregate(aggregateArgs);
 ```
-
 ```prisma
 model User {
   id           String @id @default(cuid())
@@ -278,11 +285,14 @@ model User {
 }
 ```
 
+
 ### Infer the output type of the `groupBy` method
 
 The `groupBy` method allows you to perform aggregations on groups of model instances. The results will include fields
 that are used for grouping, as well as the results of aggregating fields. Here's how you can use `satisfies` to infer
 the output type:
+
+
 
 ```typescript
 import { Prisma } from "@prisma/client";
@@ -296,12 +306,13 @@ const groupByArgs = {
 } satisfies Prisma.UserGroupByArgs;
 
 // Infer the resulting payload type
-type MyGroupByPayload = Awaited<Prisma.GetUserGroupByPayload<typeof groupByArgs>>;
+type MyGroupByPayload = Awaited<
+  Prisma.GetUserGroupByPayload<typeof groupByArgs>
+>;
 
 // The result type is equivalent to `MyGroupByPayload`
 const groups = await prisma.user.groupBy(groupByArgs);
 ```
-
 ```prisma
 model User {
   id           String @id @default(cuid())
@@ -310,6 +321,7 @@ model User {
   profileViews Int
 }
 ```
+
 
 ## Create lossless schema validators
 
@@ -327,7 +339,6 @@ model Post {
   published Boolean @default(false)
 }
 ```
-
 Prisma will generate the following `PostCreateInput` type:
 
 ```typescript
@@ -337,7 +348,6 @@ export type PostCreateInput = {
   published?: boolean;
 };
 ```
-
 If you try to create a schema with [zod](https://github.com/colinhacks/zod) that matches this type, you will "lose"
 some information about the schema object:
 
@@ -352,12 +362,13 @@ const schema: z.ZodType<Prisma.PostCreateInput> = z.object({
 // TS Error: Property 'pick' does not exist on type 'ZodType<PostCreateInput, ZodTypeDef, PostCreateInput>'.
 const titleOnly = schema.pick({ title: true });
 ```
-
 A workaround before TypeScript 4.9 was to create a [`schemaForType` function](https://github.com/colinhacks/zod/discussions/667)
 (a kind of constrained identity function). Now with the `satisfies` operator, you can create a schema for an existing
 type, without losing any information about the schema.
 
 Here are some examples for four popular schema validation libraries:
+
+
 
 ```typescript
 import { Prisma } from "@prisma/client";
@@ -371,7 +382,6 @@ const schema = z.object({
 
 type Inferred = z.infer<typeof schema>;
 ```
-
 ```typescript
 import { Prisma } from "@prisma/client";
 import { boolean, Describe, Infer, nullable, object, optional, string } from "superstruct";
@@ -384,7 +394,6 @@ const schema = object({
 
 type Inferred = Infer<typeof schema>;
 ```
-
 ```typescript
 import { Prisma } from "@prisma/client";
 import { boolean, InferType, object, ObjectSchema, string } from "yup";
@@ -397,7 +406,6 @@ const schema = object({
 
 type Inferred = InferType<typeof schema>;
 ```
-
 ```typescript
 import { Prisma } from "@prisma/client";
 import { pipe } from "fp-ts/lib/function";
@@ -411,12 +419,13 @@ const schema = pipe(
     D.partial({
       content: D.nullable(D.string),
       published: D.boolean,
-    }),
-  ),
+    })
+  )
 ) satisfies D.Decoder<unknown, Prisma.PostCreateInput>;
 
 type Inferred = D.TypeOf<typeof schema>;
 ```
+
 
 ### Define a collection of reusable query filters
 
@@ -454,7 +463,6 @@ const posts = await prisma.post.findMany({
   },
 });
 ```
-
 ### Strongly typed functions with inferred return types
 
 Sometimes you might want to assert that a function matches a special function signature, such as a React component or
@@ -502,7 +510,6 @@ export default function PostPage() {
   );
 }
 ```
-
 Here the `satisfies` operator does three things:
 
 - Ensures our `loader` function is compatible with the `LoaderFunction` signature from Remix
@@ -519,3 +526,4 @@ type annotations, or provide generic arguments.
 We're excited to see how new TypeScript features like the `satisfies` operator can help you get better type safety,
 even in more advanced cases, with minimal type noise. Let us know how you are using Prisma and TypeScript 4.9 by
 reaching out to us on our [Twitter](pris.ly/x).
+

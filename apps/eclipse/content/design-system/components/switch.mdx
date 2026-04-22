@@ -4,10 +4,7 @@ description: A toggle switch component built on Radix UI for binary on/off state
 ---
 
 import { Switch, Field, FieldLabel, FieldDescription } from "@prisma/eclipse";
-import {
-  ControlledSwitchExample,
-  SwitchFormExample,
-} from "@/components/switch-examples/interactive-examples";
+import { ControlledSwitchExample, SwitchFormExample } from "@/components/switch-examples/interactive-examples";
 
 ### Usage
 
@@ -38,7 +35,10 @@ export function SwitchWithLabel() {
   return (
     <div className="flex items-center gap-2">
       <Switch id="airplane-mode" />
-      <label htmlFor="airplane-mode" className="text-sm font-medium leading-none cursor-pointer">
+      <label 
+        htmlFor="airplane-mode" 
+        className="text-sm font-medium leading-none cursor-pointer"
+      >
         Airplane Mode
       </label>
     </div>
@@ -50,8 +50,8 @@ export function SwitchWithLabel() {
 
 <div className="flex items-center gap-2 my-4">
   <Switch id="airplane-mode-example" />
-  <label
-    htmlFor="airplane-mode-example"
+  <label 
+    htmlFor="airplane-mode-example" 
     className="text-sm font-medium leading-none cursor-pointer"
   >
     Airplane Mode
@@ -104,12 +104,18 @@ export function ControlledSwitch() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Switch id="controlled" checked={enabled} onCheckedChange={setEnabled} />
+        <Switch 
+          id="controlled" 
+          checked={enabled}
+          onCheckedChange={setEnabled}
+        />
         <label htmlFor="controlled" className="text-sm font-medium">
           Feature enabled
         </label>
       </div>
-      <p className="text-sm text-foreground-neutral-weak">Status: {enabled ? "On" : "Off"}</p>
+      <p className="text-sm text-foreground-neutral-weak">
+        Status: {enabled ? "On" : "Off"}
+      </p>
     </div>
   );
 }
@@ -121,6 +127,8 @@ export function ControlledSwitch() {
   <ControlledSwitchExample />
 </div>
 
+
+
 **Disabled State**
 
 ```tsx
@@ -131,13 +139,19 @@ export function DisabledSwitch() {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Switch id="disabled-off" disabled />
-        <label htmlFor="disabled-off" className="text-sm font-medium opacity-70 cursor-not-allowed">
+        <label 
+          htmlFor="disabled-off" 
+          className="text-sm font-medium opacity-70 cursor-not-allowed"
+        >
           Disabled (off)
         </label>
       </div>
       <div className="flex items-center gap-2">
         <Switch id="disabled-on" disabled checked />
-        <label htmlFor="disabled-on" className="text-sm font-medium opacity-70 cursor-not-allowed">
+        <label 
+          htmlFor="disabled-on" 
+          className="text-sm font-medium opacity-70 cursor-not-allowed"
+        >
           Disabled (on)
         </label>
       </div>
@@ -151,8 +165,8 @@ export function DisabledSwitch() {
 <div className="space-y-4 my-4">
   <div className="flex items-center gap-2">
     <Switch id="disabled-off-example" disabled />
-    <label
-      htmlFor="disabled-off-example"
+    <label 
+      htmlFor="disabled-off-example" 
       className="text-sm font-medium opacity-70 cursor-not-allowed"
     >
       Disabled (off)
@@ -160,8 +174,8 @@ export function DisabledSwitch() {
   </div>
   <div className="flex items-center gap-2">
     <Switch id="disabled-on-example" disabled checked />
-    <label
-      htmlFor="disabled-on-example"
+    <label 
+      htmlFor="disabled-on-example" 
       className="text-sm font-medium opacity-70 cursor-not-allowed"
     >
       Disabled (on)
@@ -180,7 +194,7 @@ export function SettingsPanel() {
   return (
     <div className="space-y-6 max-w-md">
       <h3 className="text-lg font-semibold">Notification Settings</h3>
-
+      
       <Field orientation="horizontal" className="justify-between">
         <div className="flex flex-col gap-1">
           <FieldLabel htmlFor="email-notifications">Email Notifications</FieldLabel>
@@ -222,13 +236,13 @@ export function SettingsPanel() {
     <Switch id="email-notifications-example" defaultChecked />
   </Field>
 
-<Field orientation="horizontal" className="justify-between">
-  <div className="flex flex-col gap-1">
-    <FieldLabel htmlFor="push-notifications-example">Push Notifications</FieldLabel>
-    <FieldDescription>Receive push notifications on your devices.</FieldDescription>
-  </div>
-  <Switch id="push-notifications-example" />
-</Field>
+  <Field orientation="horizontal" className="justify-between">
+    <div className="flex flex-col gap-1">
+      <FieldLabel htmlFor="push-notifications-example">Push Notifications</FieldLabel>
+      <FieldDescription>Receive push notifications on your devices.</FieldDescription>
+    </div>
+    <Switch id="push-notifications-example" />
+  </Field>
 
   <Field orientation="horizontal" className="justify-between">
     <div className="flex flex-col gap-1">
@@ -260,7 +274,7 @@ export function SwitchForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
       <h3 className="text-lg font-semibold">App Settings</h3>
-
+      
       <div className="flex items-center justify-between">
         <label htmlFor="dark-mode" className="text-sm font-medium">
           Dark Mode
@@ -268,7 +282,9 @@ export function SwitchForm() {
         <Switch
           id="dark-mode"
           checked={settings.darkMode}
-          onCheckedChange={(checked) => setSettings({ ...settings, darkMode: checked })}
+          onCheckedChange={(checked) => 
+            setSettings({ ...settings, darkMode: checked })
+          }
         />
       </div>
 
@@ -279,7 +295,9 @@ export function SwitchForm() {
         <Switch
           id="notifications-form"
           checked={settings.notifications}
-          onCheckedChange={(checked) => setSettings({ ...settings, notifications: checked })}
+          onCheckedChange={(checked) => 
+            setSettings({ ...settings, notifications: checked })
+          }
         />
       </div>
 
@@ -290,11 +308,16 @@ export function SwitchForm() {
         <Switch
           id="analytics-form"
           checked={settings.analytics}
-          onCheckedChange={(checked) => setSettings({ ...settings, analytics: checked })}
+          onCheckedChange={(checked) => 
+            setSettings({ ...settings, analytics: checked })
+          }
         />
       </div>
 
-      <button type="submit" className="px-4 py-2 bg-primary text-primary-foreground rounded-md">
+      <button 
+        type="submit"
+        className="px-4 py-2 bg-primary text-primary-foreground rounded-md"
+      >
         Save Settings
       </button>
     </form>
@@ -371,14 +394,12 @@ The Switch component is perfect for:
 ### Switch vs Checkbox
 
 Use **Switch** when:
-
 - The change takes effect immediately
 - Toggling a feature on/off
 - Representing a binary state (enabled/disabled)
 - In settings or preferences panels
 
 Use **Checkbox** when:
-
 - Part of a form that requires submission
 - Selecting multiple items from a list
 - Accepting terms or agreements

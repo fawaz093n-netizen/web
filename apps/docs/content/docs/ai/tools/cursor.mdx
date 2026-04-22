@@ -269,7 +269,7 @@ enum SubscriptionStatus {
   PAST_DUE
 }
 
-```
+````
 
 ## Generating Prisma queries
 
@@ -277,7 +277,7 @@ Cursor can help you create queries tailored to your Prisma schema, whether for b
 
 ```text tab="Prompt to generate a database query"
 "Generate a query to retrieve all User records associated with an Organization that has an `active` Subscription, while excluding any records where the deletedAt field is set."
-```
+````
 
 ```typescript tab="Result"
 const activeUsers = await prisma.user.findMany({

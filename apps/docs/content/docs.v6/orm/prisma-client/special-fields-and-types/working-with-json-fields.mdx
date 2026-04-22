@@ -1,9 +1,9 @@
 ---
 title: Working with Json fields
-description: "How to read, write, and filter by Json fields."
+description: 'How to read, write, and filter by Json fields.'
 url: /v6/orm/prisma-client/special-fields-and-types/working-with-json-fields
 metaTitle: Working with Json fields (Concepts)
-metaDescription: "How to read, write, and filter by Json fields."
+metaDescription: 'How to read, write, and filter by Json fields.'
 ---
 
 Use the [`Json`](/v6/orm/reference/prisma-schema-reference#json) Prisma ORM field type to read, write, and perform basic filtering on JSON types in the underlying database. In the following example, the `User` model has an optional `Json` field named `extendedPetsData`:
@@ -370,6 +370,7 @@ const getUsers = await prisma.user.findMany({
 });
 ```
 
+
 ```ts tab="MySQL"
 const getUsers = await prisma.user.findMany({
   where: {
@@ -417,6 +418,7 @@ const getUsers = await prisma.user.findMany({
   },
 });
 ```
+
 
 ```ts tab="MySQL"
 const getUsers = await prisma.user.findMany({

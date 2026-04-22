@@ -549,7 +549,9 @@ const availableZones = await prisma.deliveryZone.findMany({
 const canDeliver = availableZones.length > 0;
 
 if (canDeliver) {
-  console.log(`Delivery available in zones: ${availableZones.map((z) => z.name).join(", ")}`);
+  console.log(
+    `Delivery available in zones: ${availableZones.map((z) => z.name).join(", ")}`
+  );
 } else {
   console.log("Sorry, we don't deliver to this address yet");
 }
@@ -762,14 +764,15 @@ If you're using **PostgreSQL 16** with datasets containing thousands of records,
 **Workaround:** Use the `withSpatialOptimization` helper from `@prisma/adapter-pg`:
 
 ```typescript
-import { PrismaClient } from "@prisma/client";
-import { withSpatialOptimization } from "@prisma/adapter-pg";
+import { PrismaClient } from '@prisma/client'
+import { withSpatialOptimization } from '@prisma/adapter-pg'
 
-const userLocation = [13.4, 52.5] as [number, number];
+const userLocation = [13.4, 52.5] as [number, number]
 
 // The helper automatically detects PostgreSQL 16 and applies optimization only when needed
-const nearby = await withSpatialOptimization(prisma, (client) =>
-  client.location.findMany({
+const nearby = await withSpatialOptimization(
+  prisma,
+  (client) => client.location.findMany({
     where: {
       position: {
         near: {
@@ -784,26 +787,26 @@ const nearby = await withSpatialOptimization(prisma, (client) =>
       },
     },
     take: 20,
-  }),
-);
+  })
+)
 
 // Works with all spatial filters:
-const zonesContaining = await withSpatialOptimization(prisma, (client) =>
-  client.deliveryZone.findMany({
+const zonesContaining = await withSpatialOptimization(
+  prisma,
+  (client) => client.deliveryZone.findMany({
     where: {
       boundary: {
         intersects: {
-          type: "Point",
+          type: 'Point',
           coordinates: userLocation,
         },
       },
     },
-  }),
-);
+  })
+)
 ```
 
 The helper:
-
 - **Automatically detects** PostgreSQL version (cached for performance)
 - **Only applies optimization** on PostgreSQL 16
 - **Skips optimization** on PostgreSQL 17+ (where the bug is fixed)

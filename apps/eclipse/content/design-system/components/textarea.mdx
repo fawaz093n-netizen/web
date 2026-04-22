@@ -3,15 +3,7 @@ title: Textarea
 description: A multi-line text input component for forms with optional character count and validation styles.
 ---
 
-import {
-  Textarea,
-  textareaVariants,
-  Button,
-  Field,
-  FieldLabel,
-  FieldDescription,
-  FieldError,
-} from "@prisma/eclipse";
+import { Textarea, textareaVariants, Button, Field, FieldLabel, FieldDescription, FieldError } from "@prisma/eclipse";
 
 ### Usage
 
@@ -39,14 +31,24 @@ The Textarea component supports an optional character counter that displays the 
 import { Textarea } from "@prisma/eclipse";
 
 export function TextareaWithCount() {
-  return <Textarea placeholder="Enter up to 200 characters..." maxLength={200} showCharCount />;
+  return (
+    <Textarea
+      placeholder="Enter up to 200 characters..."
+      maxLength={200}
+      showCharCount
+    />
+  );
 }
 ```
 
 **Live Example:**
 
 <div className="max-w-md my-4">
-  <Textarea placeholder="Enter up to 200 characters..." maxLength={200} showCharCount />
+  <Textarea
+    placeholder="Enter up to 200 characters..."
+    maxLength={200}
+    showCharCount
+  />
 </div>
 
 **Character Count with Different Limits**
@@ -59,9 +61,21 @@ import { Textarea } from "@prisma/eclipse";
 export function TextareaLimits() {
   return (
     <div className="space-y-4 max-w-md">
-      <Textarea placeholder="Short text (50 chars)" maxLength={50} showCharCount />
-      <Textarea placeholder="Medium text (150 chars)" maxLength={150} showCharCount />
-      <Textarea placeholder="Long text (500 chars)" maxLength={500} showCharCount />
+      <Textarea
+        placeholder="Short text (50 chars)"
+        maxLength={50}
+        showCharCount
+      />
+      <Textarea
+        placeholder="Medium text (150 chars)"
+        maxLength={150}
+        showCharCount
+      />
+      <Textarea
+        placeholder="Long text (500 chars)"
+        maxLength={500}
+        showCharCount
+      />
     </div>
   );
 }
@@ -70,9 +84,21 @@ export function TextareaLimits() {
 **Live Example:**
 
 <div className="space-y-4 max-w-md my-4">
-  <Textarea placeholder="Short text (50 chars)" maxLength={50} showCharCount />
-  <Textarea placeholder="Medium text (150 chars)" maxLength={150} showCharCount />
-  <Textarea placeholder="Long text (500 chars)" maxLength={500} showCharCount />
+  <Textarea
+    placeholder="Short text (50 chars)"
+    maxLength={50}
+    showCharCount
+  />
+  <Textarea
+    placeholder="Medium text (150 chars)"
+    maxLength={150}
+    showCharCount
+  />
+  <Textarea
+    placeholder="Long text (500 chars)"
+    maxLength={500}
+    showCharCount
+  />
 </div>
 
 **Textarea Sizes**
@@ -138,7 +164,12 @@ export function TextareaFieldWithCount() {
   return (
     <Field>
       <FieldLabel htmlFor="description">Description</FieldLabel>
-      <Textarea id="description" placeholder="Enter description..." maxLength={300} showCharCount />
+      <Textarea
+        id="description"
+        placeholder="Enter description..."
+        maxLength={300}
+        showCharCount
+      />
       <FieldDescription>Provide a brief description (max 300 characters).</FieldDescription>
     </Field>
   );
@@ -194,7 +225,11 @@ export function InvalidTextareaWithField() {
     <Field>
       <FieldLabel htmlFor="feedback-invalid">Feedback</FieldLabel>
       <FieldDescription>We'd love to hear your thoughts.</FieldDescription>
-      <Textarea id="feedback-invalid" defaultValue="Too short" aria-invalid="true" />
+      <Textarea
+        id="feedback-invalid"
+        defaultValue="Too short"
+        aria-invalid="true"
+      />
       <FieldError>Feedback must be at least 10 characters long</FieldError>
     </Field>
   );
@@ -207,7 +242,11 @@ export function InvalidTextareaWithField() {
   <Field>
     <FieldLabel htmlFor="feedback-invalid-field">Feedback</FieldLabel>
     <FieldDescription>We'd love to hear your thoughts.</FieldDescription>
-    <Textarea id="feedback-invalid-field" defaultValue="Too short" aria-invalid="true" />
+    <Textarea
+      id="feedback-invalid-field"
+      defaultValue="Too short"
+      aria-invalid="true"
+    />
     <FieldError>Feedback must be at least 10 characters long</FieldError>
   </Field>
 </div>
@@ -225,7 +264,11 @@ export function InvalidTextarea() {
       <label htmlFor="invalid-feedback" className="text-sm font-medium">
         Feedback
       </label>
-      <Textarea id="invalid-feedback" defaultValue="Too short" aria-invalid="true" />
+      <Textarea
+        id="invalid-feedback"
+        defaultValue="Too short"
+        aria-invalid="true"
+      />
       <span className="text-sm text-foreground-error block">
         Feedback must be at least 10 characters long
       </span>
@@ -240,7 +283,11 @@ export function InvalidTextarea() {
   <label htmlFor="invalid-feedback" className="text-sm font-medium">
     Feedback
   </label>
-  <Textarea id="invalid-feedback" defaultValue="Too short" aria-invalid="true" />
+  <Textarea
+    id="invalid-feedback"
+    defaultValue="Too short"
+    aria-invalid="true"
+  />
   <span className="text-sm text-foreground-error">
     Feedback must be at least 10 characters long
   </span>
@@ -266,7 +313,9 @@ export function ControlledTextarea() {
         maxLength={200}
         showCharCount
       />
-      <p className="text-sm text-muted-foreground">You typed: {value || "(nothing yet)"}</p>
+      <p className="text-sm text-muted-foreground">
+        You typed: {value || "(nothing yet)"}
+      </p>
     </div>
   );
 }
@@ -483,24 +532,23 @@ import { useForm } from "react-hook-form";
 import { Textarea } from "@prisma/eclipse";
 
 export function FormWithValidation() {
-  const {
-    register,
-    formState: { errors },
-  } = useForm();
+  const { register, formState: { errors } } = useForm();
 
   return (
     <form>
       <Textarea
         {...register("description", {
           required: "Description is required",
-          minLength: { value: 10, message: "Too short" },
+          minLength: { value: 10, message: "Too short" }
         })}
         aria-invalid={errors.description ? "true" : "false"}
         maxLength={500}
         showCharCount
       />
       {errors.description && (
-        <span className="text-sm text-foreground-error">{errors.description.message}</span>
+        <span className="text-sm text-foreground-error">
+          {errors.description.message}
+        </span>
       )}
     </form>
   );
