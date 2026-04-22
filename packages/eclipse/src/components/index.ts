@@ -178,3 +178,22 @@ export {
   EmptyContent,
   EmptyMedia,
 } from "./empty";
+
+export {
+  Collection,
+  CollectionHeader,
+  CollectionHeaderMenu,
+  CollectionBody,
+  CollectionFooter,
+} from "./collection";
+export type { CollectionProps } from "./collection";
+
+export {
+  DataTable,
+  DataTableHeader,
+  DataTableHeaderRow,
+  DataTableHeaderCell,
+  DataTableBody,
+  DataTableRow,
+  DataTableCell,
+} from "./data-table";

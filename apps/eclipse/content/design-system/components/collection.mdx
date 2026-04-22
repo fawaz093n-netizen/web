@@ -1,0 +1,629 @@
+---
+title: Collection
+description: A composable layout for browsing data collections — combines a filterable header, a data table body, and a paginated footer.
+---
+
+import {
+  Collection,
+  CollectionHeader,
+  CollectionHeaderMenu,
+  CollectionBody,
+  CollectionFooter,
+  DataTable,
+  DataTableHeader,
+  DataTableHeaderRow,
+  DataTableHeaderCell,
+  DataTableBody,
+  DataTableRow,
+  DataTableCell,
+  Button,
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationInput,
+  PaginationEllipsis,
+} from "@prisma/eclipse";
+import {
+  FullCollectionExample,
+  CollectionNoHeaderExample,
+  CollectionNoFooterExample,
+  DataTableWithCheckboxesExample,
+  DataTableWithSubtitlesExample,
+} from "@/components/collection-examples/interactive-examples";
+
+### Usage
+
+**Full Collection**
+
+The canonical usage: a view-switcher dropdown on the left, filter/sort controls on the right, a `DataTable` in the body, and a paginated footer.
+
+```tsx
+import {
+  Collection,
+  CollectionHeader,
+  CollectionHeaderMenu,
+  CollectionBody,
+  CollectionFooter,
+  DataTable,
+  DataTableHeader,
+  DataTableHeaderRow,
+  DataTableHeaderCell,
+  DataTableBody,
+  DataTableRow,
+  DataTableCell,
+  Button,
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationInput,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@prisma/eclipse";
+import { ChevronDown, SlidersHorizontal, ArrowUpDown } from "lucide-react";
+
+export function MyCollection() {
+  const [view, setView] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  return (
+    <Collection>
+      <CollectionHeader>
+        <CollectionHeaderMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="default" size="lg">
+                {view} <ChevronDown className="h-3.5 w-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => setView("All Items")}>All Items</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setView("Active")}>Active</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </CollectionHeaderMenu>
+
+        <CollectionHeaderMenu>
+          <Button variant="default" size="lg">
+            <SlidersHorizontal className="h-3.5 w-3.5" /> Filter
+          </Button>
+          <Button variant="default" size="lg">
+            <ArrowUpDown className="h-3.5 w-3.5" /> Sort
+          </Button>
+        </CollectionHeaderMenu>
+      </CollectionHeader>
+
+      <CollectionBody>
+        <DataTable>
+          <DataTableHeader>
+            <DataTableHeaderRow>
+              <DataTableHeaderCell title="Name" />
+              <DataTableHeaderCell title="Status" />
+              <DataTableHeaderCell title="Updated At" />
+            </DataTableHeaderRow>
+          </DataTableHeader>
+          <DataTableBody>
+            <DataTableRow>
+              <DataTableCell title="User" />
+              <DataTableCell title="Active" />
+              <DataTableCell title="Jan 15, 2024" />
+            </DataTableRow>
+          </DataTableBody>
+        </DataTable>
+      </CollectionBody>
+
+      <CollectionFooter>
+        <PaginationInput value={currentPage} totalPages={13} onChange={(e) => setCurrentPage(+e.target.value)} />
+        <Pagination className="mx-0 w-auto">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationLink isActive onClick={() => setCurrentPage(1)}>1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink onClick={() => setCurrentPage(2)}>2</PaginationLink>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </CollectionFooter>
+    </Collection>
+  );
+}
+```
+
+**Live Example:**
+
+<div className="not-prose">
+  <FullCollectionExample />
+</div>
+
+---
+
+**Hiding the Header or Footer**
+
+Pass `showHeader={false}` or `showFooter={false}` to the root `Collection` to automatically suppress the corresponding section — no conditional rendering required at the callsite.
+
+```tsx
+// Header hidden — table only shows the body + footer
+<Collection showHeader={false}>
+  <CollectionHeader>{/* won't render */}</CollectionHeader>
+  <CollectionBody>...</CollectionBody>
+  <CollectionFooter>
+    <span className="type-text-sm text-foreground-neutral-weak">3 results</span>
+  </CollectionFooter>
+</Collection>
+
+// Footer hidden — useful for non-paginated lists
+<Collection showFooter={false}>
+  <CollectionHeader>...</CollectionHeader>
+  <CollectionBody>...</CollectionBody>
+  <CollectionFooter>{/* won't render */}</CollectionFooter>
+</Collection>
+```
+
+**Live — no header:**
+
+<div className="not-prose">
+  <CollectionNoHeaderExample />
+</div>
+
+**Live — no footer:**
+
+<div className="not-prose">
+  <CollectionNoFooterExample />
+</div>
+
+---
+
+**CollectionHeader layout**
+
+`CollectionHeader` is a `justify-between` flex row. Place any number of `CollectionHeaderMenu` groups inside it — the first group is left-aligned, the last floats to the right.
+
+```tsx
+<CollectionHeader>
+  {/* Left — view switcher / breadcrumb */}
+  <CollectionHeaderMenu>
+    <Button variant="default" size="lg">
+      All Items <ChevronDown className="h-3.5 w-3.5" />
+    </Button>
+  </CollectionHeaderMenu>
+
+  {/* Right — actions */}
+  <CollectionHeaderMenu>
+    <Button variant="default" size="lg">
+      <SlidersHorizontal className="h-3.5 w-3.5" /> Filter
+    </Button>
+    <Button variant="default" size="lg">
+      <ArrowUpDown className="h-3.5 w-3.5" /> Sort
+    </Button>
+  </CollectionHeaderMenu>
+</CollectionHeader>
+```
+
+**Live Example:**
+
+<div className="not-prose">
+  <Collection>
+    <CollectionHeader>
+      <CollectionHeaderMenu>
+        <Button variant="default" size="lg">
+          All Items <ChevronDown className="h-3.5 w-3.5" />
+        </Button>
+      </CollectionHeaderMenu>
+      <CollectionHeaderMenu>
+        <Button variant="default" size="lg">
+          <SlidersHorizontal className="h-3.5 w-3.5" /> Filter
+        </Button>
+        <Button variant="default" size="lg">
+          <ArrowUpDown className="h-3.5 w-3.5" /> Sort
+        </Button>
+      </CollectionHeaderMenu>
+    </CollectionHeader>
+  </Collection>
+</div>
+
+---
+
+**DataTable — basic**
+
+`DataTable` can be used independently from `Collection` whenever you just need a styled table.
+
+```tsx
+import {
+  DataTable,
+  DataTableHeader,
+  DataTableHeaderRow,
+  DataTableHeaderCell,
+  DataTableBody,
+  DataTableRow,
+  DataTableCell,
+} from "@prisma/eclipse";
+
+<DataTable>
+  <DataTableHeader>
+    <DataTableHeaderRow>
+      <DataTableHeaderCell title="Model" />
+      <DataTableHeaderCell title="Fields" />
+      <DataTableHeaderCell title="Status" />
+    </DataTableHeaderRow>
+  </DataTableHeader>
+  <DataTableBody>
+    <DataTableRow>
+      <DataTableCell title="User" />
+      <DataTableCell title="12" />
+      <DataTableCell title="Active" />
+    </DataTableRow>
+    <DataTableRow>
+      <DataTableCell title="Post" />
+      <DataTableCell title="8" />
+      <DataTableCell title="Active" />
+    </DataTableRow>
+  </DataTableBody>
+</DataTable>
+```
+
+**Live Example:**
+
+<div className="not-prose">
+  <DataTable>
+    <DataTableHeader>
+      <DataTableHeaderRow>
+        <DataTableHeaderCell title="Model" />
+        <DataTableHeaderCell title="Fields" />
+        <DataTableHeaderCell title="Status" />
+        <DataTableHeaderCell title="Last Updated" />
+      </DataTableHeaderRow>
+    </DataTableHeader>
+    <DataTableBody>
+      <DataTableRow>
+        <DataTableCell title="User" />
+        <DataTableCell title="12" />
+        <DataTableCell title="Active" />
+        <DataTableCell title="Jan 15, 2024" />
+      </DataTableRow>
+      <DataTableRow>
+        <DataTableCell title="Post" />
+        <DataTableCell title="8" />
+        <DataTableCell title="Active" />
+        <DataTableCell title="Jan 14, 2024" />
+      </DataTableRow>
+      <DataTableRow>
+        <DataTableCell title="Comment" />
+        <DataTableCell title="5" />
+        <DataTableCell title="Active" />
+        <DataTableCell title="Jan 13, 2024" />
+      </DataTableRow>
+    </DataTableBody>
+  </DataTable>
+</div>
+
+---
+
+**DataTable with subtitles**
+
+Both header cells and body cells accept a `subtitle` prop. Pass `showSubtitle` to display it below the main title — useful for adding units, descriptions, or secondary metadata.
+
+```tsx
+<DataTable>
+  <DataTableHeader>
+    <DataTableHeaderRow>
+      <DataTableHeaderCell
+        title="Model Name"
+        subtitle="Prisma model identifier"
+        showSubtitle
+      />
+      <DataTableHeaderCell
+        title="Fields"
+        subtitle="Scalar field count"
+        showSubtitle
+      />
+    </DataTableHeaderRow>
+  </DataTableHeader>
+  <DataTableBody>
+    <DataTableRow>
+      <DataTableCell title="User" subtitle="id: 1" showSubtitle />
+      <DataTableCell title="12" />
+    </DataTableRow>
+  </DataTableBody>
+</DataTable>
+```
+
+**Live Example:**
+
+<div className="not-prose">
+  <DataTableWithSubtitlesExample />
+</div>
+
+---
+
+**DataTable with checkboxes**
+
+Add `showCheckbox` to `DataTableHeaderRow` and `DataTableRow` to prepend a checkbox column. Wire up selection state externally — the checkbox column renders the UI, your code owns the state.
+
+```tsx
+export function SelectableTable() {
+  const [selected, setSelected] = useState<number[]>([]);
+
+  const toggle = (id: number) =>
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+    );
+
+  return (
+    <DataTable>
+      <DataTableHeader>
+        <DataTableHeaderRow showCheckbox>
+          <DataTableHeaderCell title="Model" />
+          <DataTableHeaderCell title="Status" />
+        </DataTableHeaderRow>
+      </DataTableHeader>
+      <DataTableBody>
+        {rows.map((row) => (
+          <DataTableRow
+            key={row.id}
+            showCheckbox
+            data-state={selected.includes(row.id) ? "selected" : undefined}
+            onClick={() => toggle(row.id)}
+            className="cursor-pointer"
+          >
+            <DataTableCell title={row.name} />
+            <DataTableCell title={row.status} />
+          </DataTableRow>
+        ))}
+      </DataTableBody>
+    </DataTable>
+  );
+}
+```
+
+**Live Example:**
+
+<div className="not-prose">
+  <DataTableWithCheckboxesExample />
+</div>
+
+---
+
+**Custom cell content**
+
+When `children` are provided to a cell, they take precedence over `title`/`subtitle` — use this for badges, action buttons, or any bespoke content.
+
+```tsx
+import { Badge, Button } from "@prisma/eclipse";
+import { Pencil, Trash2 } from "lucide-react";
+
+<DataTableRow>
+  <DataTableCell title="User" />
+  <DataTableCell>
+    <Badge variant="success">Active</Badge>
+  </DataTableCell>
+  <DataTableCell>
+    <div className="flex gap-1">
+      <Button variant="default-weak" size="icon-lg">
+        <Pencil />
+      </Button>
+      <Button variant="default-weak" size="icon-lg">
+        <Trash2 />
+      </Button>
+    </div>
+  </DataTableCell>
+</DataTableRow>
+```
+
+---
+
+**CollectionFooter with pagination**
+
+`CollectionFooter` is a `justify-between` row — place `PaginationInput` on the left and `Pagination` on the right. Override `Pagination`'s default `w-full mx-auto` with `className="mx-0 w-auto"` so it doesn't expand to fill the row.
+
+```tsx
+<CollectionFooter>
+  <PaginationInput
+    key={currentPage}           // re-mounts when page changes externally
+    value={currentPage}
+    totalPages={totalPages}
+    onChange={(e) => setCurrentPage(+e.target.value)}
+  />
+  <Pagination className="mx-0 w-auto">
+    <PaginationContent>
+      {pages.map((p, i) =>
+        p === "ellipsis" ? (
+          <PaginationItem key={`e-${i}`}>
+            <PaginationEllipsis />
+          </PaginationItem>
+        ) : (
+          <PaginationItem key={p}>
+            <PaginationLink isActive={p === currentPage} onClick={() => setCurrentPage(p)}>
+              {p}
+            </PaginationLink>
+          </PaginationItem>
+        ),
+      )}
+    </PaginationContent>
+  </Pagination>
+</CollectionFooter>
+```
+
+---
+
+### API Reference
+
+#### Collection
+
+The root container. Provides a `CollectionContext` that controls header/footer visibility.
+
+**Props:**
+
+- `showHeader` - Whether to render `CollectionHeader` children (boolean, default: `true`)
+- `showFooter` - Whether to render `CollectionFooter` children (boolean, default: `true`)
+- `className` - Additional CSS classes (optional)
+- `children` - Collection sections (required)
+- Extends all standard HTML `<div>` attributes
+
+#### CollectionHeader
+
+Top bar rendered as a `justify-between` flex row. Hidden when `showHeader={false}` is set on the parent `Collection`.
+
+**Props:**
+
+- `className` - Additional CSS classes (optional)
+- `children` - One or more `CollectionHeaderMenu` groups (required)
+- Extends all standard HTML `<div>` attributes
+
+#### CollectionHeaderMenu
+
+A horizontal group of controls inside a `CollectionHeader`. Items are spaced with `gap-2`.
+
+**Props:**
+
+- `className` - Additional CSS classes (optional)
+- `children` - Buttons, dropdowns, or other controls (required)
+- Extends all standard HTML `<div>` attributes
+
+#### CollectionBody
+
+Full-width slot for the main content. Typically wraps a `DataTable`.
+
+**Props:**
+
+- `className` - Additional CSS classes (optional)
+- `children` - Body content, usually a `DataTable` (required)
+- Extends all standard HTML `<div>` attributes
+
+#### CollectionFooter
+
+Bottom bar rendered as a `justify-between` flex row. Hidden when `showFooter={false}` is set on the parent `Collection`. Typically holds `PaginationInput` on the left and `Pagination` on the right.
+
+**Props:**
+
+- `className` - Additional CSS classes (optional)
+- `children` - Footer content (required)
+- Extends all standard HTML `<div>` attributes
+
+---
+
+#### DataTable
+
+Wraps a `<table>` element with `overflow-auto` and an outer `border border-stroke-neutral`.
+
+**Props:**
+
+- `className` - Additional CSS classes applied to the inner `<table>` (optional)
+- `children` - `DataTableHeader` and `DataTableBody` (required)
+- Extends all standard HTML `<table>` attributes
+
+#### DataTableHeader
+
+Renders a `<thead>` with a semi-transparent frosted-glass background (`bg-white/50 backdrop-blur-[24px]`).
+
+**Props:**
+
+- `className` - Additional CSS classes (optional)
+- `children` - One or more `DataTableHeaderRow` elements (required)
+- Extends all standard HTML `<thead>` attributes
+
+#### DataTableHeaderRow
+
+A `<tr>` inside `<thead>`. Optionally prepends a checkbox cell.
+
+**Props:**
+
+- `showCheckbox` - Prepend a checkbox `<th>` cell (boolean, default: `false`)
+- `className` - Additional CSS classes (optional)
+- `children` - `DataTableHeaderCell` elements (required)
+- Extends all standard HTML `<tr>` attributes
+
+#### DataTableHeaderCell
+
+A `<th>` cell with `type-text-sm-strong` typography and correct outer padding (`first:pl-12 last:pr-12`).
+
+**Props:**
+
+- `title` - Column heading text (string, optional — takes precedence over `children` when set)
+- `subtitle` - Secondary label beneath the title (string, optional)
+- `showSubtitle` - Whether to render the subtitle (boolean, default: `false`)
+- `className` - Additional CSS classes (optional)
+- `children` - Custom cell content; used when `title` is not provided (optional)
+- Extends all standard HTML `<th>` attributes
+
+#### DataTableBody
+
+Renders a `<tbody>`. Automatically removes the bottom border from the last row.
+
+**Props:**
+
+- `className` - Additional CSS classes (optional)
+- `children` - One or more `DataTableRow` elements (required)
+- Extends all standard HTML `<tbody>` attributes
+
+#### DataTableRow
+
+A `<tr>` inside `<tbody>` with hover and selected states. Optionally prepends a checkbox cell.
+
+**Props:**
+
+- `showCheckbox` - Prepend a checkbox `<td>` cell (boolean, default: `false`)
+- `className` - Additional CSS classes (optional)
+- `children` - `DataTableCell` elements (required)
+- `data-state="selected"` - Apply the selected background (via HTML attribute)
+- Extends all standard HTML `<tr>` attributes
+
+#### DataTableCell
+
+A `<td>` cell with `type-text-sm` typography and correct outer padding (`first:pl-12 last:pr-12`).
+
+**Props:**
+
+- `title` - Cell text (string, optional — takes precedence over `children` when set)
+- `subtitle` - Secondary label beneath the title (string, optional)
+- `showSubtitle` - Whether to render the subtitle (boolean, default: `false`)
+- `className` - Additional CSS classes (optional)
+- `children` - Custom cell content; used when `title` is not provided (optional)
+- Extends all standard HTML `<td>` attributes
+
+---
+
+### Features
+
+- ✅ Context-driven `showHeader` / `showFooter` visibility — no extra conditionals at the callsite
+- ✅ Composable sections — use `Collection` wrapper or any section independently
+- ✅ `DataTable` can be used standalone, outside of a `Collection`
+- ✅ Frosted-glass thead with `backdrop-blur`
+- ✅ Outer border + row dividers with design-system stroke tokens
+- ✅ Correct Figma padding: `12px` vertical, `48px` outer horizontal, `12px` gap between cells
+- ✅ Optional checkbox column on header and body rows
+- ✅ `title` + `subtitle` convenience props on header and body cells
+- ✅ Custom cell content via `children` (badges, action buttons, etc.)
+- ✅ `data-state="selected"` on rows for selection styling
+- ✅ Horizontal scroll via `overflow-auto` on narrow viewports
+- ✅ Fully typed with TypeScript
+- ✅ Works with `PaginationInput` + `Pagination` from the Eclipse pagination primitives
+
+### Best Practices
+
+- Always use one `CollectionHeaderMenu` for the left side and one for the right side, and let `CollectionHeader`'s `justify-between` do the layout work
+- Pass `key={currentPage}` to `PaginationInput` when the page can change via external controls (e.g. clicking a page button) — this forces the input to re-initialise with the new value
+- Override `Pagination` with `className="mx-0 w-auto"` inside `CollectionFooter` to prevent the nav from expanding to full width
+- Use `data-state="selected"` on `DataTableRow` rather than adding custom background classes — the token-based selected style is already wired up
+- Prefer `title` / `subtitle` props for uniform cell typography; only reach for `children` when you need custom markup (badges, icon-buttons, etc.)
+- Keep `CollectionBody` as a thin wrapper — apply scroll/height constraints there (`max-h-[...]`, `overflow-y-auto`) rather than on `DataTable` itself
+- Use `showCheckbox` purely for the UI affordance; own the selection state in your component and derive `data-state` from it
+
+### Accessibility
+
+- `DataTable` renders semantic `<table>`, `<thead>`, `<tbody>`, `<th>`, and `<td>` elements — screen readers announce columns and rows correctly
+- Header cells (`<th>`) have implicit `scope="col"` via their position; add `scope` explicitly if you have grouped headers
+- `CollectionFooter` pagination uses `<nav role="navigation" aria-label="pagination">` from the underlying `Pagination` component
+- Checkbox rows are keyboard-accessible via `onClick` on `DataTableRow` — ensure focus management if you build a full keyboard-selection pattern
+- Use `aria-sort` on `DataTableHeaderCell` to communicate the current sort direction to assistive technology
+
+### Related Components
+
+- **Table** — lightweight unstyled table primitives (`Table`, `TableHead`, `TableRow`, `TableCell`, …)
+- **Pagination** — standalone pagination nav with `PaginationInput`, `PaginationLink`, and ellipsis
+- **Button** — used in `CollectionHeader` for filter/sort controls
+- **DropdownMenu** — pairs with `CollectionHeaderMenu` for the view-switcher dropdown
+- **Checkbox** — rendered automatically by `showCheckbox` on `DataTableHeaderRow` / `DataTableRow`
+- **Empty** — drop inside `CollectionBody` when there are no rows to display
