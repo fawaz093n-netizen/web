@@ -288,7 +288,7 @@ export default function CommunityPage() {
               </a>
             ))}
           </div>
-          <div className="mt-6">
+          <div className="mt-6 w-fit">
             <Button asChild variant="orm" size="lg">
               <a href="/events">
                 See all events
