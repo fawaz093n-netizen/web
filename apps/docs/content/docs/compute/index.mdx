@@ -1,6 +1,5 @@
 ---
 title: Prisma Compute
-description: One-page internal reference for deploying apps to Prisma Compute during EA.
 badge: early-access
 url: /compute
 metaTitle: Prisma Compute
@@ -16,45 +15,56 @@ Two CLIs are usable today, pick whichever you prefer:
 
 ## Quickstart
 
-Pick your starter and run the steps below.
+Pick your framework below. The scaffold command and any required config in this section update to match your selection.
 
 <Tabs items={['Next.js', 'Astro', 'Nuxt', 'TanStack Start', 'Bun']}>
 
 <Tab value="next.js">
 
-```bash
-pnpm create next-app@latest my-app --yes
-cd my-app
-```
+1. Scaffold the app:
 
-Enable standalone output in `next.config.ts`:
+   ```bash
+   pnpm create next-app@latest my-app --yes
+   cd my-app
+   ```
 
-```typescript
-const nextConfig = { output: "standalone" };
-export default nextConfig;
-```
+2. Enable standalone output in `next.config.ts`:
+
+   ```typescript
+   const nextConfig = { output: "standalone" };
+   export default nextConfig;
+   ```
+
+Default port: `3000`.
 
 </Tab>
 
 <Tab value="astro">
 
-```bash
-pnpm create astro@latest my-app
-cd my-app
-pnpm add @astrojs/node
-```
+1. Scaffold the app:
 
-Enable SSR with the Node adapter in standalone mode in `astro.config.mjs`:
+   ```bash
+   pnpm create astro@latest my-app
+   cd my-app
+   ```
 
-```typescript
-import { defineConfig } from "astro/config";
-import node from "@astrojs/node";
+2. Add the Node adapter:
 
-export default defineConfig({
-  output: "server",
-  adapter: node({ mode: "standalone" }),
-});
-```
+   ```bash
+   pnpm add @astrojs/node
+   ```
+
+3. Enable SSR with the Node adapter in standalone mode in `astro.config.mjs`:
+
+   ```typescript
+   import { defineConfig } from "astro/config";
+   import node from "@astrojs/node";
+
+   export default defineConfig({
+     output: "server",
+     adapter: node({ mode: "standalone" }),
+   });
+   ```
 
 Default port: `4321`.
 
@@ -62,10 +72,12 @@ Default port: `4321`.
 
 <Tab value="nuxt">
 
-```bash
-pnpm create nuxt my-app
-cd my-app
-```
+1. Scaffold the app:
+
+   ```bash
+   pnpm create nuxt my-app
+   cd my-app
+   ```
 
 No extra config. Nuxt builds with the Nitro `node-server` preset by default.
 
@@ -75,7 +87,7 @@ Default port: `3000`.
 
 <Tab value="tanstack-start">
 
-Scaffold from the official TanStack Start starter (Vite + Nitro `node` preset) and `cd` into the project.
+1. Scaffold from the official TanStack Start starter (Vite + Nitro `node` preset) and `cd` into the project.
 
 No extra config. Ensure `vite.config.ts` includes the `tanstackStart()` and `nitro()` plugins.
 
@@ -85,26 +97,30 @@ Default port: `3000`.
 
 <Tab value="bun">
 
-```bash
-mkdir my-app && cd my-app && bun init --yes
-```
+1. Initialize the app:
 
-Replace `index.ts`:
+   ```bash
+   mkdir my-app && cd my-app && bun init --yes
+   ```
 
-```typescript
-Bun.serve({
-  port: Number(process.env.PORT ?? 3000),
-  fetch() {
-    return new Response("Hello from Compute");
-  },
-});
-```
+2. Replace `index.ts`:
+
+   ```typescript
+   Bun.serve({
+     port: Number(process.env.PORT ?? 3000),
+     fetch() {
+       return new Response("Hello from Compute");
+     },
+   });
+   ```
+
+Default port: `3000`.
 
 </Tab>
 
 </Tabs>
 
-Authenticate, then deploy:
+With the app scaffolded, authenticate and deploy. The steps below are the same across frameworks.
 
 <CodeBlockTabs defaultValue="looma">
   <CodeBlockTabsList>
@@ -128,6 +144,8 @@ bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
 
   </CodeBlockTab>
 </CodeBlockTabs>
+
+Port defaults by framework: Next.js, Nuxt, TanStack Start, and Bun use `3000`; Astro uses `4321`. Pass `--http-port <port>` on the first deploy to match.
 
 The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `app deploy` (or `deploy`) is enough.
 
