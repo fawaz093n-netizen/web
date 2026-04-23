@@ -4,10 +4,12 @@ description: One-page internal reference for deploying apps to Prisma Compute du
 badge: early-access
 url: /compute
 metaTitle: Prisma Compute
-metaDescription: Internal one-page reference for deploying Next.js and Bun apps to Prisma Compute, managing environment variables, and streaming logs.
+metaDescription: Internal one-page reference for deploying Next.js, Astro, Nuxt, TanStack Start, and Bun apps to Prisma Compute, managing environment variables, and streaming logs.
 ---
 
-App hosting for Next.js and Bun, driven from the CLI. Two CLIs are usable today, pick whichever you prefer:
+App hosting for Node.js and Bun apps, driven from the CLI. First-class support for Next.js, Astro, Nuxt, TanStack Start, and Bun. Deploys are zero-flag: the SDK auto-detects the framework from your `package.json` and config.
+
+Two CLIs are usable today, pick whichever you prefer:
 
 - [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli): new unified `prisma app` surface.
 - [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli): original `compute` surface.
@@ -16,7 +18,7 @@ App hosting for Next.js and Bun, driven from the CLI. Two CLIs are usable today,
 
 Pick your starter and run the steps below.
 
-<Tabs items={['Next.js', 'Bun']}>
+<Tabs items={['Next.js', 'Astro', 'Nuxt', 'TanStack Start', 'Bun']}>
 
 <Tab value="next.js">
 
@@ -31,6 +33,53 @@ Enable standalone output in `next.config.ts`:
 const nextConfig = { output: "standalone" };
 export default nextConfig;
 ```
+
+</Tab>
+
+<Tab value="astro">
+
+```bash
+pnpm create astro@latest my-app
+cd my-app
+pnpm add @astrojs/node
+```
+
+Enable SSR with the Node adapter in standalone mode in `astro.config.mjs`:
+
+```typescript
+import { defineConfig } from "astro/config";
+import node from "@astrojs/node";
+
+export default defineConfig({
+  output: "server",
+  adapter: node({ mode: "standalone" }),
+});
+```
+
+Default port: `4321`.
+
+</Tab>
+
+<Tab value="nuxt">
+
+```bash
+pnpm create nuxt my-app
+cd my-app
+```
+
+No extra config. Nuxt builds with the Nitro `node-server` preset by default.
+
+Default port: `3000`.
+
+</Tab>
+
+<Tab value="tanstack-start">
+
+Scaffold from the official TanStack Start starter (Vite + Nitro `node` preset) and `cd` into the project.
+
+No extra config. Ensure `vite.config.ts` includes the `tanstackStart()` and `nitro()` plugins.
+
+Default port: `3000`.
 
 </Tab>
 
@@ -199,8 +248,9 @@ EA log limits: ~10-min stream cap (reconnect with `--cursor`), one concurrent st
 
 ## Limitations
 
+- Framework support: **Next.js**, **Astro**, **Nuxt**, **TanStack Start**, and **Bun**.
 - Next.js apps must use `output: "standalone"`.
-- First-class support for **Next.js** and **Bun/Hono** only.
+- Astro apps need `@astrojs/node` in standalone mode.
 - `env update` / `app update-env` cuts a new compute version. The old version stays live until the new one is healthy.
 - No bulk `.env` import yet, repeat `--env KEY=VALUE` for each variable.
 - Logs: 10-min stream cap, one concurrent stream per version.
