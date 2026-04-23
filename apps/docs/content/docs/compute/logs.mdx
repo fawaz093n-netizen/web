@@ -1,9 +1,8 @@
 ---
 title: Logs
-badge: early-access
 url: /compute/logs
 metaTitle: Logs | Prisma Compute
-metaDescription: Stream runtime logs from a Prisma Compute deployment, with EA limits documented.
+metaDescription: Stream runtime logs from a Prisma Compute deployment.
 ---
 
 Stream logs for a specific compute version or deployment.
@@ -36,7 +35,7 @@ npx @looma/prisma-cli app logs --tail 200
   </CodeBlockTab>
 </CodeBlockTabs>
 
-## EA limits
+## Limits
 
 - Stream caps at around 10 minutes. Reconnect with `--cursor <byte-offset>` to resume from where the last stream ended.
 - Only one concurrent log stream per compute version.
