@@ -1,3 +1,4 @@
+import Image from "next/image";
 import parse from "html-react-parser";
 import { cn } from "../../lib/cn";
 import { Button } from "@prisma/eclipse";
@@ -44,58 +45,82 @@ export function Hero({ data }: { data: HeroData }) {
             {parse(data.description)}
           </p>
           <div className="flex gap-4 md:justify-start justify-center">
-            <Button variant="ppg" size="3xl" href={data.btns[0].url}>
-              <span>{data.btns[0].label}</span>
-              {data.btns[0].icon && (
-                <i className={cn("ml-2", data.btns[0].icon)} />
-              )}
+            <Button asChild variant="ppg" size="3xl">
+              <a href={data.btns[0].url}>
+                <span>{data.btns[0].label}</span>
+                {data.btns[0].icon && (
+                  <i className={data.btns[0].icon} />
+                )}
+              </a>
             </Button>
             {secondaryButton && (
               <Button
-                variant="default-stronger"
+                asChild
+                variant="default-strong"
                 size="3xl"
-                href={secondaryButton.url}
               >
-                <span>{secondaryButton.label}</span>
-                {secondaryButton.icon && (
-                  <i className={cn("ml-2", secondaryButton.icon)} />
-                )}
+                <a href={secondaryButton.url}>
+                  <span>{secondaryButton.label}</span>
+                  {secondaryButton.icon && (
+                    <i className={secondaryButton.icon} />
+                  )}
+                </a>
               </Button>
             )}
           </div>
         </div>
         <div className="logos relative max-h-78 hidden md:block">
           <div className="absolute left-0 top-0 w-57 h-44 object-cover bg-background-default flex items-center justify-center p-9 border border-stroke-ppg-weak rounded-2xl">
-            <img
-              src={data.imageUrl}
+            <div
               className={cn(
-                "dark:hidden h-full max-w-full contain",
+                "dark:hidden h-full w-full relative",
                 data.imageClassName,
               )}
-              alt={`Prisma with ${data.tech}`}
-            />
+            >
+              <Image
+                src={data.imageUrl}
+                fill
+                className="object-contain"
+                alt={`Prisma with ${data.tech}`}
+                priority={true}
+              />
+            </div>
             {data.imageUrlLight && (
-              <img
-                src={data.imageUrlLight}
+              <div
                 className={cn(
-                  "hidden dark:block h-full max-w-full contain",
+                  "hidden dark:block h-full w-full relative",
                   data.imageClassNameLight,
                 )}
-                alt={`Prisma with ${data.tech}`}
-              />
+              >
+                <Image
+                  src={data.imageUrlLight}
+                  fill
+                  className="object-contain"
+                  alt={`Prisma with ${data.tech}`}
+                  priority={true}
+                />
+              </div>
             )}
           </div>
           <div className="absolute right-0 bottom-0 w-57 h-44 object-cover bg-background-default flex items-center justify-center p-9 border border-stroke-ppg-weak rounded-2xl">
-            <img
-              src="/icons/technologies/prisma.svg"
-              className="dark:block hidden h-full contain"
-              alt="Prisma"
-            />
-            <img
-              src="/icons/technologies/prisma_light.svg"
-              className="dark:hidden h-full contain"
-              alt="Prisma"
-            />
+            <div className="dark:block hidden h-full w-full relative">
+              <Image
+                src="/icons/technologies/prisma.svg"
+                fill
+                className="object-contain"
+                alt="Prisma"
+                priority={true}
+              />
+            </div>
+            <div className="dark:hidden h-full w-full relative">
+              <Image
+                src="/icons/technologies/prisma_light.svg"
+                fill
+                className="object-contain"
+                alt="Prisma"
+                priority={true}
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -224,6 +224,11 @@ const config = {
         permanent: false,
         basePath: false,
       },
+      {
+        source: "/optimize-now-generally-available",
+        destination: "/",
+        permanent: true,
+      },
       ...tagSlugs.map((tag) => ({
         source: `/${tag}`,
         destination: `/?tag=${tag}`,
@@ -233,6 +238,10 @@ const config = {
   },
   async rewrites() {
     return [
+      {
+        source: "/sitemap",
+        destination: "/sitemap.xml",
+      },
       {
         source: "/:path*.mdx",
         destination: "/llms.mdx/:path*",

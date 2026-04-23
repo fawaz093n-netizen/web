@@ -11,9 +11,9 @@ import {
 import { NewsletterSignup } from "./newsletter-signup";
 
 export const metadata = createPageMetadata({
-  title: "Newsletter | Prisma",
+  title: "Sign up for Prisma's monthly newsletter",
   description:
-    "Subscribe for monthly Prisma release notes, tutorials, and product updates covering ORM, Postgres, and the developer ecosystem.",
+    "The Prisma newsletter is packed with all the latest releases, updates, blogs, and more. Sign up today to stay up-to-date with Prisma.",
   path: "/newsletter",
   ogImage: "/og/og-newsletter.png",
 });
@@ -100,7 +100,7 @@ export default async function NewsletterPage() {
             <i className="fa-regular fa-bell" aria-hidden />
             Stay Updated
           </p>
-          <h1 className="m-0 text-foreground-neutral text-5xl font-sans-display stretch-display">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl stretch-display mb-0 text-center mt-0 font-sans-display text-foreground-neutral max-w-224 mx-auto">
             Get our monthly newsletter
           </h1>
         </div>

@@ -10,7 +10,7 @@ import { createPageMetadata } from "@/lib/page-metadata";
 export const metadata = createPageMetadata({
   title: "Prisma Support Policy | Prisma",
   description:
-    "Read the Prisma Support Policy, including support channels, response times, severity levels, and business hours.",
+    "Read our support policy and see how it relates to you.",
   path: "/support-policy",
   ogImage: "/og/og-support.png",
 });
@@ -30,7 +30,7 @@ export default function SupportPolicyPage() {
               <i className="fa-regular fa-headset" />
               <span>Support</span>
             </div>
-            <h1 className="text-6xl [font-variation-settings:'wght'_900,'wdth'_125] mb-0 mt-0 font-sans-display text-foreground-neutral">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl stretch-display mb-0 text-center mt-0 font-sans-display text-foreground-neutral max-w-224 mx-auto">
               Prisma Support Policy
             </h1>
           </div>
@@ -41,22 +41,24 @@ export default function SupportPolicyPage() {
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <Button
+              asChild
               variant="orm"
-              href="https://www.prisma.io/docs"
               size="3xl"
-              className="font-sans-display! font-[650]"
             >
-              <span>Read the docs</span>
-              <i className="fa-regular fa-book-open ml-2" />
+              <a href="https://www.prisma.io/docs">
+                <span>Read the docs</span>
+                <i className="fa-regular fa-book-open" />
+              </a>
             </Button>
             <Button
-              variant="default-stronger"
-              href="/support"
+              asChild
+              variant="default-strong"
               size="3xl"
-              className="font-sans-display! font-[650]"
             >
-              <span>Visit support</span>
-              <i className="fa-regular fa-arrow-right ml-2" />
+              <a href="/support">
+                <span>Visit support</span>
+                <i className="fa-regular fa-arrow-right" />
+              </a>
             </Button>
           </div>
         </div>

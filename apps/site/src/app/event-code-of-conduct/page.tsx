@@ -7,9 +7,9 @@ import {
 import { LegalAccordion } from "@/components/legal-accordion";
 
 export const metadata = createPageMetadata({
-  title: "Event Code of Conduct | Prisma",
+  title: "Prisma - Event Code of Conduct",
   description:
-    "All attendees, speakers, sponsors, and volunteers at Prisma events are required to agree to this code of conduct.",
+    "Read our Event Code of Conduct and how it relates to you.",
   path: "/event-code-of-conduct",
   ogImage: "/og/og-event-code-of-conduct.png",
 });
@@ -19,7 +19,7 @@ export default function EventCodeOfConductPage() {
     <main className="flex-1 w-full z-1 -mt-24 pt-24 relative legal-hero-gradient">
       {/* Hero */}
       <div className="text-center pb-16 pt-40">
-        <h1 className="text-5xl font-bold font-sans-display text-foreground-neutral mb-6">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl stretch-display mb-0 text-center mt-0 font-sans-display text-foreground-neutral max-w-224 mx-auto">
           Event Code of Conduct
         </h1>
         <p className="max-w-[640px] mx-auto text-lg text-foreground-neutral-weak text-left mb-6">
