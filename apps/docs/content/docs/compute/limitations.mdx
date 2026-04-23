@@ -20,7 +20,7 @@ Framework-specific requirements:
 
 `env update` (compute) and `app update-env` (looma) each cut a new compute version. The old version stays live until the new one is healthy.
 
-No bulk `.env` import yet. Repeat `--env KEY=VALUE` for each variable.
+`@looma/prisma-cli` accepts only one `KEY=VALUE` per `--env` flag. `.env` file paths and comma-separated assignments are currently only supported by `@prisma/compute-cli` (see [Environment variables](/compute/environment-variables)).
 
 ## Logs
 
