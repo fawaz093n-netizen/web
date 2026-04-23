@@ -1,0 +1,68 @@
+---
+title: Next.js
+badge: early-access
+url: /compute/quickstart/nextjs
+metaTitle: "Quickstart: Deploy a Next.js app to Prisma Compute"
+metaDescription: Scaffold a Next.js app, enable standalone output, and deploy it to Prisma Compute during EA.
+---
+
+Deploy a Next.js app to Prisma Compute. This quickstart walks through scaffolding a fresh app, enabling standalone output (required by Compute), and running the first deploy with either `@looma/prisma-cli` or `@prisma/compute-cli`.
+
+## Prerequisites
+
+- Node.js 20+
+- A Prisma account logged in via CLI (covered in step 3)
+
+## 1. Scaffold the app
+
+```bash
+pnpm create next-app@latest my-app --yes
+cd my-app
+```
+
+## 2. Enable standalone output
+
+Edit `next.config.ts`:
+
+```typescript title="next.config.ts"
+const nextConfig = { output: "standalone" };
+export default nextConfig;
+```
+
+Compute deploys Next.js apps in standalone mode. Without this flag, the build output does not include the server entry Compute expects.
+
+## 3. Authenticate and deploy
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli auth login
+npx @looma/prisma-cli app deploy --app my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli login
+bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `app deploy` (or `deploy`) is enough.
+
+In CI, set `PRISMA_API_TOKEN` instead of running `auth login`.
+
+## Next steps
+
+- [Environment variables](/compute/environment-variables): set secrets and config at deploy time or after.
+- [Logs](/compute/logs): stream runtime logs per deployment.
+- [CLI reference](/compute/cli): full command inventory for both CLIs.
+- [Limitations](/compute/limitations): known EA caveats.

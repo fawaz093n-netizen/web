@@ -2,5 +2,16 @@
   "title": "Compute",
   "root": true,
   "icon": "Cpu",
-  "pages": ["index"]
+  "pages": [
+    "---Introduction---",
+    "index",
+    "---Quickstart---",
+    "...quickstart",
+    "---Reference---",
+    "environment-variables",
+    "logs",
+    "cli",
+    "---More---",
+    "limitations"
+  ]
 }

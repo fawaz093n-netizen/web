@@ -3,312 +3,59 @@ title: Prisma Compute
 badge: early-access
 url: /compute
 metaTitle: Prisma Compute
-metaDescription: Internal one-page reference for deploying Next.js, Astro, Nuxt, TanStack Start, and Bun apps to Prisma Compute, managing environment variables, and streaming logs.
+metaDescription: Internal one-stop reference for deploying Next.js, Astro, Nuxt, TanStack Start, and Bun apps to Prisma Compute, managing environment variables, and streaming logs.
 ---
 
-App hosting for Node.js and Bun apps, driven from the CLI. First-class support for Next.js, Astro, Nuxt, TanStack Start, and Bun. Deploys are zero-flag: the SDK auto-detects the framework from your `package.json` and config.
+Prisma Compute is app hosting for Node.js and Bun apps, driven from the CLI. First-class support for Next.js, Astro, Nuxt, TanStack Start, and Bun. Deploys are zero-flag on the SDK side: the framework is auto-detected from your `package.json` and config.
 
 Two CLIs are usable today, pick whichever you prefer:
 
-- [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli): new unified `prisma app` surface.
+- [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli): unified `prisma app` surface.
 - [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli): original `compute` surface.
 
-## Quickstart
-
-Pick your framework below. The scaffold command and any required config in this section update to match your selection.
-
-<Tabs items={['Next.js', 'Astro', 'Nuxt', 'TanStack Start', 'Bun']}>
-
-<Tab value="next.js">
-
-1. Scaffold the app:
-
-   ```bash
-   pnpm create next-app@latest my-app --yes
-   cd my-app
-   ```
-
-2. Enable standalone output in `next.config.ts`:
-
-   ```typescript
-   const nextConfig = { output: "standalone" };
-   export default nextConfig;
-   ```
-
-Default port: `3000`.
-
-</Tab>
-
-<Tab value="astro">
-
-1. Scaffold the app:
-
-   ```bash
-   pnpm create astro@latest my-app
-   cd my-app
-   ```
-
-2. Add the Node adapter:
-
-   ```bash
-   pnpm add @astrojs/node
-   ```
-
-3. Enable SSR with the Node adapter in standalone mode in `astro.config.mjs`:
-
-   ```typescript
-   import { defineConfig } from "astro/config";
-   import node from "@astrojs/node";
-
-   export default defineConfig({
-     output: "server",
-     adapter: node({ mode: "standalone" }),
-   });
-   ```
-
-Default port: `4321`.
-
-</Tab>
-
-<Tab value="nuxt">
-
-1. Scaffold the app:
-
-   ```bash
-   pnpm create nuxt my-app
-   cd my-app
-   ```
-
-No extra config. Nuxt builds with the Nitro `node-server` preset by default.
-
-Default port: `3000`.
-
-</Tab>
-
-<Tab value="tanstack-start">
-
-1. Scaffold from the official TanStack Start starter (Vite + Nitro `node` preset) and `cd` into the project.
-
-No extra config. Ensure `vite.config.ts` includes the `tanstackStart()` and `nitro()` plugins.
-
-Default port: `3000`.
-
-</Tab>
-
-<Tab value="bun">
-
-1. Initialize the app:
-
-   ```bash
-   mkdir my-app && cd my-app && bun init --yes
-   ```
-
-2. Replace `index.ts`:
-
-   ```typescript
-   Bun.serve({
-     port: Number(process.env.PORT ?? 3000),
-     fetch() {
-       return new Response("Hello from Compute");
-     },
-   });
-   ```
-
-Default port: `3000`.
-
-</Tab>
-
-</Tabs>
-
-With the app scaffolded, authenticate and deploy. The steps below are the same across frameworks.
-
-<CodeBlockTabs defaultValue="looma">
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
-    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
-  <CodeBlockTab value="looma">
-
-```bash
-npx @looma/prisma-cli auth login
-npx @looma/prisma-cli app deploy --app my-app --http-port 3000
-```
-
-  </CodeBlockTab>
-  <CodeBlockTab value="compute">
-
-```bash
-bunx @prisma/compute-cli login
-bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
-```
-
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-Port defaults by framework: Next.js, Nuxt, TanStack Start, and Bun use `3000`; Astro uses `4321`. Pass `--http-port <port>` on the first deploy to match.
-
-The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `app deploy` (or `deploy`) is enough.
-
-In CI, set `PRISMA_API_TOKEN` instead of running `auth login`.
-
-## Inspect a deployment
-
-<CodeBlockTabs defaultValue="looma">
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
-    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
-  <CodeBlockTab value="looma">
-
-```bash
-npx @looma/prisma-cli app list-deploys
-npx @looma/prisma-cli app show-deploy <deployment-id>
-```
-
-  </CodeBlockTab>
-  <CodeBlockTab value="compute">
-
-```bash
-bunx @prisma/compute-cli versions list
-bunx @prisma/compute-cli versions show <version-id>
-```
-
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-## Environment variables
-
-Set them inline on a deploy, or update without rebuilding (cuts a new version).
-
-**During a deploy**, repeat `--env` per variable:
-
-<CodeBlockTabs defaultValue="looma">
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
-    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
-  <CodeBlockTab value="looma">
-
-```bash
-npx @looma/prisma-cli app deploy \
-  --env DATABASE_URL=postgresql://example \
-  --env NODE_ENV=production
-```
-
-  </CodeBlockTab>
-  <CodeBlockTab value="compute">
-
-```bash
-bunx @prisma/compute-cli deploy \
-  --env DATABASE_URL=postgresql://example \
-  --env NODE_ENV=production
-```
-
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-**Without rebuilding**: same flag shape, dedicated command. Old version stays live until the new one is healthy.
-
-<CodeBlockTabs defaultValue="looma">
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
-    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
-  <CodeBlockTab value="looma">
-
-```bash
-npx @looma/prisma-cli app update-env --env STRIPE_KEY=sk_live_xxx
-npx @looma/prisma-cli app list-env
-```
-
-  </CodeBlockTab>
-  <CodeBlockTab value="compute">
-
-```bash
-bunx @prisma/compute-cli env update --env STRIPE_KEY=sk_live_xxx
-bunx @prisma/compute-cli env update --unset-env LEGACY_FLAG
-```
-
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-## Logs
-
-Stream logs for a specific compute version (or deployment):
-
-<CodeBlockTabs defaultValue="compute">
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
-    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
-  <CodeBlockTab value="compute">
-
-```bash
-bunx @prisma/compute-cli logs <compute-version-id>
-bunx @prisma/compute-cli logs <compute-version-id> --tail 200
-bunx @prisma/compute-cli logs <compute-version-id> --from-start
-bunx @prisma/compute-cli logs <compute-version-id> --cursor <byte-offset>
-```
-
-  </CodeBlockTab>
-  <CodeBlockTab value="looma">
-
-```bash
-npx @looma/prisma-cli app logs
-npx @looma/prisma-cli app logs --deployment <deployment-id>
-npx @looma/prisma-cli app logs --tail 200
-```
-
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-EA log limits: ~10-min stream cap (reconnect with `--cursor`), one concurrent stream per version.
-
-## Limitations
-
-- Framework support: **Next.js**, **Astro**, **Nuxt**, **TanStack Start**, and **Bun**.
-- Next.js apps must use `output: "standalone"`.
-- Astro apps need `@astrojs/node` in standalone mode.
-- `env update` / `app update-env` cuts a new compute version. The old version stays live until the new one is healthy.
-- No bulk `.env` import yet, repeat `--env KEY=VALUE` for each variable.
-- Logs: 10-min stream cap, one concurrent stream per version.
-
-## Useful CLI inventory
-
-<CodeBlockTabs defaultValue="looma">
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
-    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
-  <CodeBlockTab value="looma">
-
-```bash
-prisma auth login | logout | whoami
-prisma project ...
-prisma app build | run | deploy | update-env | list-env
-prisma app show | open | logs
-prisma app list-deploys | show-deploy <id> | promote <id> | rollback | remove
-```
-
-  </CodeBlockTab>
-  <CodeBlockTab value="compute">
-
-```bash
-compute login | logout
-compute deploy [--project --service --service-name --region --path
-                --entrypoint --build-type auto|bun|nextjs --http-port
-                --env KEY=VALUE --unset-env KEY
-                --skip-build --skip-promote --destroy-old-version --json]
-compute logs <version-id> [--tail --from-start --cursor --json]
-compute env update [--env --unset-env --http-port]
-compute versions list | show | start | stop | promote | delete | destroy
-compute services list
-compute projects list
-```
-
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-Need a flag that isn't here? Run `--help` on the relevant command. Both CLIs have stable, browsable help output.
+See the full [CLI reference](/compute/cli) for both.
+
+## Pick a quickstart
+
+Each quickstart walks you from a fresh app to a live deployment. Pick the one that matches your stack.
+
+<Cards>
+  <Card href="/compute/quickstart/nextjs" title="Next.js">
+    Scaffold, enable standalone output, and deploy.
+  </Card>
+  <Card href="/compute/quickstart/astro" title="Astro">
+    Set up the Node adapter in standalone mode and deploy on port 4321.
+  </Card>
+  <Card href="/compute/quickstart/nuxt" title="Nuxt">
+    Scaffold and deploy with the default Nitro node-server preset.
+  </Card>
+  <Card href="/compute/quickstart/tanstack-start" title="TanStack Start">
+    Deploy the official Vite plus Nitro starter.
+  </Card>
+  <Card href="/compute/quickstart/bun" title="Bun">
+    Deploy a Bun.serve HTTP server directly.
+  </Card>
+</Cards>
+
+## Manage a deployment
+
+After the first deploy, use these references day-to-day.
+
+<Cards>
+  <Card href="/compute/environment-variables" title="Environment variables">
+    Set secrets and config inline on deploy, or update later without rebuilding.
+  </Card>
+  <Card href="/compute/logs" title="Logs">
+    Stream runtime logs per compute version or deployment.
+  </Card>
+  <Card href="/compute/cli" title="CLI reference">
+    Full command inventory for both `@looma/prisma-cli` and `@prisma/compute-cli`.
+  </Card>
+  <Card href="/compute/limitations" title="Limitations">
+    Known EA caveats around framework support, env updates, and log streaming.
+  </Card>
+</Cards>
+
+## Support
 
 Questions or breakage during EA: `#product-compute`.

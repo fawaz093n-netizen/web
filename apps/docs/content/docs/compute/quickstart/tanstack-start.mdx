@@ -1,0 +1,72 @@
+---
+title: TanStack Start
+badge: early-access
+url: /compute/quickstart/tanstack-start
+metaTitle: "Quickstart: Deploy a TanStack Start app to Prisma Compute"
+metaDescription: Scaffold a TanStack Start app (Vite + Nitro node preset) and deploy it to Prisma Compute during EA.
+---
+
+Deploy a TanStack Start app to Prisma Compute. TanStack Start builds with Vite and the Nitro `node` preset, both already wired in the official starter.
+
+## Prerequisites
+
+- Node.js 20+
+- A Prisma account logged in via CLI (covered in step 2)
+
+## 1. Scaffold the app
+
+Scaffold from the [official TanStack Start starter](https://tanstack.com/start/latest/docs/framework/react/getting-started) and `cd` into the project. Ensure `vite.config.ts` includes the `tanstackStart()` and `nitro()` plugins, which match the detection the Compute SDK expects.
+
+Example `vite.config.ts`:
+
+```typescript title="vite.config.ts"
+import { defineConfig } from "vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
+
+export default defineConfig({
+  server: { port: 3000 },
+  plugins: [
+    tanstackStart(),
+    nitro(),
+    viteReact(),
+  ],
+});
+```
+
+## 2. Authenticate and deploy
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli auth login
+npx @looma/prisma-cli app deploy --app my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli login
+bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `app deploy` (or `deploy`) is enough.
+
+In CI, set `PRISMA_API_TOKEN` instead of running `auth login`.
+
+## Next steps
+
+- [Environment variables](/compute/environment-variables): set secrets and config at deploy time or after.
+- [Logs](/compute/logs): stream runtime logs per deployment.
+- [CLI reference](/compute/cli): full command inventory for both CLIs.
+- [Limitations](/compute/limitations): known EA caveats.

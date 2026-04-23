@@ -1,0 +1,69 @@
+---
+title: Bun
+badge: early-access
+url: /compute/quickstart/bun
+metaTitle: "Quickstart: Deploy a Bun app to Prisma Compute"
+metaDescription: Scaffold a Bun HTTP server and deploy it to Prisma Compute during EA.
+---
+
+Deploy a Bun HTTP server to Prisma Compute. Bun.serve apps are supported directly, no bundler or adapter required.
+
+## Prerequisites
+
+- [Bun](https://bun.sh) installed locally
+- A Prisma account logged in via CLI (covered in step 3)
+
+## 1. Initialize the app
+
+```bash
+mkdir my-app && cd my-app && bun init --yes
+```
+
+## 2. Replace `index.ts`
+
+```typescript title="index.ts"
+Bun.serve({
+  port: Number(process.env.PORT ?? 3000),
+  fetch() {
+    return new Response("Hello from Compute");
+  },
+});
+```
+
+Reading `PORT` from the environment keeps the server aligned with Compute's injected port.
+
+## 3. Authenticate and deploy
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli auth login
+npx @looma/prisma-cli app deploy --app my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli login
+bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `app deploy` (or `deploy`) is enough.
+
+In CI, set `PRISMA_API_TOKEN` instead of running `auth login`.
+
+## Next steps
+
+- [Environment variables](/compute/environment-variables): set secrets and config at deploy time or after.
+- [Logs](/compute/logs): stream runtime logs per deployment.
+- [CLI reference](/compute/cli): full command inventory for both CLIs.
+- [Limitations](/compute/limitations): known EA caveats.

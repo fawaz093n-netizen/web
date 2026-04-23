@@ -1,0 +1,69 @@
+---
+title: Environment variables
+badge: early-access
+url: /compute/environment-variables
+metaTitle: Environment variables | Prisma Compute
+metaDescription: Set environment variables on a Prisma Compute deployment, either inline on deploy or without rebuilding.
+---
+
+Set environment variables inline when deploying, or update them later without rebuilding. Either path cuts a new compute version. The old version stays live until the new one is healthy.
+
+## During a deploy
+
+Repeat `--env` per variable:
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli app deploy \
+  --env DATABASE_URL=postgresql://example \
+  --env NODE_ENV=production
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli deploy \
+  --env DATABASE_URL=postgresql://example \
+  --env NODE_ENV=production
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+## Without rebuilding
+
+Same flag shape, dedicated command:
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli app update-env --env STRIPE_KEY=sk_live_xxx
+npx @looma/prisma-cli app list-env
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli env update --env STRIPE_KEY=sk_live_xxx
+bunx @prisma/compute-cli env update --unset-env LEGACY_FLAG
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+:::note
+No bulk `.env` import yet. Repeat `--env KEY=VALUE` for each variable.
+:::
