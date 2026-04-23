@@ -1,0 +1,64 @@
+---
+title: Prisma Compute
+url: /compute-internal
+metaTitle: Prisma Compute (Internal)
+metaDescription: Internal one-stop reference for deploying Next.js, Astro, Nuxt, TanStack Start, and Bun apps to Prisma Compute, managing environment variables, and streaming logs.
+---
+
+<Alert variant="warning">
+  Internal team reference. Not for users. The public docs live at [/compute](/compute).
+</Alert>
+
+Prisma Compute is app hosting for Node.js and Bun apps, driven from the CLI. First-class support for Next.js, Astro, Nuxt, TanStack Start, and Bun. Deploys are zero-flag on the SDK side: the framework is auto-detected from your `package.json` and config.
+
+Two CLIs are usable today, pick whichever you prefer:
+
+- [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli): unified `prisma app` surface.
+- [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli): original `compute` surface.
+
+See the full [CLI reference](/compute-internal/cli) for both.
+
+## Pick a quickstart
+
+Each quickstart walks you from a fresh app to a live deployment. Pick the one that matches your stack.
+
+<Cards>
+  <Card href="/compute-internal/quickstart/nextjs" title="Next.js">
+    Scaffold, enable standalone output, and deploy.
+  </Card>
+  <Card href="/compute-internal/quickstart/astro" title="Astro">
+    Set up the Node adapter in standalone mode and deploy on port 4321.
+  </Card>
+  <Card href="/compute-internal/quickstart/nuxt" title="Nuxt">
+    Scaffold and deploy with the default Nitro node-server preset.
+  </Card>
+  <Card href="/compute-internal/quickstart/tanstack-start" title="TanStack Start">
+    Deploy the official Vite plus Nitro starter.
+  </Card>
+  <Card href="/compute-internal/quickstart/bun" title="Bun">
+    Deploy a Bun.serve HTTP server directly.
+  </Card>
+</Cards>
+
+## Manage a deployment
+
+After the first deploy, use these references day-to-day.
+
+<Cards>
+  <Card href="/compute-internal/environment-variables" title="Environment variables">
+    Set secrets and config inline on deploy, or update later without rebuilding.
+  </Card>
+  <Card href="/compute-internal/logs" title="Logs">
+    Stream runtime logs per compute version or deployment.
+  </Card>
+  <Card href="/compute-internal/cli" title="CLI reference">
+    Full command inventory for both `@looma/prisma-cli` and `@prisma/compute-cli`.
+  </Card>
+  <Card href="/compute-internal/limitations" title="Limitations">
+    Known caveats around framework support, env updates, and log streaming.
+  </Card>
+</Cards>
+
+## Support
+
+Questions or breakage: `#product-compute`.

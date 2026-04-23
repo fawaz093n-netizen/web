@@ -2,15 +2,15 @@
 title: Next.js
 url: /compute/quickstart/nextjs
 metaTitle: "Quickstart: Deploy a Next.js app to Prisma Compute"
-metaDescription: Scaffold a Next.js app, enable standalone output, and deploy it to Prisma Compute.
+metaDescription: Scaffold a Next.js app, enable standalone output, and deploy it to Prisma Compute with a single command.
 ---
 
-Deploy a Next.js app to Prisma Compute. This quickstart walks through scaffolding a fresh app, enabling standalone output (required by Compute), and running the first deploy with either `@looma/prisma-cli` or `@prisma/compute-cli`.
+Deploy a Next.js app to Prisma Compute. This quickstart covers scaffolding a fresh app, enabling the standalone build output Compute requires, and running the first deploy.
 
 ## Prerequisites
 
-- Node.js 20+
-- A Prisma account logged in via CLI (covered in step 3)
+- Node.js 20 or later
+- A Prisma account
 
 ## 1. Scaffold the app
 
@@ -28,40 +28,21 @@ const nextConfig = { output: "standalone" };
 export default nextConfig;
 ```
 
-Compute deploys Next.js apps in standalone mode. Without this flag, the build output does not include the server entry Compute expects.
+Compute deploys Next.js apps from the standalone build. Without this flag, the build output does not include the server entry Compute expects.
 
 ## 3. Authenticate and deploy
 
-<CodeBlockTabs defaultValue="looma">
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
-    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
-  <CodeBlockTab value="looma">
-
 ```bash
-npx @looma/prisma-cli auth login
-npx @looma/prisma-cli app deploy --app my-app --http-port 3000
+prisma auth login
+prisma app deploy --app my-app --http-port 3000
 ```
 
-  </CodeBlockTab>
-  <CodeBlockTab value="compute">
+The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `prisma app deploy` is enough.
 
-```bash
-bunx @prisma/compute-cli login
-bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
-```
-
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `app deploy` (or `deploy`) is enough.
-
-In CI, set `PRISMA_API_TOKEN` instead of running `auth login`.
+In CI, set `PRISMA_API_TOKEN` instead of running `prisma auth login`.
 
 ## Next steps
 
-- [Environment variables](/compute/environment-variables): set secrets and config at deploy time or after.
-- [Logs](/compute/logs): stream runtime logs per deployment.
-- [CLI reference](/compute/cli): full command inventory for both CLIs.
+- [Environment variables](/compute/environment-variables): set secrets and configuration at deploy time or after.
+- [Logs](/compute/logs): stream runtime logs.
 - [Limitations](/compute/limitations): known caveats.

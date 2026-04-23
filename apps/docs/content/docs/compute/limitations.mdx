@@ -2,31 +2,23 @@
 title: Limitations
 url: /compute/limitations
 metaTitle: Limitations | Prisma Compute
-metaDescription: Known Prisma Compute limitations covering framework support, env updates, and log streaming.
+metaDescription: Known Prisma Compute limitations covering framework support, environment updates, and log streaming.
 ---
-
-Known caveats.
 
 ## Framework support
 
-First-class support: **Next.js**, **Astro**, **Nuxt**, **TanStack Start**, and **Bun**. Other Node.js frameworks may build via auto-detection, but are not explicitly tested.
+First-class support: **Next.js**, **Astro**, **Nuxt**, **TanStack Start**, and **Bun**. Other Node.js frameworks may build via auto-detection but are not explicitly tested.
 
 Framework-specific requirements:
 
 - **Next.js**: must use `output: "standalone"` in `next.config.ts`.
-- **Astro**: needs `@astrojs/node` in standalone mode via the adapter.
+- **Astro**: needs `@astrojs/node` in standalone mode.
 
 ## Environment updates
 
-`env update` (compute) and `app update-env` (looma) each cut a new compute version. The old version stays live until the new one is healthy.
-
-`@looma/prisma-cli` accepts only one `KEY=VALUE` per `--env` flag. `.env` file paths and comma-separated assignments are currently only supported by `@prisma/compute-cli` (see [Environment variables](/compute/environment-variables)).
+Updating environment variables cuts a new deployment. The old deployment stays live until the new one is healthy.
 
 ## Logs
 
-- Stream caps at around 10 minutes. Reconnect with `--cursor <byte-offset>`.
-- One concurrent log stream per compute version.
-
-## Support
-
-Questions or breakage: `#product-compute`.
+- Stream caps at around 10 minutes.
+- One concurrent log stream per deployment.

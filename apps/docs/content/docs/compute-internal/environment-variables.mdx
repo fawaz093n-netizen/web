@@ -1,0 +1,106 @@
+---
+title: Environment variables
+url: /compute-internal/environment-variables
+metaTitle: Environment variables | Prisma Compute (Internal)
+metaDescription: Set environment variables on a Prisma Compute deployment, either inline on deploy or without rebuilding. Supports KEY=VALUE, comma-separated assignments, and dotenv file paths.
+---
+
+<Alert variant="warning">
+  Internal team reference. Not for users. The public docs live at [/compute](/compute).
+</Alert>
+
+Set environment variables inline when deploying, or update them later without rebuilding. Either path cuts a new compute version. The old version stays live until the new one is healthy.
+
+## During a deploy
+
+Repeat `--env` per variable:
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli app deploy \
+  --env DATABASE_URL=postgresql://example \
+  --env NODE_ENV=production
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli deploy \
+  --env DATABASE_URL=postgresql://example \
+  --env NODE_ENV=production
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+## Without rebuilding
+
+Same flag shape, dedicated command:
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli app update-env --env STRIPE_KEY=sk_live_xxx
+npx @looma/prisma-cli app list-env
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli env update --env STRIPE_KEY=sk_live_xxx
+bunx @prisma/compute-cli env update --unset-env LEGACY_FLAG
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+## Bulk input with `@prisma/compute-cli`
+
+`@prisma/compute-cli` accepts three `--env` input formats. They can be combined on the same command and `--env` is repeatable. When a key appears more than once, the later value wins.
+
+**Load a `.env` file:**
+
+```bash
+bunx @prisma/compute-cli deploy --env ./.env.production
+```
+
+The file is parsed with standard dotenv rules (comments, `export KEY=VALUE`, quoted values, inline comments). Malformed lines fail fast.
+
+**Comma-separated assignments in one flag:**
+
+```bash
+bunx @prisma/compute-cli deploy --env FOO=1,BAR=2
+```
+
+**Values that contain commas:** wrap the whole assignment in single quotes and the value in double quotes:
+
+```bash
+bunx @prisma/compute-cli deploy --env 'DB_URL="postgres://user:pass@host/db?options=a,b"'
+```
+
+For complex values (URLs with query params, multi-line secrets), a `.env` file is easier to get right than inline quoting.
+
+**Mix them:**
+
+```bash
+bunx @prisma/compute-cli env update \
+  --env ./.env \
+  --env API_URL=https://example.com
+```
+
+:::note
+The `.env` file path and comma-separated formats are currently only supported by `@prisma/compute-cli`. With `@looma/prisma-cli`, pass one `KEY=VALUE` per `--env` flag.
+:::

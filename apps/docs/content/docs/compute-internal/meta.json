@@ -1,5 +1,5 @@
 {
-  "title": "Compute",
+  "title": "Compute (Internal)",
   "root": true,
   "icon": "Cpu",
   "pages": [
@@ -10,6 +10,7 @@
     "---Reference---",
     "environment-variables",
     "logs",
+    "cli",
     "---More---",
     "limitations"
   ]

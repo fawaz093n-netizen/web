@@ -1,0 +1,45 @@
+---
+title: Logs
+url: /compute-internal/logs
+metaTitle: Logs | Prisma Compute (Internal)
+metaDescription: Stream runtime logs from a Prisma Compute deployment.
+---
+
+<Alert variant="warning">
+  Internal team reference. Not for users. The public docs live at [/compute](/compute).
+</Alert>
+
+Stream logs for a specific compute version or deployment.
+
+## Stream logs
+
+<CodeBlockTabs defaultValue="compute">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli logs <compute-version-id>
+bunx @prisma/compute-cli logs <compute-version-id> --tail 200
+bunx @prisma/compute-cli logs <compute-version-id> --from-start
+bunx @prisma/compute-cli logs <compute-version-id> --cursor <byte-offset>
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli app logs
+npx @looma/prisma-cli app logs --deployment <deployment-id>
+npx @looma/prisma-cli app logs --tail 200
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+## Limits
+
+- Stream caps at around 10 minutes. Reconnect with `--cursor <byte-offset>` to resume from where the last stream ended.
+- Only one concurrent log stream per compute version.

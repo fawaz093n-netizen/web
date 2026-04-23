@@ -1,0 +1,62 @@
+---
+title: Nuxt
+url: /compute-internal/quickstart/nuxt
+metaTitle: "Quickstart: Deploy a Nuxt app to Prisma Compute (Internal)"
+metaDescription: Scaffold a Nuxt app and deploy it to Prisma Compute. No extra config, Nuxt uses the Nitro node-server preset by default.
+---
+
+<Alert variant="warning">
+  Internal team reference. Not for users. The public docs live at [/compute](/compute).
+</Alert>
+
+Deploy a Nuxt app to Prisma Compute. Nuxt builds with the Nitro `node-server` preset by default, so no adapter config is required.
+
+## Prerequisites
+
+- Node.js 20+
+- A Prisma account logged in via CLI (covered in step 2)
+
+## 1. Scaffold the app
+
+```bash
+pnpm create nuxt my-app
+cd my-app
+```
+
+No extra config is needed. The default build output targets Node.
+
+## 2. Authenticate and deploy
+
+<CodeBlockTabs defaultValue="looma">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="looma">@looma/prisma-cli</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="compute">@prisma/compute-cli</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="looma">
+
+```bash
+npx @looma/prisma-cli auth login
+npx @looma/prisma-cli app deploy --app my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+  <CodeBlockTab value="compute">
+
+```bash
+bunx @prisma/compute-cli login
+bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
+```
+
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `app deploy` (or `deploy`) is enough.
+
+In CI, set `PRISMA_API_TOKEN` instead of running `auth login`.
+
+## Next steps
+
+- [Environment variables](/compute-internal/environment-variables): set secrets and config at deploy time or after.
+- [Logs](/compute-internal/logs): stream runtime logs per deployment.
+- [CLI reference](/compute-internal/cli): full command inventory for both CLIs.
+- [Limitations](/compute-internal/limitations): known caveats.

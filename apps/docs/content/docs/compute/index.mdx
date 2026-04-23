@@ -2,59 +2,43 @@
 title: Prisma Compute
 url: /compute
 metaTitle: Prisma Compute
-metaDescription: Internal one-stop reference for deploying Next.js, Astro, Nuxt, TanStack Start, and Bun apps to Prisma Compute, managing environment variables, and streaming logs.
+metaDescription: Deploy Next.js, Astro, Nuxt, TanStack Start, and Bun apps to Prisma Compute with a single command.
 ---
 
-Prisma Compute is app hosting for Node.js and Bun apps, driven from the CLI. First-class support for Next.js, Astro, Nuxt, TanStack Start, and Bun. Deploys are zero-flag on the SDK side: the framework is auto-detected from your `package.json` and config.
-
-Two CLIs are usable today, pick whichever you prefer:
-
-- [`@looma/prisma-cli`](https://www.npmjs.com/package/@looma/prisma-cli): unified `prisma app` surface.
-- [`@prisma/compute-cli`](https://www.npmjs.com/package/@prisma/compute-cli): original `compute` surface.
-
-See the full [CLI reference](/compute/cli) for both.
+Prisma Compute is app hosting for Node.js and Bun apps. Deploy from the command line with a single command. Framework detection is automatic for Next.js, Astro, Nuxt, TanStack Start, and Bun.
 
 ## Pick a quickstart
 
-Each quickstart walks you from a fresh app to a live deployment. Pick the one that matches your stack.
+Each quickstart walks you from a fresh app to a live deployment.
 
 <Cards>
   <Card href="/compute/quickstart/nextjs" title="Next.js">
-    Scaffold, enable standalone output, and deploy.
+    Scaffold a Next.js app, enable standalone output, and deploy.
   </Card>
   <Card href="/compute/quickstart/astro" title="Astro">
-    Set up the Node adapter in standalone mode and deploy on port 4321.
+    Deploy an Astro app with the Node adapter in standalone mode.
   </Card>
   <Card href="/compute/quickstart/nuxt" title="Nuxt">
-    Scaffold and deploy with the default Nitro node-server preset.
+    Deploy a Nuxt app with the default Nitro node-server preset.
   </Card>
   <Card href="/compute/quickstart/tanstack-start" title="TanStack Start">
-    Deploy the official Vite plus Nitro starter.
+    Deploy a TanStack Start app built with Vite and Nitro.
   </Card>
   <Card href="/compute/quickstart/bun" title="Bun">
-    Deploy a Bun.serve HTTP server directly.
+    Deploy a Bun HTTP server directly.
   </Card>
 </Cards>
 
 ## Manage a deployment
 
-After the first deploy, use these references day-to-day.
-
 <Cards>
   <Card href="/compute/environment-variables" title="Environment variables">
-    Set secrets and config inline on deploy, or update later without rebuilding.
+    Set secrets and configuration inline on deploy, or update later without rebuilding.
   </Card>
   <Card href="/compute/logs" title="Logs">
-    Stream runtime logs per compute version or deployment.
-  </Card>
-  <Card href="/compute/cli" title="CLI reference">
-    Full command inventory for both `@looma/prisma-cli` and `@prisma/compute-cli`.
+    Stream runtime logs per deployment.
   </Card>
   <Card href="/compute/limitations" title="Limitations">
-    Known caveats around framework support, env updates, and log streaming.
+    Known caveats around framework support, environment updates, and log streaming.
   </Card>
 </Cards>
-
-## Support
-
-Questions or breakage: `#product-compute`.
