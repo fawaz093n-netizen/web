@@ -1,4 +1,5 @@
 import { getBaseUrl, withDocsBasePath } from "@/lib/urls";
+import { formatSlugDisplayName } from "@/lib/breadcrumb-utils";
 import type { InferPageType } from "fumadocs-core/source";
 import type { source, sourceV6 } from "@/lib/source";
 import { JsonLd } from "@prisma-docs/ui/components/json-ld";
@@ -42,7 +43,9 @@ function getSectionTitle(page: DocsPage, slugs: string[]) {
 
   for (const candidatePath of candidatePaths) {
     try {
-      const meta = JSON.parse(readFileSync(candidatePath, "utf8")) as { title?: string };
+      const meta = JSON.parse(readFileSync(candidatePath, "utf8")) as {
+        title?: string;
+      };
       if (typeof meta.title === "string" && meta.title.trim().length > 0) {
         sectionTitleCache.set(cacheKey, meta.title);
         return meta.title;
@@ -61,14 +64,16 @@ function getBreadcrumbName(page: DocsPage, slugs: string[], index: number) {
 
   return (
     getSectionTitle(page, slugs.slice(0, index + 1)) ??
-    slugs[index].charAt(0).toUpperCase() + slugs[index].slice(1).replace(/-/g, " ")
+    formatSlugDisplayName(slugs[index])
   );
 }
 
 export function TechArticleSchema({ page }: StructuredDataProps) {
   const baseUrl = getBaseUrl();
-  const lastModified = (page.data as { lastModified?: Date | string }).lastModified;
-  const datePublished = (page.data as { datePublished?: Date | string }).datePublished;
+  const lastModified = (page.data as { lastModified?: Date | string })
+    .lastModified;
+  const datePublished = (page.data as { datePublished?: Date | string })
+    .datePublished;
 
   const schema = {
     "@context": "https://schema.org",

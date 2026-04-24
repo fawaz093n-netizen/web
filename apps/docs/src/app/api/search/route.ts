@@ -1,6 +1,7 @@
 import { createMixedbreadSearchAPI } from "fumadocs-core/search/mixedbread";
 import Mixedbread from "@mixedbread/sdk";
 import { SortedResult } from "fumadocs-core/search";
+import { formatSlugDisplayName } from "@/lib/breadcrumb-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -13,13 +14,9 @@ function getBreadcrumbsFromUrl(url: string): string[] {
   const normalized = segments[0] === "v6" ? segments.slice(1) : segments;
   if (normalized.length === 0) return [];
   // Ancestors only (exclude last = current page), or full path for section roots
-  const breadcrumbSegments = normalized.length > 1 ? normalized.slice(0, -1) : normalized;
-  return breadcrumbSegments.map((s) =>
-    s
-      .split(/[-_]/)
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-      .join(" "),
-  );
+  const breadcrumbSegments =
+    normalized.length > 1 ? normalized.slice(0, -1) : normalized;
+  return breadcrumbSegments.map((s) => formatSlugDisplayName(s));
 }
 
 function slugger(value: string): string {
@@ -35,7 +32,10 @@ function removeMd(md: string): string {
   if (typeof md !== "string") return "";
   try {
     return md
-      .replace(/^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/gm, "")
+      .replace(
+        /^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/gm,
+        "",
+      )
       .replace(/^([\s\t]*)([*\-+]|\d+\.)\s+/gm, "$1")
       .replace(/\n={2,}/g, "\n")
       .replace(/^[=-]{2,}\s*$/gm, "")
@@ -49,7 +49,10 @@ function removeMd(md: string): string {
       .replace(/!\[(.*?)\][[(].*?[\])]/g, "")
       .replace(/\[([\s\S]*?)\]\s*[([].*?[)\]]/g, "$1")
       .replace(/^(\n)?\s{0,3}>\s?/gm, "$1")
-      .replace(/^(\n)?\s{0,}#{1,6}\s*( (.+))? +#+$|^(\n)?\s{0,}#{1,6}\s*( (.+))?$/gm, "$1$3$4$6")
+      .replace(
+        /^(\n)?\s{0,}#{1,6}\s*( (.+))? +#+$|^(\n)?\s{0,}#{1,6}\s*( (.+))?$/gm,
+        "$1$3$4$6",
+      )
       .replace(/([*]+)(\S)(.*?\S)??\1/g, "$2$3")
       .replace(/(^|\W)([_]+)(\S)(.*?\S)??\2($|\W)/g, "$1$3$4$5")
       .replace(/(`{3,})(.*?)\1/gm, "$2")
@@ -88,7 +91,8 @@ export const { GET } = createMixedbreadSearchAPI({
           breadcrumbs,
         },
       ];
-      const heading = item.type === "text" ? extractHeadingTitle(item.text) : "";
+      const heading =
+        item.type === "text" ? extractHeadingTitle(item.text) : "";
       if (heading)
         chunkResults.push({
           id: `${base}-heading`,
