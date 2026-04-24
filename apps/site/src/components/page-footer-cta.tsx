@@ -30,9 +30,9 @@ export function PageFooterCta({
 }: PageFooterCtaProps) {
   return (
     <div
-      className={`bg-[url('/illustrations/homepage/footer_grid.svg')] bg-contain bg-center before:inset-x-30 before:inset-y-[45%] before:absolute relative before:content-[''] before:pointer-events-none before:-z-1 rounded-full before:blur-[100px] ${color === "orm" ? "before:bg-indigo-400" : "before:bg-teal-400"}`}
+      className={`bg-[url('/illustrations/homepage/footer_grid.svg')] bg-contain bg-center before:inset-x-30 before:inset-y-[45%] before:absolute relative before:content-[''] before:pointer-events-none before:z-0 rounded-full before:blur-[100px] ${color === "orm" ? "before:bg-indigo-400" : "before:bg-teal-400"}`}
     >
-      <div className="my-12 p-12">
+      <div className="my-12 p-12 relative z-1">
         <div className="flex flex-col mx-auto w-fit items-center justify-center gap-8">
           <div className="flex flex-col items-center text-center gap-4">
             <h2

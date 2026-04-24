@@ -156,7 +156,7 @@ const twoCol_2 = [
           asChild
           variant="orm"
           size="xl"
-          className="w-fit mx-auto lg:w-full"
+          className="w-fit mx-auto md:mx-0"
         >
           <a href="https://benchmarks.prisma.io">
             Explore Benchmarks
@@ -365,17 +365,17 @@ export default function ORM() {
                 >
                   <Image src={stat.icon} alt={stat.title} fill loading="lazy" />
                 </Action>
-                <h4 className="text-2xl text-center md:text-left font-sans-display stretch-display text-foreground-neutral">
+                <h4 className="text-2xl text-left font-sans-display stretch-display text-foreground-neutral">
                   {stat.title}
                 </h4>
-                <p className="text-center md:text-left text-foreground-neutral-weak">
+                <p className="text-left text-foreground-neutral-weak">
                   {stat.description}
                 </p>
                 <Button
                   asChild
                   variant="default-strong"
                   size="xl"
-                  className="w-fit mx-auto md:mx-0"
+                  className="w-fit"
                 >
                   <a href={stat.btn.url}>
                     {stat.btn.label}{" "}
