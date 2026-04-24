@@ -1,6 +1,6 @@
 import { Button } from "@prisma/eclipse";
 import { ConsoleCtaButton } from "@/components/console-cta-button";
-import type { UtmParams } from "@/lib/utm";
+import type { UtmParams } from "@prisma-docs/ui/lib/utm";
 import type { ReactNode } from "react";
 
 interface Btn {
