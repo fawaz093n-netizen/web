@@ -1161,7 +1161,7 @@
     { "source": "/docs/orm/tools/prisma-cli", "destination": "/docs/cli", "permanent": true },
     {
       "source": "/docs/platform/platform-cli",
-      "destination": "/docs/cli/console/platform",
+      "destination": "/docs/cli/console",
       "permanent": true
     },
     {
@@ -1227,7 +1227,7 @@
     },
     {
       "source": "/docs/platform/platform-cli/commands",
-      "destination": "/docs/cli/console/platform",
+      "destination": "/docs/cli/console",
       "permanent": true
     },
     {
@@ -1259,11 +1259,6 @@
     {
       "source": "/docs/postgres/database/api-reference/error-reference",
       "destination": "/docs/postgres/error-reference",
-      "permanent": true
-    },
-    {
-      "source": "/docs/postgres/database",
-      "destination": "/docs/postgres/database/caching",
       "permanent": true
     },
     { "source": "/docs/showcase", "destination": "/docs", "permanent": true },
@@ -1662,12 +1657,12 @@
     },
     {
       "source": "/docs/guides/upgrade-from-prisma-1/should-you-upgrade",
-      "destination": "/docs/guides/upgrade-from-prisma-1/how-to-upgrade",
+      "destination": "/docs/guides/upgrade-prisma-orm/v1",
       "permanent": true
     },
     {
       "source": "/docs/reference/tools-and-interfaces/prisma-schema/models",
-      "destination": "/docs/reference/tools-and-interfaces/prisma-schema/data-model",
+      "destination": "/docs/orm/prisma-schema/data-model/models",
       "permanent": true
     },
     {
@@ -1732,7 +1727,7 @@
     },
     {
       "source": "/docs/reference/tools-and-interfaces/prisma-schema/prisma-schema-file",
-      "destination": "/docs/reference/tools-and-interfaces/prisma-schema",
+      "destination": "/docs/orm/prisma-schema/overview",
       "permanent": true
     },
     {
