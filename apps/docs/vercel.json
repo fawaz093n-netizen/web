@@ -254,7 +254,6 @@
       "destination": "/docs/postgres/import-from-existing-database",
       "permanent": true
     },
-    { "source": "/docs/getting-started", "destination": "/docs", "permanent": true },
     {
       "source": "/docs/accelerate/api-reference",
       "destination": "/docs/accelerate/reference/api-reference",
@@ -483,32 +482,32 @@
     },
     {
       "source": "/docs/optimize",
-      "destination": "/docs/postgres/query-insights",
+      "destination": "/docs/query-insights",
       "permanent": true
     },
     {
       "source": "/docs/optimize/:path*",
-      "destination": "/docs/postgres/query-insights",
+      "destination": "/docs/query-insights",
       "permanent": true
     },
     {
       "source": "/docs/v6/optimize",
-      "destination": "/docs/postgres/query-insights",
+      "destination": "/docs/query-insights",
       "permanent": true
     },
     {
       "source": "/docs/v6/optimize/:path*",
-      "destination": "/docs/postgres/query-insights",
+      "destination": "/docs/query-insights",
       "permanent": true
     },
     {
       "source": "/docs/v6/postgres/query-optimization",
-      "destination": "/docs/postgres/query-insights",
+      "destination": "/docs/query-insights",
       "permanent": true
     },
     {
       "source": "/docs/v6/postgres/query-optimization/:path*",
-      "destination": "/docs/postgres/query-insights",
+      "destination": "/docs/query-insights",
       "permanent": true
     },
     { "source": "/docs/orm/more", "destination": "/docs/orm/more/releases", "permanent": true },
@@ -780,7 +779,7 @@
     },
     {
       "source": "/docs/orm/overview/databases/cockroachdb",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/postgresql",
       "permanent": true
     },
     {
@@ -790,17 +789,17 @@
     },
     {
       "source": "/docs/orm/overview/databases/mongodb",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/mongodb",
       "permanent": true
     },
     {
       "source": "/docs/orm/overview/databases/mysql",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/mysql",
       "permanent": true
     },
     {
       "source": "/docs/orm/overview/databases/neon",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/postgresql",
       "permanent": true
     },
     {
@@ -815,7 +814,7 @@
     },
     {
       "source": "/docs/orm/overview/databases/postgresql",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/postgresql",
       "permanent": true
     },
     {
@@ -835,12 +834,12 @@
     },
     {
       "source": "/docs/orm/overview/databases/sqlite",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/sqlite",
       "permanent": true
     },
     {
       "source": "/docs/orm/overview/databases/supabase",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/postgresql",
       "permanent": true
     },
     {
@@ -892,11 +891,6 @@
     {
       "source": "/docs/orm/overview/prisma-in-your-stack/rest",
       "destination": "/docs/orm",
-      "permanent": true
-    },
-    {
-      "source": "/docs/orm/prisma-client",
-      "destination": "/docs/orm/prisma-client/setup-and-configuration/introduction",
       "permanent": true
     },
     {
@@ -1129,36 +1123,6 @@
       "permanent": true
     },
     {
-      "source": "/docs/orm/prisma-client/queries/excluding-fields",
-      "destination": "/docs/orm/prisma-client/queries/crud",
-      "permanent": true
-    },
-    {
-      "source": "/docs/orm/prisma-client/queries/filtering-and-sorting",
-      "destination": "/docs/orm/prisma-client/queries/crud",
-      "permanent": true
-    },
-    {
-      "source": "/docs/orm/prisma-client/queries/full-text-search",
-      "destination": "/docs/orm/prisma-client/queries/crud",
-      "permanent": true
-    },
-    {
-      "source": "/docs/orm/prisma-client/queries/pagination",
-      "destination": "/docs/orm/prisma-client/queries/crud",
-      "permanent": true
-    },
-    {
-      "source": "/docs/orm/prisma-client/queries/relation-queries",
-      "destination": "/docs/orm/prisma-client/queries/crud",
-      "permanent": true
-    },
-    {
-      "source": "/docs/orm/prisma-client/queries/select-fields",
-      "destination": "/docs/orm/prisma-client/queries/crud",
-      "permanent": true
-    },
-    {
       "source": "/docs/orm/prisma-migrate/understanding-prisma-migrate",
       "destination": "/docs/orm/prisma-migrate",
       "permanent": true
@@ -1326,11 +1290,6 @@
     {
       "source": "/docs/orm/prisma-client/setup-and-configuration/no-rust-engine",
       "destination": "/docs/orm/prisma-client/setup-and-configuration/database-polyfills",
-      "permanent": true
-    },
-    {
-      "source": "/docs/orm/prisma-client/setup-and-configuration/generating-prisma-client",
-      "destination": "/docs/orm/prisma-client/setup-and-configuration/introduction",
       "permanent": true
     },
     {
