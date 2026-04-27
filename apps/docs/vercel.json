@@ -1672,7 +1672,7 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch-sql-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql",
       "permanent": true
     },
     {
@@ -1682,7 +1682,7 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch-sql-node-mysql",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases-node-mysql",
+      "destination": "/docs/prisma-orm/quickstart/mysql",
       "permanent": true
     },
     {
@@ -1692,7 +1692,7 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch-prisma-migrate-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#6-create-and-apply-your-first-migration",
       "permanent": true
     },
     {
@@ -1702,7 +1702,7 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch-prisma-migrate-node-mysql",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases-node-mysql",
+      "destination": "/docs/prisma-orm/quickstart/mysql#6-create-and-apply-your-first-migration",
       "permanent": true
     },
     {
@@ -1712,7 +1712,7 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql",
       "permanent": true
     },
     {
@@ -1722,7 +1722,7 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch-node-mysql",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases-node-mysql",
+      "destination": "/docs/prisma-orm/quickstart/mysql",
       "permanent": true
     },
     {
@@ -1772,12 +1772,12 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch-prisma-migrate",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#6-create-and-apply-your-first-migration",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch-sql",
-      "destination": "/docs/getting-started/prisma-orm",
+      "destination": "/docs/getting-started",
       "permanent": true
     },
     {
@@ -1993,42 +1993,42 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/connect-your-database-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/connect-your-database-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#4-initialize-prisma-orm",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/using-prisma-migrate-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/using-prisma-migrate-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#6-create-and-apply-your-first-migration",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/install-prisma-client-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/install-prisma-client-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#2-install-required-dependencies",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/querying-the-database-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/querying-the-database-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#8-write-your-first-query",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/next-steps-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/next-steps-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#next-steps",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/connect-your-database-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/connect-your-database-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#4-initialize-prisma-orm",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/using-prisma-migrate-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/using-prisma-migrate-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#6-create-and-apply-your-first-migration",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/install-prisma-client-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/install-prisma-client-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#2-install-required-dependencies",
       "permanent": true
     },
     {
@@ -2038,42 +2038,42 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/next-steps-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/next-steps-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#next-steps",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/connect-your-database-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/connect-your-database-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#4-initialize-prisma-orm",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/connect-your-database-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/connect-your-database-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#4-initialize-prisma-orm",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/using-prisma-migrate-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/using-prisma-migrate-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#6-create-and-apply-your-first-migration",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/using-prisma-migrate-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/using-prisma-migrate-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#6-create-and-apply-your-first-migration",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/install-prisma-client-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/install-prisma-client-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#2-install-required-dependencies",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/install-prisma-client-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/install-prisma-client-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#2-install-required-dependencies",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/querying-the-database-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/querying-the-database-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#8-write-your-first-query",
       "permanent": true
     },
     {
@@ -2083,12 +2083,12 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/next-steps-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/next-steps-typescript-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#next-steps",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/next-steps-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases/next-steps-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql#next-steps",
       "permanent": true
     },
     {
@@ -2098,7 +2098,7 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/start-from-scratch/relational-databases-node-postgresql",
+      "destination": "/docs/prisma-orm/quickstart/postgresql",
       "permanent": true
     },
     {
@@ -2108,122 +2108,122 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/connect-your-database-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/connect-your-database-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#3-connect-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/introspection-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/introspection-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#4-introspect-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/install-prisma-client-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/install-prisma-client-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#1-set-up-prisma-orm",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/querying-the-database-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/querying-the-database-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#8-query-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/next-steps-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/next-steps-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#next-steps",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/connect-your-database-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/connect-your-database-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#3-connect-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/introspection-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/introspection-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#4-introspect-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/install-prisma-client-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/install-prisma-client-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#1-set-up-prisma-orm",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/querying-the-database-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/querying-the-database-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#8-query-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/next-steps-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/next-steps-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#next-steps",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/connect-your-database-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/connect-your-database-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#3-connect-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/connect-your-database-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/connect-your-database-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#3-connect-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/introspection-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/introspection-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#4-introspect-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/introspection-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/introspection-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#4-introspect-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/baseline-your-database-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/baseline-your-database-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#5-baseline-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/baseline-your-database-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/baseline-your-database-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#5-baseline-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/install-prisma-client-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/install-prisma-client-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#1-set-up-prisma-orm",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/install-prisma-client-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/install-prisma-client-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#1-set-up-prisma-orm",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/querying-the-database-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/querying-the-database-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#8-query-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/querying-the-database-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/querying-the-database-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#8-query-your-database",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/evolve-your-schema-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/evolve-your-schema-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#9-evolve-your-schema",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/evolve-your-schema-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/evolve-your-schema-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#9-evolve-your-schema",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/next-steps-typescript-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/next-steps-typescript-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#next-steps",
       "permanent": true
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/next-steps-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases/next-steps-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql#next-steps",
       "permanent": true
     },
     {
@@ -2233,7 +2233,7 @@
     },
     {
       "source": "/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases-node-postgres",
-      "destination": "/docs/getting-started/prisma-orm/add-to-existing-project/postgresql/relational-databases-node-postgresql",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql",
       "permanent": true
     },
     {
