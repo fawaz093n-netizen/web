@@ -1782,12 +1782,12 @@
     },
     {
       "source": "/docs/guides/prisma-guides/prisma-migrate-guides",
-      "destination": "/docs/guides/prisma-guides/add-prisma-migrate-to-a-project",
+      "destination": "/docs/orm/prisma-migrate/getting-started",
       "permanent": true
     },
     {
       "source": "/docs/guides/prisma-guides/prisma-migrate-guides/add-prisma-migrate-to-a-project",
-      "destination": "/docs/guides/prisma-guides/add-prisma-migrate-to-a-project",
+      "destination": "/docs/orm/prisma-migrate/getting-started",
       "permanent": true
     },
     {
@@ -2299,27 +2299,27 @@
     },
     {
       "source": "/docs/concepts/components/prisma-data-platform",
-      "destination": "/docs/concepts/data-platform",
+      "destination": "/docs/console",
       "permanent": true
     },
     {
       "source": "/docs/about/prisma/platform-releases",
-      "destination": "/docs/concepts/data-platform/about-platform/platform-releases",
+      "destination": "/docs/console/more/feature-maturity",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/about/platform-limits-and-status",
-      "destination": "/docs/data-platform/platform-console/limits",
+      "destination": "/docs/console/more/feature-maturity",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/about/platform-releases",
-      "destination": "/docs/data-platform/platform-console/maturity-levels",
+      "destination": "/docs/console/more/feature-maturity",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/accounts",
-      "destination": "/docs/data-platform/classic-projects/platform/account",
+      "destination": "/docs/console/concepts#user-account",
       "permanent": true
     },
     {
@@ -2334,17 +2334,17 @@
     },
     {
       "source": "/docs/data-platform/members/user-roles",
-      "destination": "/docs/data-platform/classic-projects/platform/members/roles-permissions",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/members/data-collaborators",
-      "destination": "/docs/data-platform/classic-projects/platform/members/add",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/environments/edit-settings/change-database-connection-string",
-      "destination": "/docs/data-platform/classic-projects/platform/troubleshooting/cannot-change-db-of-env",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
@@ -2464,127 +2464,127 @@
     },
     {
       "source": "/docs/data-platform/about/releases",
-      "destination": "/docs/data-platform/platform-console/maturity-levels",
+      "destination": "/docs/console/more/feature-maturity",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/about/limits-and-status",
-      "destination": "/docs/data-platform/platform-console/limits",
+      "destination": "/docs/console/more/feature-maturity",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/about",
-      "destination": "/docs/data-platform/platform-console/about",
+      "destination": "/docs/console",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/static-ips",
-      "destination": "/docs/data-platform/classic-projects/platform/static-ips",
+      "destination": "/docs/accelerate/static-ip",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/projects/create",
-      "destination": "/docs/data-platform/classic-projects/platform/projects/create",
+      "destination": "/docs/console/getting-started#step-3-create-a-project",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/projects/edit-settings",
-      "destination": "/docs/data-platform/classic-projects/platform/projects/edit-settings",
+      "destination": "/docs/console/concepts#project",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/projects/delete-project",
-      "destination": "/docs/data-platform/classic-projects/platform/projects/delete-project",
+      "destination": "/docs/console/concepts#project",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/projects",
-      "destination": "/docs/data-platform/classic-projects/platform/projects",
+      "destination": "/docs/console/concepts#project",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/environments/view-all",
-      "destination": "/docs/data-platform/classic-projects/platform/environments/view-all",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/environments/create",
-      "destination": "/docs/data-platform/classic-projects/platform/environments/create",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/environments/edit-settings/edit-name-and-url-handle",
-      "destination": "/docs/data-platform/classic-projects/platform/environments/edit-settings/edit-name-and-url-handle",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/environments/edit-settings/change-default-environment",
-      "destination": "/docs/data-platform/classic-projects/platform/environments/edit-settings/change-default-environment",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/environments/edit-settings",
-      "destination": "/docs/data-platform/classic-projects/platform/environments/edit-settings",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/environments/delete",
-      "destination": "/docs/data-platform/classic-projects/platform/environments/delete",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/environments",
-      "destination": "/docs/data-platform/classic-projects/platform/environments",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/members/roles-permissions",
-      "destination": "/docs/data-platform/classic-projects/platform/members/roles-permissions",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/members/add",
-      "destination": "/docs/data-platform/classic-projects/platform/members/add",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/members/change-role",
-      "destination": "/docs/data-platform/classic-projects/platform/members/change-role",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/members/remove",
-      "destination": "/docs/data-platform/classic-projects/platform/members/remove",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/members",
-      "destination": "/docs/data-platform/classic-projects/platform/members",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/data-browser",
-      "destination": "/docs/data-platform/classic-projects/platform/data-browser",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/query-console",
-      "destination": "/docs/data-platform/classic-projects/platform/query-console",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/schema-viewer",
-      "destination": "/docs/data-platform/classic-projects/platform/schema-viewer",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/account",
-      "destination": "/docs/data-platform/classic-projects/platform/account",
+      "destination": "/docs/console/concepts#user-account",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/github-integration",
-      "destination": "/docs/data-platform/classic-projects/platform/github-integration",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     {
@@ -2599,17 +2599,17 @@
     },
     {
       "source": "/docs/data-platform/billing/invoices",
-      "destination": "/docs/data-platform/classic-projects/platform/billing/invoices",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/billing/data-proxy-usage",
-      "destination": "/docs/data-platform/classic-projects/platform/billing/data-proxy-usage",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/billing/payment-method-and-billing-information",
-      "destination": "/docs/data-platform/classic-projects/platform/billing/payment-method-and-billing-information",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
@@ -2619,97 +2619,97 @@
     },
     {
       "source": "/docs/data-platform/troubleshooting/connection-to-db-timed-out",
-      "destination": "/docs/data-platform/classic-projects/platform/troubleshooting/connection-to-db-timed-out",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/troubleshooting/cannot-change-db-of-env",
-      "destination": "/docs/data-platform/classic-projects/platform/troubleshooting/cannot-change-db-of-env",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/troubleshooting/cannot-edit-schema-file",
-      "destination": "/docs/data-platform/classic-projects/platform/troubleshooting/cannot-edit-schema-file",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/troubleshooting/schema-file-does-not-update",
-      "destination": "/docs/data-platform/classic-projects/platform/troubleshooting/schema-file-does-not-update",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/troubleshooting",
-      "destination": "/docs/data-platform/platform-console/support",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/contact-support",
-      "destination": "/docs/data-platform/platform-console/support",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/cloud-projects/platform/account",
-      "destination": "/docs/data-platform/platform-console/concepts",
+      "destination": "/docs/console/concepts#user-account",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/cloud-projects/platform/projects",
-      "destination": "/docs/data-platform/platform-console/concepts/projects",
+      "destination": "/docs/console/concepts#project",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/cloud-projects/platform/organizations",
-      "destination": "/docs/data-platform/platform-console/concepts/workspaces",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/cloud-projects/platform/billing",
-      "destination": "/docs/data-platform/platform-console/concepts/workspaces",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/cloud-projects/platform",
-      "destination": "/docs/data-platform/platform-console",
+      "destination": "/docs/console",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/cloud-projects/faq",
-      "destination": "/docs/data-platform/platform-console/limits",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/cloud-projects/support",
-      "destination": "/docs/data-platform/platform-console/support",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/cloud-projects/about-cloud-projects",
-      "destination": "/docs/data-platform/platform-console/about",
+      "destination": "/docs/console",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/cloud-projects",
-      "destination": "/docs/data-platform/platform-console",
+      "destination": "/docs/console",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/classic-projects/about/releases",
-      "destination": "/docs/data-platform/platform-console/maturity-levels",
+      "destination": "/docs/console/more/feature-maturity",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/classic-projects/about/limits-and-status",
-      "destination": "/docs/data-platform/platform-console/limits",
+      "destination": "/docs/console/more/feature-maturity",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/classic-projects/about",
-      "destination": "/docs/data-platform/platform-console/about",
+      "destination": "/docs/console",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/classic-projects/contact-support",
-      "destination": "/docs/data-platform/platform-console/support",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
@@ -2724,7 +2724,7 @@
     },
     {
       "source": "/docs/data-platform/accelerate/testing",
-      "destination": "/docs/data-platform/accelerate/evaluating",
+      "destination": "/docs/accelerate/evaluating",
       "permanent": true
     },
     {
@@ -2784,7 +2784,7 @@
     },
     {
       "source": "/docs/concepts/more/telemetry",
-      "destination": "/docs/orm/tools/prisma-cli#telemetry",
+      "destination": "/docs/orm/prisma-client/observability-and-logging/opentelemetry-tracing",
       "permanent": true
     },
     {
@@ -3161,7 +3161,7 @@
     },
     {
       "source": "/docs/guides/deployment/traditional",
-      "destination": "/docs/orm/prisma-client/deployment/traditional",
+      "destination": "/docs/v6/orm/prisma-client/deployment/traditional",
       "permanent": true
     },
     {
@@ -3206,7 +3206,7 @@
     },
     {
       "source": "/docs/guides/deployment/edge",
-      "destination": "/docs/orm/prisma-client/deployment/edge",
+      "destination": "/docs/orm/prisma-client/deployment/edge/overview",
       "permanent": true
     },
     {
@@ -3621,7 +3621,11 @@
       "destination": "/docs/orm/more/releases#roadmap",
       "permanent": true
     },
-    { "source": "/docs/about/prisma/faq", "destination": "/docs/support", "permanent": true },
+    {
+      "source": "/docs/about/prisma/faq",
+      "destination": "/docs/console/more/support",
+      "permanent": true
+    },
     {
       "source": "/docs/about/prisma/limitations",
       "destination": "/docs/orm/prisma-schema/data-model/models#limitations",
@@ -3696,17 +3700,17 @@
     },
     {
       "source": "/docs/platform/concepts/workspaces",
-      "destination": "/docs/platform/about#workspace",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/platform/concepts/projects",
-      "destination": "/docs/platform/about#project",
+      "destination": "/docs/console/concepts#project",
       "permanent": true
     },
     {
       "source": "/docs/platform/concepts/environments",
-      "destination": "/docs/platform/about#environment",
+      "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
     { "source": "/docs/platform/concepts", "destination": "/docs/console", "permanent": true },
@@ -3926,7 +3930,7 @@
     },
     {
       "source": "/docs/postgres/tcp-tunnel",
-      "destination": "/docs/postgres/database/direct-connections",
+      "destination": "/docs/postgres/database/connecting-to-your-database",
       "permanent": true
     },
     {
@@ -3936,7 +3940,7 @@
     },
     {
       "source": "/docs/postgres/caching",
-      "destination": "/docs/postgres/database/caching",
+      "destination": "/docs/accelerate/caching",
       "permanent": true
     },
     {
@@ -4016,7 +4020,7 @@
     },
     {
       "source": "/docs/optimize/recommendations/_category_.json",
-      "destination": "/docs/postgres/query-optimization/recommendations/_category_.json",
+      "destination": "/docs/query-insights",
       "permanent": true
     },
     { "source": "/docs/optimize/:path*", "destination": "/docs/query-insights", "permanent": true },
@@ -4047,12 +4051,12 @@
     },
     {
       "source": "/docs/postgres/integrations/vscode-agent",
-      "destination": "/docs/postgres/integrations/vscode-extension#agent-mode",
+      "destination": "/docs/guides/postgres/vscode#agent-mode",
       "permanent": true
     },
     {
       "source": "/docs/postgres/database/tcp-tunnel",
-      "destination": "/docs/postgres/database/direct-connections",
+      "destination": "/docs/postgres/database/connecting-to-your-database",
       "permanent": true
     },
     {
@@ -4258,7 +4262,7 @@
     },
     {
       "source": "/docs/orm/prisma-client/deployment/accelerate-direct-connections",
-      "destination": "/docs/postgres/database/direct-connections",
+      "destination": "/docs/postgres/database/connecting-to-your-database",
       "permanent": true
     },
     {
@@ -4554,7 +4558,7 @@
     },
     {
       "source": "/docs/guides/database/prisma-postgres/connect",
-      "destination": "/docs/postgres/database/direct-connections",
+      "destination": "/docs/postgres/database/connecting-to-your-database",
       "permanent": true
     },
     {
@@ -5217,7 +5221,7 @@
     },
     {
       "source": "/docs/reference/api-reference/prisma-schema-reference/enum",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/reference/prisma-schema-reference#enum",
       "permanent": true
     },
     {
@@ -5257,17 +5261,17 @@
     },
     {
       "source": "/docs/prisma-orm/add-to-existing-project/postgresql/page/2",
-      "destination": "/docs/prisma-orm",
+      "destination": "/docs/prisma-orm/add-to-existing-project/postgresql",
       "permanent": true
     },
     {
       "source": "/docs/prisma-orm/add-to-existing-project/sqlite/page/2",
-      "destination": "/docs/prisma-orm",
+      "destination": "/docs/prisma-orm/add-to-existing-project/sqlite",
       "permanent": true
     },
     {
       "source": "/docs/reference/tools-and-interfaces/prisma-schema",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/prisma-schema/overview",
       "permanent": true
     },
     {
@@ -5375,7 +5379,7 @@
     },
     {
       "source": "/docs/reference/database-connectors/postgresql",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/core-concepts/supported-databases/postgresql",
       "permanent": true
     },
     {
@@ -5400,7 +5404,7 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/working-with-fields/working-with-numeric-fields",
-      "destination": "/docs/concepts",
+      "destination": "/docs/orm/reference/prisma-schema-reference",
       "permanent": true
     },
     {
@@ -5410,7 +5414,7 @@
     },
     {
       "source": "/docs/reference/api-reference/prisma-schema-reference/datasource",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/reference/prisma-schema-reference#datasource",
       "permanent": true
     },
     { "source": "/docs/pulse", "destination": "/docs/postgres", "permanent": true },
@@ -5442,7 +5446,7 @@
     },
     {
       "source": "/docs/reference/tools-and-interfaces/prisma-schema/data-model",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/prisma-schema/data-model/models",
       "permanent": true
     },
     {
@@ -5452,7 +5456,7 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/working-with-fields/working-with-enum-fields",
-      "destination": "/docs/concepts",
+      "destination": "/docs/orm/reference/prisma-schema-reference#enum",
       "permanent": true
     },
     {
@@ -5462,17 +5466,17 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/querying/filtering/data-types",
-      "destination": "/docs/concepts",
+      "destination": "/docs/orm/prisma-client/queries/filtering-and-sorting",
       "permanent": true
     },
     {
       "source": "/docs/prisma-orm/quickstart",
-      "destination": "/docs/prisma-orm",
+      "destination": "/docs/getting-started",
       "permanent": true
     },
     {
       "source": "/docs/data-platform/platform-console/limits",
-      "destination": "/docs/data-platform",
+      "destination": "/docs/console/more/feature-maturity",
       "permanent": true
     },
     {
@@ -5487,12 +5491,12 @@
     },
     {
       "source": "/docs/platform/classic-projects/platform/members",
-      "destination": "/docs/platform",
+      "destination": "/docs/console/concepts#workspace",
       "permanent": true
     },
     {
       "source": "/docs/reference/service-configuration/prisma.yml/yaml-structure-ufeshusai8",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/reference/prisma-config-reference",
       "permanent": true
     },
     {
@@ -5512,7 +5516,7 @@
     },
     {
       "source": "/docs/prisma-client/getting-started",
-      "destination": "/docs/prisma-client",
+      "destination": "/docs/orm/prisma-client/setup-and-configuration/introduction",
       "permanent": true
     },
     {
@@ -5527,7 +5531,7 @@
     },
     {
       "source": "/docs/about/prisma-docs/docs-components/examples",
-      "destination": "/docs/about",
+      "destination": "/docs",
       "permanent": true
     },
     {
@@ -5553,12 +5557,12 @@
     },
     {
       "source": "/docs/data-platform/classic-projects/platform/troubleshooting/cannot-edit-schema-file",
-      "destination": "/docs/data-platform",
+      "destination": "/docs/console/more/support",
       "permanent": true
     },
     {
       "source": "/docs/reference/api-reference/prisma-client-reference/prismaclient",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/reference/prisma-client-reference#prismaclient",
       "permanent": true
     },
     {
@@ -5593,7 +5597,7 @@
     },
     {
       "source": "/docs/reference/tools-and-interfaces/introspection",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/prisma-schema/introspection",
       "permanent": true
     },
     {
@@ -5618,7 +5622,7 @@
     },
     {
       "source": "/docs/reference/api-reference/error-reference/p1000",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/reference/error-reference#p1000",
       "permanent": true
     },
     {
@@ -5628,12 +5632,12 @@
     },
     {
       "source": "/docs/reference/cli-command-reference/database-service/prisma-introspect-jusreo9tn4",
-      "destination": "/docs/reference",
+      "destination": "/docs/cli/db/pull",
       "permanent": true
     },
     {
       "source": "/docs/reference/tools-and-integration/prisma-cli",
-      "destination": "/docs/reference",
+      "destination": "/docs/cli",
       "permanent": true
     },
     {
@@ -5668,7 +5672,7 @@
     },
     {
       "source": "/docs/reference/api-reference/prisma-studio",
-      "destination": "/docs/reference",
+      "destination": "/docs/studio",
       "permanent": true
     },
     {
@@ -5746,7 +5750,7 @@
     },
     {
       "source": "/docs/reference/api-reference/error-reference/p1012",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/reference/error-reference#p1012",
       "permanent": true
     },
     {
@@ -5951,7 +5955,7 @@
     },
     { "source": "/docs/guide/:path*", "destination": "/docs/guides/:path*", "permanent": true },
     { "source": "/docs/-:junk", "destination": "/docs", "permanent": true },
-    { "source": "/docs/tutorials/-:junk", "destination": "/docs/tutorials", "permanent": true },
+    { "source": "/docs/tutorials/-:junk", "destination": "/docs/guides", "permanent": true },
     {
       "source": "/docs/prisma-orm/:flow/:db/page/:page",
       "destination": "/docs/prisma-orm/:flow/:db",
@@ -5959,12 +5963,12 @@
     },
     {
       "source": "/docs/reference/tools-and-integration/:path*",
-      "destination": "/docs/reference",
+      "destination": "/docs/cli",
       "permanent": true
     },
     {
       "source": "/docs/reference/service-configuration/:path*",
-      "destination": "/docs/reference",
+      "destination": "/docs/orm/reference/prisma-config-reference",
       "permanent": true
     },
     {

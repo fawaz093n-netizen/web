@@ -85,6 +85,10 @@ async function collectDocsRoutes() {
   ];
 
   const routes = new Set();
+  const extraRoutes = new Set([
+    "/docs/llms-full.txt",
+    "/docs/llms-full-v6.txt",
+  ]);
 
   for (const root of roots) {
     const files = await walk(root);
@@ -96,6 +100,10 @@ async function collectDocsRoutes() {
 
       routes.add(toDocsRoute(url));
     }
+  }
+
+  for (const route of extraRoutes) {
+    routes.add(route);
   }
 
   return routes;
