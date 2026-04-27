@@ -35,16 +35,18 @@ const firstPage = await prisma.post.findMany({
 
 const lastPost = firstPage[firstPage.length - 1];
 
-const nextPage = await prisma.post.findMany({
-  take: 10,
-  skip: 1,
-  cursor: {
-    id: lastPost.id,
-  },
-  orderBy: {
-    id: "asc",
-  },
-});
+const nextPage = lastPost
+  ? await prisma.post.findMany({
+      take: 10,
+      skip: 1,
+      cursor: {
+        id: lastPost.id,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    })
+  : [];
 ```
 
 ## Which approach to choose
@@ -57,4 +59,3 @@ const nextPage = await prisma.post.findMany({
 - [Filtering and sorting](/orm/prisma-client/queries/filtering-and-sorting)
 - [Query Insights](/query-insights)
 - [Prisma Client API reference](/orm/reference/prisma-client-reference#cursor)
-

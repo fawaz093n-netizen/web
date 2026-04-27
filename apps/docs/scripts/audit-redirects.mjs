@@ -13,8 +13,10 @@ const broadDestinations = new Set([
 ]);
 
 function normalizeRoute(route) {
-  if (route.length > 1 && route.endsWith("/")) return route.slice(0, -1);
-  return route;
+  const cleanRoute = route.split(/[?#]/, 1)[0];
+
+  if (cleanRoute.length > 1 && cleanRoute.endsWith("/")) return cleanRoute.slice(0, -1);
+  return cleanRoute;
 }
 
 function toDocsRoute(url) {

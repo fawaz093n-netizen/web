@@ -486,11 +486,6 @@
       "permanent": true
     },
     {
-      "source": "/docs/optimize/:path*",
-      "destination": "/docs/query-insights",
-      "permanent": true
-    },
-    {
       "source": "/docs/v6/optimize",
       "destination": "/docs/query-insights",
       "permanent": true
