@@ -1792,7 +1792,7 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/distinct",
-      "destination": "/docs/concepts/components/prisma-client/aggregation-grouping-summarizing#select-distinct",
+      "destination": "/docs/orm/prisma-client/queries/aggregation-grouping-summarizing#select-distinct",
       "permanent": true
     },
     {
@@ -1802,12 +1802,12 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/constructor",
-      "destination": "/docs/reference/api-reference/prisma-client-reference#prismaclient",
+      "destination": "/docs/orm/reference/prisma-client-reference#prismaclient",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/field-selection",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/orm/prisma-client/queries/select-fields",
       "permanent": true
     },
     {
@@ -1817,12 +1817,12 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/sorting",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/orm/prisma-client/queries/filtering-and-sorting",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/filtering",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/orm/prisma-client/queries/filtering-and-sorting",
       "permanent": true
     },
     {
@@ -1837,7 +1837,7 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/group-by",
-      "destination": "/docs/concepts/components/prisma-client/aggregation-grouping-summarizing#group-by-preview",
+      "destination": "/docs/orm/prisma-client/queries/aggregation-grouping-summarizing#group-by",
       "permanent": true
     },
     {
@@ -1847,17 +1847,17 @@
     },
     {
       "source": "/docs/concepts/components/preview-features/native-types/native-types-mappings",
-      "destination": "/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types",
+      "destination": "/docs/orm/reference/prisma-schema-reference#model-field-scalar-types",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/preview-features/native-types",
-      "destination": "/docs/concepts/components/prisma-schema/data-model#native-types-mapping",
+      "destination": "/docs/orm/prisma-schema/data-model/models#native-types-mapping",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/generating-prisma-client",
-      "destination": "/docs/orm/prisma-client/setup-and-configuration/introduction",
+      "destination": "/docs/orm/prisma-client/setup-and-configuration/generating-prisma-client",
       "permanent": true
     },
     {
@@ -1897,7 +1897,7 @@
     },
     {
       "source": "/docs/reference/utility-types-reference",
-      "destination": "/docs/reference/api-reference/prisma-client-reference#prismavalidator",
+      "destination": "/docs/orm/reference/prisma-client-reference#utility-types",
       "permanent": true
     },
     {
@@ -1937,42 +1937,42 @@
     },
     {
       "source": "/docs/guides/general-guides/database-workflows/unique-constraints-and-indexes",
-      "destination": "/docs/concepts/components/prisma-schema/data-model#defining-a-unique-field",
+      "destination": "/docs/orm/prisma-schema/data-model/models#defining-a-unique-field",
       "permanent": true
     },
     {
       "source": "/docs/guides/general-guides/database-workflows/unique-constraints-and-indexes/mysql",
-      "destination": "/docs/concepts/components/prisma-schema/data-model#defining-a-unique-field",
+      "destination": "/docs/orm/prisma-schema/data-model/models#defining-a-unique-field",
       "permanent": true
     },
     {
       "source": "/docs/guides/database/advanced-database-tasks/unique-constraints-and-indexes/postgresql",
-      "destination": "/docs/concepts/components/prisma-schema/data-model#defining-a-unique-field",
+      "destination": "/docs/orm/prisma-schema/data-model/models#defining-a-unique-field",
       "permanent": true
     },
     {
       "source": "/docs/guides/general-guides/database-workflows/unique-constraints-and-indexes/sqlite",
-      "destination": "/docs/concepts/components/prisma-schema/data-model#defining-a-unique-field",
+      "destination": "/docs/orm/prisma-schema/data-model/models#defining-a-unique-field",
       "permanent": true
     },
     {
       "source": "/docs/guides/general-guides/database-workflows/foreign-keys",
-      "destination": "/docs/concepts/components/prisma-schema/relations#relational-databases",
+      "destination": "/docs/orm/prisma-schema/data-model/relations#relational-databases",
       "permanent": true
     },
     {
       "source": "/docs/guides/general-guides/database-workflows/foreign-keys/mysql",
-      "destination": "/docs/concepts/components/prisma-schema/relations#relational-databases",
+      "destination": "/docs/orm/prisma-schema/data-model/relations#relational-databases",
       "permanent": true
     },
     {
       "source": "/docs/guides/general-guides/database-workflows/foreign-keys/postgresql",
-      "destination": "/docs/concepts/components/prisma-schema/relations#relational-databases",
+      "destination": "/docs/orm/prisma-schema/data-model/relations#relational-databases",
       "permanent": true
     },
     {
       "source": "/docs/guides/general-guides/database-workflows/foreign-keys/sqlite",
-      "destination": "/docs/concepts/components/prisma-schema/relations#relational-databases",
+      "destination": "/docs/orm/prisma-schema/data-model/relations#relational-databases",
       "permanent": true
     },
     { "source": "/docs/mongodb", "destination": "/docs/orm/", "permanent": true },
@@ -2269,22 +2269,22 @@
     },
     {
       "source": "/docs/concepts/components/preview-features/sql-server/sql-server-connection-string",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/sql-server#connection-details",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/preview-features/sql-server/sql-server-local",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/sql-server#local-setup",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/preview-features/sql-server/sql-server-docker",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/sql-server#local-setup",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/preview-features/sql-server",
-      "destination": "/docs/orm/reference/supported-databases",
+      "destination": "/docs/orm/core-concepts/supported-databases/sql-server",
       "permanent": true
     },
     {
@@ -2374,12 +2374,12 @@
     },
     {
       "source": "/docs/concepts/components/prisma-cli/installation",
-      "destination": "/docs/reference/api-reference/command-reference#installation",
+      "destination": "/docs/cli#installation",
       "permanent": true
     },
     {
       "source": "/docs/guides/other/troubleshooting-orm/help-articles/finding-entities-based-on-relation",
-      "destination": "/docs/concepts/components/prisma-client/relation-queries#filter-on-presence-of-related-records",
+      "destination": "/docs/orm/prisma-client/queries/relation-queries#filter-on-presence-of-related-records",
       "permanent": true
     },
     {
@@ -2901,7 +2901,7 @@
     { "source": "/docs/concepts/overview", "destination": "/docs/orm", "permanent": true },
     {
       "source": "/docs/concepts/components/prisma-client/working-with-prismaclient/generating-prisma-client",
-      "destination": "/docs/orm/prisma-client/setup-and-configuration/introduction",
+      "destination": "/docs/orm/prisma-client/setup-and-configuration/generating-prisma-client",
       "permanent": true
     },
     {
@@ -2951,22 +2951,22 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/select-fields",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/orm/prisma-client/queries/select-fields",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/relation-queries",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/orm/prisma-client/queries/relation-queries",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/filtering-and-sorting",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/orm/prisma-client/queries/filtering-and-sorting",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/pagination",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/orm/prisma-client/queries/pagination",
       "permanent": true
     },
     {
@@ -2981,32 +2981,32 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/full-text-search",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/orm/prisma-client/queries/full-text-search",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/custom-validation",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/v6/orm/prisma-client/queries/custom-validation",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/computed-fields",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/v6/orm/prisma-client/queries/computed-fields",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/excluding-fields",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/orm/prisma-client/queries/excluding-fields",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/custom-models",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/v6/orm/prisma-client/queries/custom-models",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/case-sensitivity",
-      "destination": "/docs/orm/prisma-client/queries/crud",
+      "destination": "/docs/v6/orm/prisma-client/queries/case-sensitivity",
       "permanent": true
     },
     {
@@ -3096,12 +3096,12 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/middleware/logging-middleware",
-      "destination": "/docs/orm/prisma-client/client-extensions/middleware/logging-middleware",
+      "destination": "/docs/orm/prisma-client/client-extensions",
       "permanent": true
     },
     {
       "source": "/docs/concepts/components/prisma-client/middleware/session-data-middleware",
-      "destination": "/docs/orm/prisma-client/client-extensions/middleware/session-data-middleware",
+      "destination": "/docs/orm/prisma-client/client-extensions",
       "permanent": true
     },
     {
@@ -3121,7 +3121,7 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/advanced-type-safety/prisma-validator",
-      "destination": "/docs/orm/prisma-client/type-safety",
+      "destination": "/docs/v6/orm/prisma-client/type-safety/prisma-validator",
       "permanent": true
     },
     {
@@ -3281,7 +3281,7 @@
     },
     {
       "source": "/docs/concepts/components/prisma-migrate/legacy-migrate",
-      "destination": "/docs/orm/prisma-migrate/understanding-prisma-migrate/legacy-migrate",
+      "destination": "/docs/v6/orm/prisma-migrate/understanding-prisma-migrate/legacy-migrate",
       "permanent": true
     },
     {
@@ -3676,7 +3676,7 @@
     },
     {
       "source": "/docs/concepts/components/prisma-client/module-bundlers",
-      "destination": "/docs/orm/prisma-client/deployment/module-bundlers",
+      "destination": "/docs/v6/orm/prisma-client/deployment/module-bundlers",
       "permanent": true
     },
     {
@@ -5294,7 +5294,7 @@
     { "source": "/docs/guides/other/prisma-dev", "destination": "/docs/guides", "permanent": true },
     {
       "source": "/docs/concepts/components/prisma-migrate/migration-troubleshooting",
-      "destination": "/docs/concepts",
+      "destination": "/docs/orm/prisma-migrate/understanding-prisma-migrate/limitations-and-known-issues",
       "permanent": true
     },
     { "source": "/docs/guide/nextjs", "destination": "/docs", "permanent": true },
