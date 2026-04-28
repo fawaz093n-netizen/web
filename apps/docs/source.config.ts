@@ -1,7 +1,15 @@
 import remarkDirective from "remark-directive";
-import { remarkDirectiveAdmonition, remarkMdxFiles } from "fumadocs-core/mdx-plugins";
+import {
+  remarkDirectiveAdmonition,
+  remarkMdxFiles,
+} from "fumadocs-core/mdx-plugins";
 import { remarkImage } from "fumadocs-core/mdx-plugins";
-import { defineConfig, defineDocs, frontmatterSchema, metaSchema } from "fumadocs-mdx/config";
+import {
+  defineConfig,
+  defineDocs,
+  frontmatterSchema,
+  metaSchema,
+} from "fumadocs-mdx/config";
 import lastModified from "fumadocs-mdx/plugins/last-modified";
 import { z } from "zod";
 import convert from "npm-to-yarn";
@@ -49,6 +57,7 @@ export const docs = defineDocs({
       metaTitle: z.string(),
       metaDescription: z.string(),
       aiPrompt: z.string().optional(),
+      noindex: z.boolean().optional(),
     }),
     postprocess: {
       includeProcessedMarkdown: true,

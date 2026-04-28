@@ -4,7 +4,11 @@ import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/mdx-components";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
-import { CopyPromptButton, LLMCopyButton, ViewOptions } from "@/components/page-actions";
+import {
+  CopyPromptButton,
+  LLMCopyButton,
+  ViewOptions,
+} from "@/components/page-actions";
 import { getPromptContent } from "@/lib/get-prompt-content";
 import {
   DocsBody,
@@ -14,13 +18,20 @@ import {
   EditOnGitHub,
   PageLastUpdate,
 } from "@/components/layout/notebook/page";
-import { TechArticleSchema, BreadcrumbSchema } from "@/components/structured-data";
+import {
+  TechArticleSchema,
+  BreadcrumbSchema,
+} from "@/components/structured-data";
 
 interface PageParams {
   slug?: string[];
 }
 
-export default async function Page({ params }: { params: Promise<PageParams> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<PageParams>;
+}) {
   const { slug } = await params;
   const page = source.getPage(slug);
   if (!page) notFound();
@@ -28,7 +39,9 @@ export default async function Page({ params }: { params: Promise<PageParams> }) 
   const MDX = page.data.body;
 
   const aiPromptSlug = (page.data as { aiPrompt?: string }).aiPrompt;
-  const promptContent = aiPromptSlug ? await getPromptContent(aiPromptSlug) : null;
+  const promptContent = aiPromptSlug
+    ? await getPromptContent(aiPromptSlug)
+    : null;
 
   return (
     <>
@@ -44,9 +57,13 @@ export default async function Page({ params }: { params: Promise<PageParams> }) 
         <div className="flex flex-col md:flex-row items-start gap-4 pt-2 pb-1 md:justify-between">
           <DocsTitle>{page.data.title}</DocsTitle>
           <div className="flex flex-row gap-2 items-center">
-            {promptContent && <CopyPromptButton fullPrompt={promptContent.fullPrompt} />}
+            {promptContent && (
+              <CopyPromptButton fullPrompt={promptContent.fullPrompt} />
+            )}
             {!page.url.startsWith("/management-api/endpoints") && (
-              <LLMCopyButton markdownUrl={`${withDocsBasePath(page.url)}.mdx`} />
+              <LLMCopyButton
+                markdownUrl={`${withDocsBasePath(page.url)}.mdx`}
+              />
             )}
 
             <ViewOptions
@@ -68,7 +85,9 @@ export default async function Page({ params }: { params: Promise<PageParams> }) 
             href={`https://github.com/prisma/docs/edit/main/apps/docs/content/docs/${page.path}`}
           />
           {(page.data as { lastModified?: Date }).lastModified && (
-            <PageLastUpdate date={(page.data as { lastModified: Date }).lastModified} />
+            <PageLastUpdate
+              date={(page.data as { lastModified: Date }).lastModified}
+            />
           )}
         </div>
       </DocsPage>
@@ -92,9 +111,12 @@ export async function generateMetadata({
   const title = page.data.metaTitle ?? page.data.title;
   const description = page.data.metaDescription ?? page.data.description;
 
+  const noindex = (page.data as { noindex?: boolean }).noindex;
+
   return {
     title,
     description,
+    ...(noindex && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: withDocsBasePath(page.url),
     },
