@@ -4,13 +4,6 @@ import Image from "next/image";
 
 const logoParade = [
   {
-    label: "Gatsby",
-    imageUrl: `/icons/companies/gatsby.svg`,
-    url: "https://www.gatsbyjs.com",
-    width: 107,
-    height: 29,
-  },
-  {
     label: "Rapha",
     imageUrl: `/icons/companies/rapha.svg`,
     url: "https://www.rapha.cc/",
@@ -70,13 +63,6 @@ const logoParade = [
     label: "Insta",
     imageUrl: `/icons/companies/insta.svg`,
     url: "",
-    width: 225,
-    height: 55,
-  },
-  {
-    label: "Outrider",
-    imageUrl: `/icons/companies/outrider.svg`,
-    url: "https://outrider.org/",
     width: 225,
     height: 55,
   },
