@@ -65,7 +65,11 @@ export function createSiteStructuredData() {
   };
 }
 
-export function createFaqStructuredData(pagePath: string, faqs: FaqEntry[], name: string) {
+export function createFaqStructuredData(
+  pagePath: string,
+  faqs: FaqEntry[],
+  name: string,
+) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -89,12 +93,27 @@ export function createSoftwareApplicationStructuredData({
   description,
   applicationCategory = "DeveloperApplication",
   operatingSystem = "Cross-platform",
+  license,
+  downloadUrl,
+  offers,
 }: {
   path: string;
   name: string;
   description: string;
   applicationCategory?: string;
   operatingSystem?: string;
+  /** SPDX license URL, e.g. Apache-2.0 open-source products. */
+  license?: string;
+  /** Canonical download/install page URL (e.g. npm package page). */
+  downloadUrl?: string;
+  /** Override the default free-tier Offer. */
+  offers?: {
+    "@type": "Offer";
+    price: string;
+    priceCurrency: string;
+    name?: string;
+    description?: string;
+  };
 }) {
   const url = absoluteUrl(path);
   const baseUrl = getBaseUrl();
@@ -108,7 +127,9 @@ export function createSoftwareApplicationStructuredData({
     url,
     applicationCategory,
     operatingSystem,
-    offers: {
+    ...(license && { license }),
+    ...(downloadUrl && { downloadUrl }),
+    offers: offers ?? {
       "@type": "Offer",
       price: "0",
       priceCurrency: "USD",

@@ -1,5 +1,7 @@
+import { createSoftwareApplicationStructuredData } from "@/lib/structured-data";
 import type { Metadata } from "next";
 import { Button, Card, Action } from "@prisma/eclipse";
+import { JsonLd } from "@prisma-docs/ui/components/json-ld";
 import { cn } from "@/lib/cn";
 import { CardSection } from "@/components/homepage/card-section/card-section";
 import { PostgresTabs } from "../../components/postgres";
@@ -12,6 +14,23 @@ import { CarouselItem } from "@/components/enterprise/carousel-item";
 const CONSOLE_URL =
   "https://console.prisma.io/login?utm_source=website&utm_medium=postgres&utm_campaign=cta";
 
+const postgresStructuredData = createSoftwareApplicationStructuredData({
+  path: "/postgres",
+  name: "Prisma Postgres",
+  description:
+    "Managed serverless PostgreSQL database built for modern applications. Instant provisioning, zero configuration, global availability, connection pooling, automated backups, and encryption at rest and in transit — all managed automatically. Free to start.",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Web",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+    name: "Free tier",
+    description:
+      "Free to start. Usage-based pricing for higher tiers with no surprise bills.",
+  },
+});
+
 const twoCol = [
   {
     content: (
@@ -21,9 +40,9 @@ const twoCol = [
           you already know
         </h2>
         <p className="text-foreground-neutral-weak! text-base">
-          This is the mature, proven, and production-tested PostgreSQL millions of developers
-          already rely on. Standard SQL and wire protocol, Postgres extensions like pgvector, and
-          data import with pg_dump.
+          This is the mature, proven, and production-tested PostgreSQL millions
+          of developers already rely on. Standard SQL and wire protocol,
+          Postgres extensions like pgvector, and data import with pg_dump.
         </p>
       </>
     ),
@@ -47,8 +66,8 @@ const twoCol = [
           zero configuration
         </h2>
         <p className="text-foreground-neutral-weak! text-base">
-          Handles connection pooling automatically, and runs on bare metal and unikernels for
-          maximum performance.
+          Handles connection pooling automatically, and runs on bare metal and
+          unikernels for maximum performance.
         </p>
       </>
     ),
@@ -71,9 +90,9 @@ const twoCol = [
           from day one
         </h2>
         <p className="text-foreground-neutral-weak! text-base">
-          Automated backups, encryption at rest and in transit, full tenant isolation and
-          enterprise-grade compliance. Everything you need to ship with confidence, managed
-          automatically.
+          Automated backups, encryption at rest and in transit, full tenant
+          isolation and enterprise-grade compliance. Everything you need to ship
+          with confidence, managed automatically.
         </p>
       </>
     ),
@@ -122,6 +141,10 @@ export const metadata: Metadata = {
 export default async function SiteHome() {
   return (
     <main className="flex-1 w-full z-1 bg-background-default">
+      <JsonLd
+        id="postgres-software-application"
+        data={postgresStructuredData}
+      />
       <div className="hero -mt-24 pt-40 flex items-end justify-center px-4 relative">
         <div className="absolute inset-0 pointer-events-none z-1 bg-[linear-gradient(180deg,var(--color-foreground-ppg)_0%,var(--color-background-default)_100%)] opacity-20" />
         <div className="content relative z-2 flex flex-col gap-8">
@@ -139,7 +162,12 @@ export default async function SiteHome() {
             Build, test and ship faster with zero infrastructure to manage.
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
-            <Button asChild variant="ppg" size="3xl" className="font-sans-display! font-[650]">
+            <Button
+              asChild
+              variant="ppg"
+              size="3xl"
+              className="font-sans-display! font-[650]"
+            >
               <a href={CONSOLE_URL} target="_blank" rel="noopener noreferrer">
                 Create database
                 <i className="fa-regular fa-database" />
@@ -182,7 +210,9 @@ export default async function SiteHome() {
                   "first:md:col-span-2 overflow-hidden",
                 )}
               >
-                <div className={cn("flex flex-col gap-6 justify-between h-full")}>
+                <div
+                  className={cn("flex flex-col gap-6 justify-between h-full")}
+                >
                   <div className="flex justify-between items-start flex-col lg:flex-row gap-6">
                     <div className="flex flex-col gap-4 w-full flex-1">
                       <div className="flex flex-col gap-4 items-start">
@@ -197,7 +227,8 @@ export default async function SiteHome() {
                         {card.subtitle}
                       </p>
                     </div>
-                    {typeof card.image === "string" && card.image === "logo-grid" ? (
+                    {typeof card.image === "string" &&
+                    card.image === "logo-grid" ? (
                       <div
                         className={cn(
                           "min-w-0 overflow-visible flex-1 flex items-center relative md:max-w-unset sm:max-w-[60%] max-w-full mx-auto",
@@ -211,9 +242,15 @@ export default async function SiteHome() {
                       </div>
                     ) : null}
                   </div>
-                  {typeof card.image === "string" && card.image === "logo-bar" && card.logos ? (
+                  {typeof card.image === "string" &&
+                  card.image === "logo-bar" &&
+                  card.logos ? (
                     <div className={cn("w-full")}>
-                      <LogoGrid logos={card.logos} type="spotlight" color="ppg" />
+                      <LogoGrid
+                        logos={card.logos}
+                        type="spotlight"
+                        color="ppg"
+                      />
                     </div>
                   ) : null}
                 </div>
@@ -242,8 +279,8 @@ export default async function SiteHome() {
           </h3>
           <div className="content flex flex-col lg:flex-row gap-3 lg:gap-12 items-center md:items-start lg:items-center">
             <p className="max-w-94 w-full text-center md:text-left text-foreground-neutral-weak text-md">
-              Usage-based pricing, with a generous free tier. Spend limits included, so you never
-              get surprised.
+              Usage-based pricing, with a generous free tier. Spend limits
+              included, so you never get surprised.
             </p>
             <Button asChild variant="ppg" size="2xl">
               <a href="/pricing">
@@ -278,7 +315,8 @@ export default async function SiteHome() {
                 See Postgres in action
               </h2>
               <p className="m-0 mt-4 text-base leading-6 text-foreground-neutral-weak">
-                See how to get started in just a couple of minutes, with Prisma Postgres.
+                See how to get started in just a couple of minutes, with Prisma
+                Postgres.
               </p>
             </div>
 
@@ -307,7 +345,9 @@ export default async function SiteHome() {
               <h2 className="text-3xl text-foreground-neutral font-sans-display stretch-display">
                 Try Prisma Postgres
               </h2>
-              <p className="text-foreground-neutral-weak">Deploy a Postgres database instantly.</p>
+              <p className="text-foreground-neutral-weak">
+                Deploy a Postgres database instantly.
+              </p>
             </div>
             <div className="flex flex-col md:flex-row gap-6">
               <Button asChild variant="ppg" size="2xl">
