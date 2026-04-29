@@ -1,8 +1,4 @@
-import dynamic from "next/dynamic";
-const Antigravity = dynamic(
-  () => import("../../components/homepage/antigravity"),
-  { ssr: false },
-);
+import Antigravity from "../../components/homepage/antigravity-client";
 import type { Metadata } from "next";
 import { SITE_HOME_DESCRIPTION, SITE_HOME_TITLE } from "@/lib/site-metadata";
 import { Button } from "@prisma/eclipse";
