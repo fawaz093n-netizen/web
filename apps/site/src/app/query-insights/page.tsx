@@ -1,38 +1,14 @@
 import { CardSection } from "@/components/homepage/card-section/card-section";
-import { Metadata } from "next";
+import { createPageMetadata } from "@/lib/page-metadata";
 import { Button } from "@prisma/eclipse";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Prisma Query Insights",
-    description:
-      "Understand why your database queries are slow, see their real impact in production, and generate a structured AI prompt to improve them.",
-    alternates: {
-      canonical: "https://www.prisma.io/query-insights",
-    },
-    openGraph: {
-      title: "Prisma Query Insights",
-      description:
-        "Understand why your database queries are slow, see their real impact in production, and generate a structured AI prompt to improve them.",
-      url: "https://www.prisma.io/query-insights",
-      type: "website",
-      siteName: "Prisma",
-      images: [
-        {
-          url: "/og/og-query-insights.png",
-          width: 1200,
-          height: 630,
-          alt: "Prisma Query Insights",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      site: "@prisma",
-      creator: "@prisma",
-    },
-  };
-}
+export const metadata = createPageMetadata({
+  title: "Prisma Query Insights",
+  description:
+    "Understand why your database queries are slow, see their real impact in production, and generate a structured AI prompt to improve them.",
+  path: "/query-insights",
+  ogImage: "/og/og-query-insights.png",
+});
 
 export default async function Page() {
   return (
