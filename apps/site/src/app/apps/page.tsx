@@ -1,17 +1,19 @@
 import { AppsDirectory } from "@/components/apps/apps-directory";
+import { AppsHeroSearch } from "@/components/apps/apps-hero-search";
 import { JsonLd } from "@/components/json-ld";
 import { appDirectory, appKinds, getFeaturedApps, type AppKind } from "@/data/apps";
-import { cn } from "@/lib/cn";
 import { createPageMetadata } from "@/lib/page-metadata";
 import {
   createBreadcrumbStructuredData,
   createCollectionPageStructuredData,
 } from "@/lib/structured-data";
-import { Badge, Button, Card } from "@prisma/eclipse";
+import { Badge, Card } from "@prisma/eclipse";
+import Link from "next/link";
 
-const APPS_PAGE_TITLE = "Prisma Apps - Deploy full apps on Prisma Compute";
+const APPS_PAGE_TITLE =
+  "Prisma Apps - Deploy AI agents, backends, internal tools, and full-stack apps";
 const APPS_PAGE_DESCRIPTION =
-  "Browse deployable apps and production-minded templates for Prisma Compute. Discover AI agents, internal tools, waitlists, webhook apps, and SaaS starters built for long-running TypeScript workloads.";
+  "Browse deployable apps for Prisma Compute, including AI agents, internal tools, support inboxes, webhook backends, waitlists, and SaaS starters. Discover apps and templates you can run, remix, and deploy.";
 
 const pageMetadata = createPageMetadata({
   title: APPS_PAGE_TITLE,
@@ -25,11 +27,13 @@ export const metadata = {
   keywords: [
     "Prisma Apps",
     "Prisma Compute apps",
-    "deployable TypeScript apps",
-    "app marketplace",
-    "full stack apps",
-    "internal tools",
+    "deployable apps",
     "AI agent apps",
+    "internal tools",
+    "support inbox app",
+    "waitlist app",
+    "webhook backend",
+    "SaaS starter",
     "Prisma templates",
   ],
 };
@@ -49,8 +53,32 @@ const breadcrumbStructuredData = createBreadcrumbStructuredData([
   { name: "Home", url: "/" },
   { name: "Apps", url: "/apps" },
 ]);
+
 const APPS_PAGE_SHELL = "mx-auto w-full max-w-[1240px]";
 const APPS_PAGE_NARROW_SHELL = "mx-auto w-full max-w-[1040px]";
+
+const useCaseLinks = [
+  {
+    href: "/apps?q=AI%20agent#directory",
+    title: "AI agents",
+    body: "Assistant workflows, triage bots, and long-running automation loops.",
+  },
+  {
+    href: "/apps?category=Customer+support#directory",
+    title: "Customer support",
+    body: "Shared inboxes, queues, and async follow-up systems for support teams.",
+  },
+  {
+    href: "/apps?category=Growth#directory",
+    title: "Growth and waitlists",
+    body: "Launch pages, referral loops, onboarding cohorts, and invite flows.",
+  },
+  {
+    href: "/apps?kind=template#directory",
+    title: "Templates",
+    body: "Starter kits for teams that want to move fast but still shape the app themselves.",
+  },
+];
 
 function parseKind(value: string | string[] | undefined): "all" | AppKind {
   if (!value || Array.isArray(value)) return "all";
@@ -78,63 +106,55 @@ export default async function AppsPage({
   const initialCategory = parseCategory(resolvedSearchParams.category);
   const initialSearch = parseQuery(resolvedSearchParams.q);
 
-  const totalApps = appDirectory.length;
-  const deployableApps = appDirectory.filter((app) => app.kind === "application").length;
-  const templates = totalApps - deployableApps;
-
   return (
     <main className="relative -mt-24 flex-1 overflow-x-hidden bg-background-default text-foreground-neutral">
       <JsonLd id="apps-collection-structured-data" data={collectionStructuredData} />
       <JsonLd id="apps-breadcrumb-structured-data" data={breadcrumbStructuredData} />
 
-      <section className="relative overflow-hidden px-4 pb-10 pt-46">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.18),transparent_42%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_68%)] opacity-80" />
-        <div className={cn(APPS_PAGE_SHELL, "relative z-1")}>
-          <div className="mx-auto grid max-w-[1120px] gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-            <div className="flex flex-col gap-5">
-              <Badge color="ppg" label="Prisma Apps" className="w-fit" />
-              <div className="max-w-[720px]">
-                <h1 className="m-0 text-[40px] leading-[0.98] font-black text-foreground-neutral md:text-[60px] stretch-display font-sans-display">
-                  Deployable apps for Prisma Compute.
-                </h1>
-                <p className="mb-0 mt-5 max-w-[640px] text-lg leading-8 text-foreground-neutral-weak">
-                  Browse real apps first, keep templates as a filter, and go from idea to deployable repo without digging through generic starters.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <span className="rounded-full border border-stroke-neutral bg-background-neutral-weaker px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
-                  {deployableApps} apps
-                </span>
-                <span className="rounded-full border border-stroke-neutral bg-background-neutral-weaker px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
-                  {templates} templates
-                </span>
-                <span className="rounded-full border border-stroke-neutral bg-background-neutral-weaker px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
-                  Deploy API coming online
-                </span>
-              </div>
+      <section className="relative overflow-hidden px-4 pb-12 pt-46">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.17),transparent_42%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_66%)] opacity-80" />
+
+        <div className={`${APPS_PAGE_SHELL} relative z-1`}>
+          <div className="mx-auto flex max-w-[900px] flex-col items-center gap-6 text-center">
+            <Badge color="ppg" label="Prisma Apps directory" className="w-fit" />
+            <div className="flex flex-col gap-4">
+              <h1 className="m-0 text-[40px] leading-[0.98] font-black text-foreground-neutral md:text-[60px] stretch-display font-sans-display">
+                Browse apps you can deploy on Prisma Compute.
+              </h1>
+              <p className="m-0 max-w-[760px] text-lg leading-8 text-foreground-neutral-weak">
+                Discover AI agents, internal tools, support inboxes, webhook backends, waitlist
+                apps, and starter kits. Open a listing to see the stack, service layout, and
+                deployment notes before you deploy.
+              </p>
             </div>
 
-            <Card className="gap-4 border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high">
-              <div className="flex items-center justify-between gap-3">
-                <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                  Ship on Compute
+            <div className="w-full max-w-[760px]">
+              <AppsHeroSearch initialSearch={initialSearch} />
+            </div>
+
+            <p className="m-0 max-w-[720px] text-sm leading-6 text-foreground-neutral-weaker">
+              Start with search, jump into a use case, or browse everything below.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-8 grid max-w-[1080px] gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {useCaseLinks.map((item) => (
+              <Link
+                key={item.title}
+                href={item.href}
+                className="cursor-pointer rounded-[24px] border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high transition-transform duration-200 hover:-translate-y-0.5"
+              >
+                <p className="m-0 text-sm font-semibold uppercase tracking-[1.5px] text-foreground-ppg stretch-display font-sans-display">
+                  Explore
                 </p>
-                <i className="fa-regular fa-cloud-arrow-up text-foreground-ppg" aria-hidden />
-              </div>
-              <p className="m-0 text-sm leading-7 text-foreground-neutral-weak">
-                Use this directory to find apps worth deploying. Each listing gets its own page, stack context, and deploy path, with one-click launch ready to slot into the real Compute API.
-              </p>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button variant="ppg" size="xl" href="#directory">
-                  <span>Browse apps</span>
-                  <i className="fa-regular fa-arrow-down" aria-hidden />
-                </Button>
-                <Button variant="default-stronger" size="xl" href="#submit">
-                  <span>Submit an app</span>
-                  <i className="fa-regular fa-arrow-right" aria-hidden />
-                </Button>
-              </div>
-            </Card>
+                <h2 className="mb-0 mt-3 text-xl font-black text-foreground-neutral stretch-display font-sans-display">
+                  {item.title}
+                </h2>
+                <p className="mb-0 mt-2 text-sm leading-6 text-foreground-neutral-weak">
+                  {item.body}
+                </p>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -153,7 +173,7 @@ export default async function AppsPage({
 
       <section id="submit" className="px-4 pb-20">
         <div className={APPS_PAGE_NARROW_SHELL}>
-          <Card className="gap-8 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high md:p-8">
+          <Card className="gap-6 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high md:p-8">
             <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
               <div className="flex flex-col gap-4">
                 <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
@@ -162,26 +182,26 @@ export default async function AppsPage({
                 <h2 className="m-0 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
                   Want to get listed?
                 </h2>
-                <p className="m-0 text-base leading-7 text-foreground-neutral-weak">
-                  Listings can come from the curated `prisma/apps` repo or from a GitHub discovery topic. Either way, the app should ship with a clear README, a real deployment shape, and enough metadata to generate a useful detail page.
+                <p className="m-0 max-w-[720px] text-base leading-7 text-foreground-neutral-weak">
+                  We plan to support curated listings from `prisma/apps` and discovery through a
+                  GitHub topic. To make a listing useful, ship a clear README, screenshots, stack
+                  metadata, and a deployment shape that makes sense on Compute.
                 </p>
               </div>
+
               <div className="flex flex-wrap gap-2 lg:justify-end">
-                <span className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
-                  Clear README
-                </span>
-                <span className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
-                  Service metadata
-                </span>
-                <span className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
-                  Screenshots
-                </span>
-                <span className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
-                  Compute fit
-                </span>
+                {["README", "Screenshots", "Stack metadata", "Deploy shape"].map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak"
+                  >
+                    {item}
+                  </span>
+                ))}
               </div>
             </div>
-            <div className="grid gap-3 border-t border-stroke-neutral pt-5 md:grid-cols-3">
+
+            <div className="grid gap-4 border-t border-stroke-neutral pt-5 md:grid-cols-3">
               {[
                 {
                   title: "Curated repo",
@@ -189,10 +209,10 @@ export default async function AppsPage({
                 },
                 {
                   title: "GitHub discovery",
-                  body: "Community apps can be pulled in through a topic once ingestion is live.",
+                  body: "Community apps can be pulled in through a dedicated topic once ingestion is live.",
                 },
                 {
-                  title: "Deploy-ready shape",
+                  title: "Deploy-ready details",
                   body: "Listings should expose enough structure for future one-click deployment.",
                 },
               ].map((item) => (

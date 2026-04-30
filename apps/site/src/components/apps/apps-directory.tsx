@@ -60,6 +60,21 @@ function updateUrl(
 }
 
 function AppCard({ app, featured = false }: { app: AppEntry; featured?: boolean }) {
+  const deploymentShape = Array.from(new Set(app.services.map((service) => service.type)))
+    .map((type) => {
+      switch (type) {
+        case "api":
+          return "API";
+        case "web":
+          return "Web";
+        case "worker":
+          return "Worker";
+        case "cron":
+          return "Cron";
+      }
+    })
+    .join(" + ");
+
   return (
     <Card
       className={cn(
@@ -102,10 +117,10 @@ function AppCard({ app, featured = false }: { app: AppEntry; featured?: boolean 
         </div>
         <div className="rounded-[16px] border border-stroke-neutral bg-background-default px-3 py-3">
           <p className="m-0 text-[11px] font-semibold uppercase tracking-[1.3px] text-foreground-neutral-weaker">
-            Services
+            Runs as
           </p>
           <p className="mb-0 mt-1 text-sm text-foreground-neutral-weak">
-            {app.services.length} declared units
+            {deploymentShape}
           </p>
         </div>
       </div>
@@ -229,11 +244,11 @@ export function AppsDirectory({
               Featured apps
             </p>
             <h2 className="mb-0 mt-2 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
-              Start with apps that already feel like products.
+              Start with a few strong examples.
             </h2>
           </div>
           <p className="m-0 max-w-[360px] text-sm leading-6 text-foreground-neutral-weak">
-            The front of the directory should be useful on first glance, so these are the most complete launch-wave examples.
+            These listings are the fastest way to understand what a polished Compute app looks like.
           </p>
         </div>
 
@@ -255,7 +270,7 @@ export function AppsDirectory({
                 Browse all listings
               </p>
               <h2 className="mb-0 mt-2 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
-                Search, filter, and deploy.
+                All apps and templates
               </h2>
             </div>
             <Link
@@ -275,7 +290,7 @@ export function AppsDirectory({
                 updateUrl(pathname, router, kind, category, nextSearch);
                 trackFilterChange(kind, category, nextSearch, filteredApps.length);
               }}
-              placeholder="Search AI agents, internal tools, waitlists, webhook apps..."
+              placeholder="Search AI agents, support inboxes, waitlists, backends..."
               className="w-full"
             />
 
