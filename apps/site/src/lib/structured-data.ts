@@ -89,15 +89,18 @@ export function createSoftwareApplicationStructuredData({
   description,
   applicationCategory = "DeveloperApplication",
   operatingSystem = "Cross-platform",
+  providerName = "Prisma",
+  providerUrl = getBaseUrl(),
 }: {
   path: string;
   name: string;
   description: string;
   applicationCategory?: string;
   operatingSystem?: string;
+  providerName?: string;
+  providerUrl?: string;
 }) {
   const url = absoluteUrl(path);
-  const baseUrl = getBaseUrl();
 
   return {
     "@context": "https://schema.org",
@@ -114,7 +117,9 @@ export function createSoftwareApplicationStructuredData({
       priceCurrency: "USD",
     },
     provider: {
-      "@id": `${baseUrl}#organization`,
+      "@type": "Organization",
+      name: providerName,
+      url: providerUrl,
     },
   };
 }
@@ -149,5 +154,23 @@ export function createCollectionPageStructuredData({
         description: item.description,
       })),
     },
+  };
+}
+
+export function createBreadcrumbStructuredData(
+  items: Array<{
+    name: string;
+    url: string;
+  }>,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.url),
+    })),
   };
 }
