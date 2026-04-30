@@ -37,17 +37,6 @@ export const metadata = {
   ],
 };
 
-const collectionStructuredData = createCollectionPageStructuredData({
-  path: "/apps",
-  name: "Prisma Apps",
-  description: APPS_PAGE_DESCRIPTION,
-  items: appDirectory.map((app) => ({
-    name: app.name,
-    url: `/apps/${app.slug}`,
-    description: app.summary,
-  })),
-});
-
 const breadcrumbStructuredData = createBreadcrumbStructuredData([
   { name: "Home", url: "/" },
   { name: "Apps", url: "/apps" },
@@ -82,6 +71,16 @@ export default async function AppsPage({
   const resolvedSearchParams = await searchParams;
   const initialKind = parseKind(resolvedSearchParams.kind);
   const appDirectory = await getAppDirectory();
+  const collectionStructuredData = createCollectionPageStructuredData({
+    path: "/apps",
+    name: "Prisma Apps",
+    description: APPS_PAGE_DESCRIPTION,
+    items: appDirectory.map((app) => ({
+      name: app.name,
+      url: `/apps/${app.slug}`,
+      description: app.summary,
+    })),
+  });
   const initialCategory = parseCategory(
     resolvedSearchParams.category,
     appDirectory.map((app) => app.category),
