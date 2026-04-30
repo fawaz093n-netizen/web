@@ -105,7 +105,19 @@ const loadAppDirectoryCached = cache(async () => {
     const curatedApps = await loadCuratedAppsFromGitHub();
 
     if (curatedApps.length > 0) {
-      return curatedApps;
+      const seededBySlug = new Map(seededAppDirectory.map((app) => [app.slug, app]));
+
+      for (const app of curatedApps) {
+        seededBySlug.set(app.slug, app);
+      }
+
+      return Array.from(seededBySlug.values()).sort((left, right) => {
+        if (left.featured !== right.featured) {
+          return left.featured ? -1 : 1;
+        }
+
+        return left.name.localeCompare(right.name);
+      });
     }
   } catch (error) {
     console.error("Failed to load curated Prisma Apps from GitHub", error);
