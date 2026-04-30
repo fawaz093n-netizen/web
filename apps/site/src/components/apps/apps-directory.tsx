@@ -88,18 +88,30 @@ function AppCard({ app, featured = false }: { app: AppEntry; featured?: boolean 
             label={app.kind === "application" ? "App" : "Template"}
             className="w-fit"
           />
-          <Badge
-            color="neutral"
-            label={app.status === "starter" ? "Starter" : "Seed listing"}
-            className="w-fit"
-          />
         </div>
       </div>
 
       <p className="m-0 text-sm leading-6 text-foreground-neutral-weak">{app.summary}</p>
 
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="rounded-[16px] border border-stroke-neutral bg-background-default px-3 py-3">
+          <p className="m-0 text-[11px] font-semibold uppercase tracking-[1.3px] text-foreground-neutral-weaker">
+            Best for
+          </p>
+          <p className="mb-0 mt-1 text-sm text-foreground-neutral-weak">{app.audiences[0]}</p>
+        </div>
+        <div className="rounded-[16px] border border-stroke-neutral bg-background-default px-3 py-3">
+          <p className="m-0 text-[11px] font-semibold uppercase tracking-[1.3px] text-foreground-neutral-weaker">
+            Services
+          </p>
+          <p className="mb-0 mt-1 text-sm text-foreground-neutral-weak">
+            {app.services.length} declared units
+          </p>
+        </div>
+      </div>
+
       <div className="flex flex-wrap gap-2">
-        {app.tags.map((tag) => (
+        {app.tags.slice(0, 3).map((tag) => (
           <span
             key={tag}
             className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1 text-xs text-foreground-neutral-weak"
@@ -109,37 +121,23 @@ function AppCard({ app, featured = false }: { app: AppEntry; featured?: boolean 
         ))}
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        {app.features.slice(0, 4).map((feature) => (
-          <div
-            key={feature}
-            className="flex items-start gap-2 text-sm text-foreground-neutral-weak"
-          >
-            <i className="fa-regular fa-check text-foreground-ppg mt-1" aria-hidden />
-            <span>{feature}</span>
-          </div>
-        ))}
-      </div>
-
       <div className="mt-auto flex flex-col gap-4 border-t border-stroke-neutral pt-4">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            {app.stack.map((item) => (
-              <div
-                key={item.label}
-                className="flex items-center gap-2 rounded-full border border-stroke-neutral bg-background-default px-2.5 py-1"
-              >
-                <Image
-                  src={item.icon}
-                  alt={item.label}
-                  width={14}
-                  height={14}
-                  className="size-3.5 object-contain"
-                />
-                <span className="text-xs text-foreground-neutral-weak">{item.label}</span>
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {app.stack.slice(0, 4).map((item) => (
+            <div
+              key={item.label}
+              className="flex items-center gap-2 rounded-full border border-stroke-neutral bg-background-default px-2.5 py-1"
+            >
+              <Image
+                src={item.icon}
+                alt={item.label}
+                width={14}
+                height={14}
+                className="size-3.5 object-contain"
+              />
+              <span className="text-xs text-foreground-neutral-weak">{item.label}</span>
+            </div>
+          ))}
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -224,10 +222,26 @@ export function AppsDirectory({
 
   return (
     <div className="flex flex-col gap-12">
-      <section className="mx-auto grid w-full max-w-[1080px] gap-4 xl:grid-cols-2">
+      <section className="mx-auto flex w-full max-w-[1080px] flex-col gap-5">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
+              Featured apps
+            </p>
+            <h2 className="mb-0 mt-2 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
+              Start with apps that already feel like products.
+            </h2>
+          </div>
+          <p className="m-0 max-w-[360px] text-sm leading-6 text-foreground-neutral-weak">
+            The front of the directory should be useful on first glance, so these are the most complete launch-wave examples.
+          </p>
+        </div>
+
+        <div className="grid gap-4 xl:grid-cols-2">
         {featuredApps.map((app) => (
           <AppCard key={app.slug} app={app} featured />
         ))}
+        </div>
       </section>
 
       <section
@@ -235,21 +249,21 @@ export function AppsDirectory({
         className="mx-auto w-full max-w-[1160px] rounded-[28px] border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high sm:p-8"
       >
         <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
               <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                Browse the directory
+                Browse all listings
               </p>
-              <h2 className="m-0 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
-                Find full apps first. Filter down to starters when you need a head start.
+              <h2 className="mb-0 mt-2 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
+                Search, filter, and deploy.
               </h2>
             </div>
-            <div className="max-w-xl">
-              <p className="m-0 text-sm leading-6 text-foreground-neutral-weak">
-                The main view is intentionally biased toward end-to-end products. Templates stay
-                available, but they are a filter, not the whole story.
-              </p>
-            </div>
+            <Link
+              href="#submit"
+              className="text-sm font-medium text-foreground-ppg hover:text-foreground-ppg-reverse-strong"
+            >
+              Submit an app
+            </Link>
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
@@ -351,12 +365,6 @@ export function AppsDirectory({
               <span className="font-semibold text-foreground-neutral">{filteredApps.length}</span>{" "}
               of {apps.length} listings.
             </p>
-            <Link
-              href="#add-your-app"
-              className="text-sm font-medium text-foreground-ppg hover:text-foreground-ppg-reverse-strong"
-            >
-              Add your app
-            </Link>
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">

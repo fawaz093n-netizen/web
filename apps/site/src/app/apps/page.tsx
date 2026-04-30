@@ -6,7 +6,6 @@ import { createPageMetadata } from "@/lib/page-metadata";
 import {
   createBreadcrumbStructuredData,
   createCollectionPageStructuredData,
-  createFaqStructuredData,
 } from "@/lib/structured-data";
 import { Badge, Button, Card } from "@prisma/eclipse";
 
@@ -50,33 +49,8 @@ const breadcrumbStructuredData = createBreadcrumbStructuredData([
   { name: "Home", url: "/" },
   { name: "Apps", url: "/apps" },
 ]);
-
-const faqEntries = [
-  {
-    question: "What is Prisma Apps?",
-    answer:
-      "Prisma Apps is an app directory for Prisma Compute. It focuses on deployable end-to-end apps first, while still keeping templates available as a filter for teams that want a starter.",
-  },
-  {
-    question: "Are these apps production-ready or just templates?",
-    answer:
-      "The directory is intentionally weighted toward real applications people can use. Templates are included, but they are a separate track rather than the default experience.",
-  },
-  {
-    question: "How will one-click deployment work?",
-    answer:
-      "The deploy button is already wired to a placeholder API seam. Once the Prisma Compute deploy API is live, the same call path can trigger app deployment directly from the directory.",
-  },
-  {
-    question: "How do I add my app to the directory?",
-    answer:
-      "The launch model supports two submission paths: curated entries in prisma/apps and discovery by GitHub topic. Listings need a clear README, deploy metadata, screenshots, stack tags, and a Prisma Compute-friendly project shape.",
-  },
-];
-
-const faqStructuredData = createFaqStructuredData("/apps", faqEntries, "Prisma Apps FAQ");
 const APPS_PAGE_SHELL = "mx-auto w-full max-w-[1240px]";
-const APPS_PAGE_NARROW_SHELL = "mx-auto w-full max-w-[1080px]";
+const APPS_PAGE_NARROW_SHELL = "mx-auto w-full max-w-[1040px]";
 
 function parseKind(value: string | string[] | undefined): "all" | AppKind {
   if (!value || Array.isArray(value)) return "all";
@@ -107,107 +81,61 @@ export default async function AppsPage({
   const totalApps = appDirectory.length;
   const deployableApps = appDirectory.filter((app) => app.kind === "application").length;
   const templates = totalApps - deployableApps;
-  const sources = new Set(appDirectory.map((app) => app.source)).size;
 
   return (
     <main className="relative -mt-24 flex-1 overflow-x-hidden bg-background-default text-foreground-neutral">
       <JsonLd id="apps-collection-structured-data" data={collectionStructuredData} />
-      <JsonLd id="apps-faq-structured-data" data={faqStructuredData} />
       <JsonLd id="apps-breadcrumb-structured-data" data={breadcrumbStructuredData} />
 
-      <section className="relative overflow-hidden px-4 pb-16 pt-46">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.14),transparent_45%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_70%)] opacity-80" />
-        <div className={cn(APPS_PAGE_SHELL, "relative z-1 flex flex-col gap-8")}>
-          <div className="mx-auto flex max-w-[960px] flex-col items-center gap-5 text-center">
-            <Badge color="ppg" label="Early access directory" className="w-fit" />
-            <h1 className="m-0 max-w-[880px] text-[42px] leading-[1.05] font-black text-foreground-neutral md:text-[64px] stretch-display font-sans-display">
-              Deploy full apps on Prisma Compute, not just starter templates.
-            </h1>
-            <p className="m-0 max-w-[760px] text-lg leading-8 text-foreground-neutral-weak">
-              Prisma Apps is the discovery layer for deployable TypeScript apps on Compute. It is
-              built for people looking for something useful to run, remix, or eventually launch with
-              one click.
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button variant="ppg" size="xl" href="#directory">
-                <span>Browse apps</span>
-                <i className="fa-regular fa-arrow-down" aria-hidden />
-              </Button>
-              <Button variant="default-stronger" size="xl" href="#add-your-app">
-                <span>Add your app</span>
-                <i className="fa-regular fa-arrow-right" aria-hidden />
-              </Button>
+      <section className="relative overflow-hidden px-4 pb-10 pt-46">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.18),transparent_42%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_68%)] opacity-80" />
+        <div className={cn(APPS_PAGE_SHELL, "relative z-1")}>
+          <div className="mx-auto grid max-w-[1120px] gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+            <div className="flex flex-col gap-5">
+              <Badge color="ppg" label="Prisma Apps" className="w-fit" />
+              <div className="max-w-[720px]">
+                <h1 className="m-0 text-[40px] leading-[0.98] font-black text-foreground-neutral md:text-[60px] stretch-display font-sans-display">
+                  Deployable apps for Prisma Compute.
+                </h1>
+                <p className="mb-0 mt-5 max-w-[640px] text-lg leading-8 text-foreground-neutral-weak">
+                  Browse real apps first, keep templates as a filter, and go from idea to deployable repo without digging through generic starters.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-full border border-stroke-neutral bg-background-neutral-weaker px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
+                  {deployableApps} apps
+                </span>
+                <span className="rounded-full border border-stroke-neutral bg-background-neutral-weaker px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
+                  {templates} templates
+                </span>
+                <span className="rounded-full border border-stroke-neutral bg-background-neutral-weaker px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
+                  Deploy API coming online
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="mx-auto grid w-full max-w-[1160px] gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              { label: "Launch listings", value: totalApps, note: "Seeded for the first wave" },
-              {
-                label: "End-to-end apps",
-                value: deployableApps,
-                note: "The default directory view",
-              },
-              { label: "Starter templates", value: templates, note: "Available as a filter" },
-              { label: "Submission paths", value: sources, note: "Curated repo or GitHub topic" },
-            ].map((stat) => (
-              <Card
-                key={stat.label}
-                className="gap-2 border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high"
-              >
-                <p className="m-0 text-xs font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                  {stat.label}
-                </p>
-                <p className="m-0 text-4xl font-black text-foreground-neutral stretch-display font-sans-display">
-                  {stat.value}
-                </p>
-                <p className="m-0 text-sm text-foreground-neutral-weak">{stat.note}</p>
-              </Card>
-            ))}
-          </div>
-
-          <Card
-            className={cn(
-              APPS_PAGE_NARROW_SHELL,
-              "border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high",
-            )}
-          >
-            <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-              <div className="flex flex-col gap-3">
+            <Card className="gap-4 border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high">
+              <div className="flex items-center justify-between gap-3">
                 <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                  Why this page exists
+                  Ship on Compute
                 </p>
-                <h2 className="m-0 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
-                  Railway proves the model. Prisma should win with apps that feel more complete,
-                  more searchable, and more honest about deployable product shape.
-                </h2>
-                <p className="m-0 text-base leading-7 text-foreground-neutral-weak">
-                  The goal is not another wall of generic starters. The goal is a marketplace for
-                  useful apps that show what Compute is good at: long-running workers, colocated
-                  Prisma Postgres, code-first infrastructure, and product workflows that go beyond a
-                  hello-world clone.
-                </p>
+                <i className="fa-regular fa-cloud-arrow-up text-foreground-ppg" aria-hidden />
               </div>
-              <div className="grid gap-3">
-                {[
-                  "Dedicated app detail pages for SEO and long-tail discovery",
-                  "Full apps first, templates second",
-                  "A stable deploy API seam already in place for the later Compute hook-up",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-start gap-3 rounded-[20px] border border-stroke-neutral bg-background-default px-4 py-3 text-sm text-foreground-neutral-weak"
-                  >
-                    <i
-                      className="fa-regular fa-circle-check mt-1 text-foreground-ppg"
-                      aria-hidden
-                    />
-                    <span>{item}</span>
-                  </div>
-                ))}
+              <p className="m-0 text-sm leading-7 text-foreground-neutral-weak">
+                Use this directory to find apps worth deploying. Each listing gets its own page, stack context, and deploy path, with one-click launch ready to slot into the real Compute API.
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button variant="ppg" size="xl" href="#directory">
+                  <span>Browse apps</span>
+                  <i className="fa-regular fa-arrow-down" aria-hidden />
+                </Button>
+                <Button variant="default-stronger" size="xl" href="#submit">
+                  <span>Submit an app</span>
+                  <i className="fa-regular fa-arrow-right" aria-hidden />
+                </Button>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
         </div>
       </section>
 
@@ -223,119 +151,62 @@ export default async function AppsPage({
         </div>
       </section>
 
-      <section className="px-4 pb-16">
-        <div className={cn(APPS_PAGE_NARROW_SHELL, "grid gap-4 lg:grid-cols-3")}>
-          {[
-            {
-              title: "Push code, it runs",
-              body: "Compute is built for the moment after the code exists. A useful app should be able to connect a repo, build, and come up without a second infrastructure choreography layer.",
-              icon: "fa-regular fa-code-commit",
-            },
-            {
-              title: "Long-lived by default",
-              body: "Many of the best directory apps need workers, streaming, or long-running orchestration. That is a first-class fit for Compute, which is why the listings lean into those shapes.",
-              icon: "fa-regular fa-timer",
-            },
-            {
-              title: "Code-first infrastructure",
-              body: "Apps in this directory are meant to ship with deployment shape in the repo, not buried in a dashboard. That makes them easier to review, remix, and automate later.",
-              icon: "fa-regular fa-file-code",
-            },
-          ].map((pillar) => (
-            <Card
-              key={pillar.title}
-              className="gap-4 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high"
-            >
-              <div className="flex size-12 items-center justify-center rounded-square bg-background-ppg text-foreground-ppg-reverse-strong">
-                <i className={cn("text-lg", pillar.icon)} aria-hidden />
-              </div>
-              <h2 className="m-0 text-2xl font-black text-foreground-neutral stretch-display font-sans-display">
-                {pillar.title}
-              </h2>
-              <p className="m-0 text-sm leading-7 text-foreground-neutral-weak">{pillar.body}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <section id="add-your-app" className="px-4 pb-16">
+      <section id="submit" className="px-4 pb-20">
         <div className={APPS_PAGE_NARROW_SHELL}>
           <Card className="gap-8 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high md:p-8">
-            <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
               <div className="flex flex-col gap-4">
                 <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                  Add your app
+                  Submit an app
                 </p>
                 <h2 className="m-0 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
-                  Publish through the curated repo or a GitHub discovery topic.
+                  Want to get listed?
                 </h2>
                 <p className="m-0 text-base leading-7 text-foreground-neutral-weak">
-                  The directory is set up for two listing paths. Prisma can curate flagship apps in
-                  a shared repo, while the wider ecosystem can opt into discovery with a topic-based
-                  route once the ingestion flow is live.
+                  Listings can come from the curated `prisma/apps` repo or from a GitHub discovery topic. Either way, the app should ship with a clear README, a real deployment shape, and enough metadata to generate a useful detail page.
                 </p>
               </div>
-              <div className="grid gap-3 md:grid-cols-2">
-                {[
-                  {
-                    title: "Path 1: prisma/apps",
-                    body: "Flagship or launch-wave apps can live in a curated repository with strong README coverage, screenshots, tags, and service metadata.",
-                  },
-                  {
-                    title: "Path 2: GitHub topic",
-                    body: "Third-party apps can be discovered through a dedicated topic once the directory sync is live, so teams keep ownership of their own repos.",
-                  },
-                  {
-                    title: "README requirements",
-                    body: "Every listing should explain what the app does, who it is for, the required services, environment variables, and why it is a good Compute fit.",
-                  },
-                  {
-                    title: "Deploy requirements",
-                    body: "Apps should declare their service layout clearly enough that the one-click deploy API can eventually provision the right shape without manual setup.",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.title}
-                    className="rounded-[20px] border border-stroke-neutral bg-background-default p-4"
-                  >
-                    <h3 className="mb-2 mt-0 text-lg font-bold text-foreground-neutral stretch-display font-sans-display">
-                      {item.title}
-                    </h3>
-                    <p className="m-0 text-sm leading-6 text-foreground-neutral-weak">
-                      {item.body}
-                    </p>
-                  </div>
-                ))}
+              <div className="flex flex-wrap gap-2 lg:justify-end">
+                <span className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
+                  Clear README
+                </span>
+                <span className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
+                  Service metadata
+                </span>
+                <span className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
+                  Screenshots
+                </span>
+                <span className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak">
+                  Compute fit
+                </span>
               </div>
             </div>
+            <div className="grid gap-3 border-t border-stroke-neutral pt-5 md:grid-cols-3">
+              {[
+                {
+                  title: "Curated repo",
+                  body: "Flagship apps can live in `prisma/apps` with tighter editorial control.",
+                },
+                {
+                  title: "GitHub discovery",
+                  body: "Community apps can be pulled in through a topic once ingestion is live.",
+                },
+                {
+                  title: "Deploy-ready shape",
+                  body: "Listings should expose enough structure for future one-click deployment.",
+                },
+              ].map((item) => (
+                <div key={item.title} className="flex flex-col gap-2">
+                  <h3 className="m-0 text-base font-bold text-foreground-neutral stretch-display font-sans-display">
+                    {item.title}
+                  </h3>
+                  <p className="m-0 text-sm leading-6 text-foreground-neutral-weak">
+                    {item.body}
+                  </p>
+                </div>
+              ))}
+            </div>
           </Card>
-        </div>
-      </section>
-
-      <section className="px-4 pb-20">
-        <div className={APPS_PAGE_NARROW_SHELL}>
-          <div className="mb-8 max-w-[720px]">
-            <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-              FAQ
-            </p>
-            <h2 className="mb-0 mt-3 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
-              Questions we expect from the first wave of builders
-            </h2>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            {faqEntries.map((faq) => (
-              <Card
-                key={faq.question}
-                className="gap-3 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high"
-              >
-                <h3 className="m-0 text-xl font-bold text-foreground-neutral stretch-display font-sans-display">
-                  {faq.question}
-                </h3>
-                <p className="m-0 text-sm leading-7 text-foreground-neutral-weak">{faq.answer}</p>
-              </Card>
-            ))}
-          </div>
         </div>
       </section>
     </main>
