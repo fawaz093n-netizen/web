@@ -1,6 +1,7 @@
 import { AppsDirectory } from "@/components/apps/apps-directory";
 import { JsonLd } from "@/components/json-ld";
-import { appDirectory, appKinds, type AppKind } from "@/data/apps";
+import { appKinds, type AppKind } from "@/data/apps";
+import { getAppDirectory } from "@/lib/prisma-apps-loader";
 import { createPageMetadata } from "@/lib/page-metadata";
 import {
   createBreadcrumbStructuredData,
@@ -60,10 +61,12 @@ function parseKind(value: string | string[] | undefined): "all" | AppKind {
   return appKinds.includes(value as AppKind) ? (value as AppKind) : "all";
 }
 
-function parseCategory(value: string | string[] | undefined): string {
+function parseCategory(
+  value: string | string[] | undefined,
+  categories: Iterable<string>,
+): string {
   if (!value || Array.isArray(value)) return "all";
-  const categories = new Set(appDirectory.map((app) => app.category));
-  return categories.has(value) ? value : "all";
+  return new Set(categories).has(value) ? value : "all";
 }
 
 function parseQuery(value: string | string[] | undefined): string {
@@ -78,7 +81,11 @@ export default async function AppsPage({
 }) {
   const resolvedSearchParams = await searchParams;
   const initialKind = parseKind(resolvedSearchParams.kind);
-  const initialCategory = parseCategory(resolvedSearchParams.category);
+  const appDirectory = await getAppDirectory();
+  const initialCategory = parseCategory(
+    resolvedSearchParams.category,
+    appDirectory.map((app) => app.category),
+  );
   const initialSearch = parseQuery(resolvedSearchParams.q);
 
   return (

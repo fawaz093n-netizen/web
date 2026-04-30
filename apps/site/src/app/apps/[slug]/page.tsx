@@ -1,11 +1,12 @@
 import { AppDeployButton, AppDetailTracker } from "@/components/apps/app-deploy-button";
 import { JsonLd } from "@/components/json-ld";
-import { appDirectory, getAppBySlug, getRelatedApps, type AppEntry } from "@/data/apps";
 import { createPageMetadata } from "@/lib/page-metadata";
+import { getAppBySlug, getAppDirectory, getRelatedApps } from "@/lib/prisma-apps-loader";
 import {
   createBreadcrumbStructuredData,
   createSoftwareApplicationStructuredData,
 } from "@/lib/structured-data";
+import type { AppEntry } from "@/data/apps";
 import { Badge, Button, Card } from "@prisma/eclipse";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -43,6 +44,8 @@ function getDeploymentShape(app: AppEntry) {
 }
 
 export async function generateStaticParams() {
+  const appDirectory = await getAppDirectory();
+
   return appDirectory.map((app) => ({
     slug: app.slug,
   }));
@@ -58,7 +61,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 function RelatedApps({ app }: { app: AppEntry }) {
-  const relatedApps = getRelatedApps(app);
+  const relatedAppsPromise = getRelatedApps(app);
+  return <RelatedAppsInner relatedAppsPromise={relatedAppsPromise} />;
+}
+
+async function RelatedAppsInner({
+  relatedAppsPromise,
+}: {
+  relatedAppsPromise: ReturnType<typeof getRelatedApps>;
+}) {
+  const relatedApps = await relatedAppsPromise;
 
   if (relatedApps.length === 0) return null;
 

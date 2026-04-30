@@ -20,11 +20,17 @@ export type AppSection = {
   body: string;
 };
 
+export type AppScreenshot = {
+  src: string;
+  alt: string;
+  caption?: string;
+};
+
 export type AppEntry = {
   slug: string;
   name: string;
   kind: AppKind;
-  status: "seed-listing" | "starter";
+  status: "seed-listing" | "starter" | "active" | "beta" | "coming-soon" | "archived";
   summary: string;
   description: string;
   icon: string;
@@ -40,6 +46,14 @@ export type AppEntry = {
   services: AppService[];
   readmeSections: AppSection[];
   relatedSlugs: string[];
+  logo?: string;
+  coverImage?: string;
+  screenshots?: AppScreenshot[];
+  repositoryUrl?: string;
+  deploy?: {
+    status: "ready" | "coming-soon";
+    buttonLabel?: string;
+  };
 };
 
 export const appDirectory: AppEntry[] = [
