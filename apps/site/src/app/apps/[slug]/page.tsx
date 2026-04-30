@@ -10,6 +10,9 @@ import { Badge, Button, Card } from "@prisma/eclipse";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+const APPS_DETAIL_SHELL = "mx-auto w-full max-w-[1240px]";
+const APPS_DETAIL_NARROW_SHELL = "mx-auto w-full max-w-[1160px]";
+
 function appMetadata(app: AppEntry) {
   return {
     ...createPageMetadata({
@@ -44,7 +47,7 @@ function RelatedApps({ app }: { app: AppEntry }) {
 
   return (
     <section className="px-4 pb-20">
-      <div className="content">
+      <div className={APPS_DETAIL_NARROW_SHELL}>
         <div className="mb-8 max-w-[760px]">
           <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
             Keep exploring
@@ -54,7 +57,7 @@ function RelatedApps({ app }: { app: AppEntry }) {
           </h2>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 xl:grid-cols-2">
           {relatedApps.map((entry) => (
             <Card
               key={entry.slug}
@@ -126,7 +129,9 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
 
       <section className="relative overflow-hidden px-4 pb-14 pt-44">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.14),transparent_45%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_70%)] opacity-80" />
-        <div className="content relative z-1 grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+        <div
+          className={`${APPS_DETAIL_SHELL} relative z-1 grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-start`}
+        >
           <div className="flex flex-col gap-6">
             <div className="flex flex-wrap items-center gap-2">
               <Badge
@@ -263,7 +268,7 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
       </section>
 
       <section className="px-4 pb-16">
-        <div className="content grid gap-4 lg:grid-cols-[1fr_1fr]">
+        <div className={`${APPS_DETAIL_NARROW_SHELL} grid gap-4 lg:grid-cols-[1fr_1fr]`}>
           <Card className="gap-5 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high">
             <div>
               <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
@@ -311,7 +316,7 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
       </section>
 
       <section className="px-4 pb-16">
-        <div className="content grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
+        <div className={`${APPS_DETAIL_NARROW_SHELL} grid gap-4 lg:grid-cols-[0.85fr_1.15fr]`}>
           <Card className="gap-5 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high">
             <div>
               <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
@@ -392,7 +397,7 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
       </section>
 
       <section className="px-4 pb-16">
-        <div className="content">
+        <div className={APPS_DETAIL_NARROW_SHELL}>
           <Card className="gap-5 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high">
             <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
               Planned analytics

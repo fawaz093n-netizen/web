@@ -224,7 +224,7 @@ export function AppsDirectory({
 
   return (
     <div className="flex flex-col gap-12">
-      <section className="grid gap-4 lg:grid-cols-3">
+      <section className="mx-auto grid w-full max-w-[1080px] gap-4 xl:grid-cols-2">
         {featuredApps.map((app) => (
           <AppCard key={app.slug} app={app} featured />
         ))}
@@ -232,7 +232,7 @@ export function AppsDirectory({
 
       <section
         id="directory"
-        className="rounded-[28px] border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high sm:p-8"
+        className="mx-auto w-full max-w-[1160px] rounded-[28px] border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high sm:p-8"
       >
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -359,7 +359,7 @@ export function AppsDirectory({
             </Link>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
             {filteredApps.map((app) => (
               <AppCard key={app.slug} app={app} />
             ))}

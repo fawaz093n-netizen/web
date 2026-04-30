@@ -75,6 +75,8 @@ const faqEntries = [
 ];
 
 const faqStructuredData = createFaqStructuredData("/apps", faqEntries, "Prisma Apps FAQ");
+const APPS_PAGE_SHELL = "mx-auto w-full max-w-[1240px]";
+const APPS_PAGE_NARROW_SHELL = "mx-auto w-full max-w-[1080px]";
 
 function parseKind(value: string | string[] | undefined): "all" | AppKind {
   if (!value || Array.isArray(value)) return "all";
@@ -115,10 +117,10 @@ export default async function AppsPage({
 
       <section className="relative overflow-hidden px-4 pb-16 pt-46">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.14),transparent_45%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_70%)] opacity-80" />
-        <div className="content relative z-1 flex flex-col gap-8">
+        <div className={cn(APPS_PAGE_SHELL, "relative z-1 flex flex-col gap-8")}>
           <div className="mx-auto flex max-w-[960px] flex-col items-center gap-5 text-center">
             <Badge color="ppg" label="Early access directory" className="w-fit" />
-            <h1 className="m-0 max-w-[920px] text-[42px] leading-[1.05] font-black text-foreground-neutral md:text-[64px] stretch-display font-sans-display">
+            <h1 className="m-0 max-w-[880px] text-[42px] leading-[1.05] font-black text-foreground-neutral md:text-[64px] stretch-display font-sans-display">
               Deploy full apps on Prisma Compute, not just starter templates.
             </h1>
             <p className="m-0 max-w-[760px] text-lg leading-8 text-foreground-neutral-weak">
@@ -138,7 +140,7 @@ export default async function AppsPage({
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mx-auto grid w-full max-w-[1160px] gap-4 md:grid-cols-2 xl:grid-cols-4">
             {[
               { label: "Launch listings", value: totalApps, note: "Seeded for the first wave" },
               {
@@ -164,7 +166,12 @@ export default async function AppsPage({
             ))}
           </div>
 
-          <Card className="mx-auto max-w-[1100px] border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high">
+          <Card
+            className={cn(
+              APPS_PAGE_NARROW_SHELL,
+              "border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high",
+            )}
+          >
             <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
               <div className="flex flex-col gap-3">
                 <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
@@ -205,7 +212,7 @@ export default async function AppsPage({
       </section>
 
       <section className="px-4 pb-16">
-        <div className="content">
+        <div className={APPS_PAGE_SHELL}>
           <AppsDirectory
             apps={appDirectory}
             featuredApps={getFeaturedApps()}
@@ -217,7 +224,7 @@ export default async function AppsPage({
       </section>
 
       <section className="px-4 pb-16">
-        <div className="content grid gap-4 lg:grid-cols-3">
+        <div className={cn(APPS_PAGE_NARROW_SHELL, "grid gap-4 lg:grid-cols-3")}>
           {[
             {
               title: "Push code, it runs",
@@ -252,7 +259,7 @@ export default async function AppsPage({
       </section>
 
       <section id="add-your-app" className="px-4 pb-16">
-        <div className="content">
+        <div className={APPS_PAGE_NARROW_SHELL}>
           <Card className="gap-8 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high md:p-8">
             <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
               <div className="flex flex-col gap-4">
@@ -306,7 +313,7 @@ export default async function AppsPage({
       </section>
 
       <section className="px-4 pb-20">
-        <div className="content">
+        <div className={APPS_PAGE_NARROW_SHELL}>
           <div className="mb-8 max-w-[720px]">
             <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
               FAQ
