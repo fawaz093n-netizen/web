@@ -1,5 +1,4 @@
 import { AppsDirectory } from "@/components/apps/apps-directory";
-import { AppsHeroSearch } from "@/components/apps/apps-hero-search";
 import { JsonLd } from "@/components/json-ld";
 import { appDirectory, appKinds, type AppKind } from "@/data/apps";
 import { createPageMetadata } from "@/lib/page-metadata";
@@ -91,7 +90,7 @@ export default async function AppsPage({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.17),transparent_42%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_66%)] opacity-80" />
 
         <div className={`${APPS_PAGE_SHELL} relative z-1`}>
-          <div className="mx-auto flex max-w-[900px] flex-col items-center gap-6 text-center">
+          <div className="mx-auto flex max-w-[860px] flex-col items-center gap-4 text-center">
             <Badge color="ppg" label="Prisma Apps directory" className="w-fit" />
             <div className="flex flex-col gap-4">
               <h1 className="m-0 text-[40px] leading-[0.98] font-black text-foreground-neutral md:text-[60px] stretch-display font-sans-display">
@@ -102,10 +101,6 @@ export default async function AppsPage({
                 apps, and starter kits. Open a listing to see the stack, service layout, and
                 deployment notes before you deploy.
               </p>
-            </div>
-
-            <div className="w-full max-w-[760px]">
-              <AppsHeroSearch initialSearch={initialSearch} />
             </div>
           </div>
         </div>
