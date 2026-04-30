@@ -87,6 +87,46 @@ export function createFaqStructuredData(
   };
 }
 
+export function createSoftwareApplicationStructuredData({
+  path,
+  name,
+  description,
+  applicationCategory = "DeveloperApplication",
+  operatingSystem = "Cross-platform",
+  providerName = "Prisma",
+  providerUrl = getBaseUrl(),
+}: {
+  path: string;
+  name: string;
+  description: string;
+  applicationCategory?: string;
+  operatingSystem?: string;
+  providerName?: string;
+  providerUrl?: string;
+}) {
+  const url = absoluteUrl(path);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": `${url}#software`,
+    name,
+    description,
+    url,
+    applicationCategory,
+    operatingSystem,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    provider: {
+      "@type": "Organization",
+      name: providerName,
+      url: providerUrl,
+    },
+  };
+}
 export function createCollectionPageStructuredData({
   path,
   name,
@@ -117,5 +157,23 @@ export function createCollectionPageStructuredData({
         description: item.description,
       })),
     },
+  };
+}
+
+export function createBreadcrumbStructuredData(
+  items: Array<{
+    name: string;
+    url: string;
+  }>,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.url),
+    })),
   };
 }
