@@ -61,7 +61,7 @@ export function AppsHeroSearch({ initialSearch }: AppsHeroSearchProps) {
         </Button>
       </form>
 
-      <div className="flex flex-wrap items-center justify-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-foreground-neutral-weaker">
         {quickLinks.map((link) => (
           <button
             key={link.label}
@@ -70,7 +70,7 @@ export function AppsHeroSearch({ initialSearch }: AppsHeroSearchProps) {
               setSearch(link.query ?? "");
               goToDirectory({ nextSearch: link.query, kind: link.kind });
             }}
-            className="cursor-pointer rounded-full border border-stroke-neutral bg-background-neutral-weaker px-3 py-1.5 text-xs uppercase tracking-[1.3px] text-foreground-neutral-weak transition-colors duration-200 hover:border-stroke-ppg hover:text-foreground-neutral"
+            className="cursor-pointer transition-colors duration-200 hover:text-foreground-neutral"
           >
             {link.label}
           </button>

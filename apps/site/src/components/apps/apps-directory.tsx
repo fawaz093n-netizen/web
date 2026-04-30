@@ -12,7 +12,6 @@ import { type ChangeEvent, startTransition, useDeferredValue, useEffect, useStat
 
 type AppsDirectoryProps = {
   apps: AppEntry[];
-  featuredApps: AppEntry[];
   initialCategory: string;
   initialKind: "all" | AppKind;
   initialSearch: string;
@@ -108,25 +107,14 @@ function AppCard({ app, featured = false }: { app: AppEntry; featured?: boolean 
 
       <p className="m-0 text-sm leading-6 text-foreground-neutral-weak">{app.summary}</p>
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        <div className="rounded-[16px] border border-stroke-neutral bg-background-default px-3 py-3">
-          <p className="m-0 text-[11px] font-semibold uppercase tracking-[1.3px] text-foreground-neutral-weaker">
-            Best for
-          </p>
-          <p className="mb-0 mt-1 text-sm text-foreground-neutral-weak">{app.audiences[0]}</p>
-        </div>
-        <div className="rounded-[16px] border border-stroke-neutral bg-background-default px-3 py-3">
-          <p className="m-0 text-[11px] font-semibold uppercase tracking-[1.3px] text-foreground-neutral-weaker">
-            Runs as
-          </p>
-          <p className="mb-0 mt-1 text-sm text-foreground-neutral-weak">
-            {deploymentShape}
-          </p>
-        </div>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-foreground-neutral-weaker">
+        <span>{app.audiences[0]}</span>
+        <span aria-hidden>•</span>
+        <span>{deploymentShape}</span>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {app.tags.slice(0, 3).map((tag) => (
+        {app.tags.slice(0, 2).map((tag) => (
           <span
             key={tag}
             className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1 text-xs text-foreground-neutral-weak"
@@ -184,7 +172,6 @@ function AppCard({ app, featured = false }: { app: AppEntry; featured?: boolean 
 
 export function AppsDirectory({
   apps,
-  featuredApps,
   initialCategory,
   initialKind,
   initialSearch,
@@ -236,38 +223,16 @@ export function AppsDirectory({
   }, [initialCategory, initialKind, initialSearch, searchParams]);
 
   return (
-    <div className="flex flex-col gap-12">
-      <section className="mx-auto flex w-full max-w-[1080px] flex-col gap-5">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-              Featured apps
-            </p>
-            <h2 className="mb-0 mt-2 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
-              Start with a few strong examples.
-            </h2>
-          </div>
-          <p className="m-0 max-w-[360px] text-sm leading-6 text-foreground-neutral-weak">
-            These listings are the fastest way to understand what a polished Compute app looks like.
-          </p>
-        </div>
-
-        <div className="grid gap-4 xl:grid-cols-2">
-        {featuredApps.map((app) => (
-          <AppCard key={app.slug} app={app} featured />
-        ))}
-        </div>
-      </section>
-
+    <div className="flex flex-col gap-10">
       <section
         id="directory"
-        className="mx-auto w-full max-w-[1160px] rounded-[28px] border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high sm:p-8"
+        className="mx-auto w-full max-w-[1160px]"
       >
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                Browse all listings
+                Browse apps
               </p>
               <h2 className="mb-0 mt-2 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
                 All apps and templates

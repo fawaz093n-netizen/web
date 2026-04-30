@@ -1,14 +1,13 @@
 import { AppsDirectory } from "@/components/apps/apps-directory";
 import { AppsHeroSearch } from "@/components/apps/apps-hero-search";
 import { JsonLd } from "@/components/json-ld";
-import { appDirectory, appKinds, getFeaturedApps, type AppKind } from "@/data/apps";
+import { appDirectory, appKinds, type AppKind } from "@/data/apps";
 import { createPageMetadata } from "@/lib/page-metadata";
 import {
   createBreadcrumbStructuredData,
   createCollectionPageStructuredData,
 } from "@/lib/structured-data";
-import { Badge, Card } from "@prisma/eclipse";
-import Link from "next/link";
+import { Badge } from "@prisma/eclipse";
 
 const APPS_PAGE_TITLE =
   "Prisma Apps - Deploy AI agents, backends, internal tools, and full-stack apps";
@@ -56,29 +55,6 @@ const breadcrumbStructuredData = createBreadcrumbStructuredData([
 
 const APPS_PAGE_SHELL = "mx-auto w-full max-w-[1240px]";
 const APPS_PAGE_NARROW_SHELL = "mx-auto w-full max-w-[1040px]";
-
-const useCaseLinks = [
-  {
-    href: "/apps?q=AI%20agent#directory",
-    title: "AI agents",
-    body: "Assistant workflows, triage bots, and long-running automation loops.",
-  },
-  {
-    href: "/apps?category=Customer+support#directory",
-    title: "Customer support",
-    body: "Shared inboxes, queues, and async follow-up systems for support teams.",
-  },
-  {
-    href: "/apps?category=Growth#directory",
-    title: "Growth and waitlists",
-    body: "Launch pages, referral loops, onboarding cohorts, and invite flows.",
-  },
-  {
-    href: "/apps?kind=template#directory",
-    title: "Templates",
-    body: "Starter kits for teams that want to move fast but still shape the app themselves.",
-  },
-];
 
 function parseKind(value: string | string[] | undefined): "all" | AppKind {
   if (!value || Array.isArray(value)) return "all";
@@ -131,30 +107,6 @@ export default async function AppsPage({
             <div className="w-full max-w-[760px]">
               <AppsHeroSearch initialSearch={initialSearch} />
             </div>
-
-            <p className="m-0 max-w-[720px] text-sm leading-6 text-foreground-neutral-weaker">
-              Start with search, jump into a use case, or browse everything below.
-            </p>
-          </div>
-
-          <div className="mx-auto mt-8 grid max-w-[1080px] gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {useCaseLinks.map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="cursor-pointer rounded-[24px] border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high transition-transform duration-200 hover:-translate-y-0.5"
-              >
-                <p className="m-0 text-sm font-semibold uppercase tracking-[1.5px] text-foreground-ppg stretch-display font-sans-display">
-                  Explore
-                </p>
-                <h2 className="mb-0 mt-3 text-xl font-black text-foreground-neutral stretch-display font-sans-display">
-                  {item.title}
-                </h2>
-                <p className="mb-0 mt-2 text-sm leading-6 text-foreground-neutral-weak">
-                  {item.body}
-                </p>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
@@ -163,7 +115,6 @@ export default async function AppsPage({
         <div className={APPS_PAGE_SHELL}>
           <AppsDirectory
             apps={appDirectory}
-            featuredApps={getFeaturedApps()}
             initialCategory={initialCategory}
             initialKind={initialKind}
             initialSearch={initialSearch}
@@ -172,61 +123,15 @@ export default async function AppsPage({
       </section>
 
       <section id="submit" className="px-4 pb-20">
-        <div className={APPS_PAGE_NARROW_SHELL}>
-          <Card className="gap-6 border border-stroke-neutral bg-background-neutral-weaker p-6 shadow-box-high md:p-8">
-            <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
-              <div className="flex flex-col gap-4">
-                <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                  Submit an app
-                </p>
-                <h2 className="m-0 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
-                  Want to get listed?
-                </h2>
-                <p className="m-0 max-w-[720px] text-base leading-7 text-foreground-neutral-weak">
-                  We plan to support curated listings from `prisma/apps` and discovery through a
-                  GitHub topic. To make a listing useful, ship a clear README, screenshots, stack
-                  metadata, and a deployment shape that makes sense on Compute.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2 lg:justify-end">
-                {["README", "Screenshots", "Stack metadata", "Deploy shape"].map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1.5 text-xs uppercase tracking-[1.4px] text-foreground-neutral-weak"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid gap-4 border-t border-stroke-neutral pt-5 md:grid-cols-3">
-              {[
-                {
-                  title: "Curated repo",
-                  body: "Flagship apps can live in `prisma/apps` with tighter editorial control.",
-                },
-                {
-                  title: "GitHub discovery",
-                  body: "Community apps can be pulled in through a dedicated topic once ingestion is live.",
-                },
-                {
-                  title: "Deploy-ready details",
-                  body: "Listings should expose enough structure for future one-click deployment.",
-                },
-              ].map((item) => (
-                <div key={item.title} className="flex flex-col gap-2">
-                  <h3 className="m-0 text-base font-bold text-foreground-neutral stretch-display font-sans-display">
-                    {item.title}
-                  </h3>
-                  <p className="m-0 text-sm leading-6 text-foreground-neutral-weak">
-                    {item.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </Card>
+        <div className={`${APPS_PAGE_NARROW_SHELL} text-center`}>
+          <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
+            Submit an app
+          </p>
+          <p className="mb-0 mt-3 text-base leading-7 text-foreground-neutral-weak">
+            We plan to support curated listings from `prisma/apps` and discovery through a GitHub
+            topic. A good listing should have a clear README, screenshots, stack metadata, and a
+            deployment shape that makes sense on Compute.
+          </p>
         </div>
       </section>
     </main>
