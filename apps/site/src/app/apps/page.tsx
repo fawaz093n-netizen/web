@@ -61,6 +61,14 @@ function parseQuery(value: string | string[] | undefined): string {
   return value;
 }
 
+function parseTechnology(
+  value: string | string[] | undefined,
+  technologies: Iterable<string>,
+): string {
+  if (!value || Array.isArray(value)) return "all";
+  return new Set(technologies).has(value) ? value : "all";
+}
+
 export default async function AppsPage({
   searchParams,
 }: {
@@ -83,6 +91,10 @@ export default async function AppsPage({
     resolvedSearchParams.category,
     appDirectory.map((app) => app.category),
   );
+  const initialTechnology = parseTechnology(
+    resolvedSearchParams.stack,
+    appDirectory.flatMap((app) => app.stack.map((item) => item.label)),
+  );
   const initialSearch = parseQuery(resolvedSearchParams.q);
 
   return (
@@ -97,14 +109,14 @@ export default async function AppsPage({
           <div className="mx-auto flex max-w-[860px] flex-col items-center gap-5 text-center">
             <Badge color="ppg" label="Apps directory" className="w-fit" />
             <div className="flex flex-col gap-4">
-              <h1 className="m-0 max-w-[11ch] text-[44px] leading-[0.96] font-black text-foreground-neutral md:text-[68px] stretch-display font-sans-display">
-                Deploy anything
-                <br className="hidden md:block" />
-                <span className="md:ml-3">on Prisma Compute.</span>
+              <h1 className="m-0 max-w-[14ch] text-[44px] leading-[0.96] font-black text-foreground-neutral md:text-[68px] stretch-display font-sans-display">
+                Deploy complete apps
+                <br />
+                on Prisma Compute.
               </h1>
               <p className="m-0 max-w-[640px] self-center text-center text-lg leading-8 text-foreground-neutral-weak">
-                Browse AI agents, internal tools, backends, and templates built for Prisma
-                Compute.
+                Discover one-click AI agents, internal tools, support apps, and full-stack
+                software ready to deploy and use.
               </p>
             </div>
           </div>
@@ -118,6 +130,7 @@ export default async function AppsPage({
             initialCategory={initialCategory}
             initialKind={initialKind}
             initialSearch={initialSearch}
+            initialTechnology={initialTechnology}
           />
         </div>
       </section>

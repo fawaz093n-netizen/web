@@ -2,7 +2,7 @@ import { AppDeployButton, AppDetailTracker } from "@/components/apps/app-deploy-
 import { AppCard } from "@/components/apps/app-card";
 import { JsonLd } from "@/components/json-ld";
 import type { AppEntry } from "@/data/apps";
-import { getAppDetailImage, getAppDisplayIcon } from "@/lib/app-visuals";
+import { getAppDetailImage, getAppGradient, getAppMonogram } from "@/lib/app-visuals";
 import { createPageMetadata } from "@/lib/page-metadata";
 import { getAppBySlug, getAppDirectory, getRelatedApps } from "@/lib/prisma-apps-loader";
 import {
@@ -26,23 +26,6 @@ function appMetadata(app: AppEntry) {
     }),
     keywords: [...app.keywords, ...app.tags, app.category, "Prisma Apps", "Prisma Compute"],
   };
-}
-
-function getDeploymentShape(app: AppEntry) {
-  return Array.from(new Set(app.services.map((service) => service.type)))
-    .map((type) => {
-      switch (type) {
-        case "api":
-          return "API";
-        case "web":
-          return "Web";
-        case "worker":
-          return "Worker";
-        case "cron":
-          return "Cron";
-      }
-    })
-    .join(" + ");
 }
 
 export async function generateStaticParams() {
@@ -82,9 +65,9 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
     { name: app.name, url: `/apps/${app.slug}` },
   ]);
 
-  const deploymentShape = getDeploymentShape(app);
   const detailImage = getAppDetailImage(app);
-  const fallbackIcon = getAppDisplayIcon(app);
+  const monogram = getAppMonogram(app);
+  const gradient = getAppGradient(app.slug);
   const relatedApp = (await getRelatedApps(app))[0];
 
   return (
@@ -96,7 +79,7 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
       <JsonLd id={`${app.slug}-breadcrumb-structured-data`} data={breadcrumbStructuredData} />
       <AppDetailTracker app={app} />
 
-      <section className="relative overflow-hidden px-4 pb-14 pt-52 md:pt-56">
+      <section className="relative px-4 pb-14 pt-52 md:pt-56">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.14),transparent_45%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_70%)] opacity-80" />
 
         <div className={`${APPS_DETAIL_SHELL} relative z-1`}>
@@ -118,11 +101,6 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
                 <p className="m-0 max-w-prose text-lg leading-8 text-foreground-neutral-weak">
                   {app.description}
                 </p>
-                <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-foreground-neutral-weaker">
-                  <span>{app.audiences[0]}</span>
-                  <span aria-hidden>•</span>
-                  <span>{deploymentShape}</span>
-                </div>
               </div>
             </div>
 
@@ -137,49 +115,25 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
                     className="aspect-[16/10] w-full object-cover"
                   />
                 ) : (
-                  <div className="flex aspect-[16/10] w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.16),transparent_55%)] text-foreground-ppg">
-                    <i className={`${fallbackIcon} text-4xl`} aria-hidden />
+                  <div
+                    className={`flex aspect-[16/10] w-full items-center justify-center bg-linear-to-br ${gradient} text-4xl font-black text-white stretch-display font-sans-display`}
+                  >
+                    {monogram}
                   </div>
                 )}
               </div>
 
               <AppDeployButton app={app} location="detail" className="w-full" />
 
-              <div className="grid gap-4 border-t border-stroke-neutral pt-5 text-sm text-foreground-neutral-weak">
-                <div>
-                  <p className="m-0 text-[11px] font-semibold uppercase tracking-[1.3px] text-foreground-neutral-weaker">
-                    Best for
-                  </p>
-                  <p className="mb-0 mt-1">{app.audiences[0]}</p>
-                </div>
-                <div>
-                  <p className="m-0 text-[11px] font-semibold uppercase tracking-[1.3px] text-foreground-neutral-weaker">
-                    Runs as
-                  </p>
-                  <p className="mb-0 mt-1">{deploymentShape}</p>
-                </div>
-                <div>
-                  <p className="m-0 text-[11px] font-semibold uppercase tracking-[1.3px] text-foreground-neutral-weaker">
-                    Stack
-                  </p>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {app.stack.map((item) => (
-                      <div
-                        key={item.label}
-                        className="flex items-center gap-2 rounded-full border border-stroke-neutral bg-background-default px-2.5 py-1"
-                      >
-                        <Image
-                          src={item.icon}
-                          alt={item.label}
-                          width={14}
-                          height={14}
-                          className="size-3.5 object-contain"
-                        />
-                        <span className="text-xs text-foreground-neutral-weak">{item.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              <div className="flex flex-wrap gap-2 border-t border-stroke-neutral pt-5">
+                {app.stack.map((item) => (
+                  <span
+                    key={item.label}
+                    className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1 text-xs text-foreground-neutral-weak"
+                  >
+                    {item.label}
+                  </span>
+                ))}
               </div>
             </Card>
           </div>
@@ -247,6 +201,9 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
       {relatedApp ? (
         <section className="px-4 pb-20">
           <div className={APPS_DETAIL_NARROW_SHELL}>
+            <h2 className="mb-6 mt-0 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
+              More apps
+            </h2>
             <div className="max-w-[380px]">
               <AppCard app={relatedApp} />
             </div>

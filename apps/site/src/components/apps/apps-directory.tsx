@@ -3,7 +3,7 @@
 import { AppCard } from "@/components/apps/app-card";
 import type { AppEntry, AppKind } from "@/data/apps";
 import { cn } from "@/lib/cn";
-import { Button, Card, Input, badgeVariants } from "@prisma/eclipse";
+import { Card, Input, badgeVariants } from "@prisma/eclipse";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { type ChangeEvent, startTransition, useDeferredValue, useEffect, useState } from "react";
@@ -13,23 +13,20 @@ type AppsDirectoryProps = {
   initialCategory: string;
   initialKind: "all" | AppKind;
   initialSearch: string;
+  initialTechnology: string;
 };
-
-const kindOptions: Array<{ label: string; value: "all" | AppKind }> = [
-  { label: "Apps", value: "application" },
-  { label: "Templates", value: "template" },
-  { label: "All", value: "all" },
-];
 
 function trackFilterChange(
   kind: "all" | AppKind,
   category: string,
+  technology: string,
   search: string,
   resultCount: number,
 ) {
   posthog.capture("site:apps_filter_changed", {
     app_kind: kind,
     category,
+    technology,
     has_search: search.trim().length > 0,
     search_length: search.trim().length,
     result_count: resultCount,
@@ -41,12 +38,14 @@ function updateUrl(
   router: ReturnType<typeof useRouter>,
   kind: "all" | AppKind,
   category: string,
+  technology: string,
   search: string,
 ) {
   const params = new URLSearchParams();
 
   if (kind !== "all") params.set("kind", kind);
   if (category !== "all") params.set("category", category);
+  if (technology !== "all") params.set("stack", technology);
   if (search.trim()) params.set("q", search.trim());
 
   const nextUrl = params.size > 0 ? `${pathname}?${params.toString()}` : pathname;
@@ -56,18 +55,38 @@ function updateUrl(
   });
 }
 
+function matchesSearch(app: AppEntry, normalizedSearch: string) {
+  if (!normalizedSearch) return true;
+
+  const haystack = [
+    app.name,
+    app.summary,
+    app.description,
+    app.category,
+    ...app.tags,
+    ...app.keywords,
+    ...app.stack.map((item) => item.label),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return haystack.includes(normalizedSearch);
+}
+
 export function AppsDirectory({
   apps,
   initialCategory,
   initialKind,
   initialSearch,
+  initialTechnology,
 }: AppsDirectoryProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [kind, setKind] = useState<"all" | AppKind>(initialKind);
+  const [kind] = useState<"all" | AppKind>(initialKind);
   const [category, setCategory] = useState(initialCategory);
+  const [technology, setTechnology] = useState(initialTechnology);
   const [search, setSearch] = useState(initialSearch);
 
   const deferredSearch = useDeferredValue(search);
@@ -80,131 +99,117 @@ export function AppsDirectory({
     ),
   ];
 
+  const technologies = [
+    "all",
+    ...Array.from(new Set(apps.flatMap((app) => app.stack.map((item) => item.label)))).sort(
+      (left, right) => left.localeCompare(right),
+    ),
+  ];
+
   const filteredApps = apps.filter((app) => {
     if (kind !== "all" && app.kind !== kind) return false;
     if (category !== "all" && app.category !== category) return false;
-    if (!normalizedSearch) return true;
+    if (technology !== "all" && !app.stack.some((item) => item.label === technology)) return false;
 
-    const haystack = [
-      app.name,
-      app.summary,
-      app.description,
-      app.category,
-      ...app.tags,
-      ...app.keywords,
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    return haystack.includes(normalizedSearch);
+    return matchesSearch(app, normalizedSearch);
   });
 
   useEffect(() => {
     posthog.capture("site:apps_directory_viewed", {
       app_kind: initialKind,
       category: initialCategory,
+      technology: initialTechnology,
       has_search: initialSearch.trim().length > 0,
       source: searchParams.get("utm_source") ?? null,
     });
-  }, [initialCategory, initialKind, initialSearch, searchParams]);
+  }, [initialCategory, initialKind, initialSearch, initialTechnology, searchParams]);
 
   return (
     <div className="flex flex-col gap-10">
       <section id="directory" className="mx-auto w-full max-w-[1160px]">
         <div className="flex flex-col gap-6">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
-            <Input
-              size="2xl"
-              value={search}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                const nextSearch = event.target.value;
-                setSearch(nextSearch);
-                updateUrl(pathname, router, kind, category, nextSearch);
-                trackFilterChange(kind, category, nextSearch, filteredApps.length);
-              }}
-              placeholder="Search AI agents, support inboxes, waitlists, backends..."
-              className="w-full"
-            />
+          <Input
+            size="2xl"
+            value={search}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              const nextSearch = event.target.value;
+              setSearch(nextSearch);
+              updateUrl(pathname, router, kind, category, technology, nextSearch);
+              trackFilterChange(kind, category, technology, nextSearch, filteredApps.length);
+            }}
+            placeholder="Search one-click apps, AI agents, support inboxes, internal tools..."
+            className="w-full"
+          />
 
-            <div className="flex flex-wrap gap-2">
-              {kindOptions.map((option) => (
-                <Button
-                  key={option.value}
-                  variant={kind === option.value ? "ppg" : "default-stronger"}
-                  size="lg"
-                  onClick={() => {
-                    setKind(option.value);
-                    updateUrl(pathname, router, option.value, category, search);
-                    const nextResults = apps.filter((app) => {
-                      if (option.value !== "all" && app.kind !== option.value) return false;
-                      if (category !== "all" && app.category !== category) return false;
-
-                      if (!normalizedSearch) return true;
-
-                      const haystack = [
-                        app.name,
-                        app.summary,
-                        app.description,
-                        app.category,
-                        ...app.tags,
-                        ...app.keywords,
-                      ]
-                        .join(" ")
-                        .toLowerCase();
-
-                      return haystack.includes(normalizedSearch);
-                    }).length;
-
-                    trackFilterChange(option.value, category, search, nextResults);
-                  }}
-                >
-                  {option.label}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-2">
               {categories.map((option) => (
                 <button
                   key={option}
-                type="button"
-                onClick={() => {
-                  setCategory(option);
-                  updateUrl(pathname, router, kind, option, search);
-                  const nextResults = apps.filter((app) => {
-                    if (kind !== "all" && app.kind !== kind) return false;
-                    if (option !== "all" && app.category !== option) return false;
+                  type="button"
+                  onClick={() => {
+                    setCategory(option);
+                    updateUrl(pathname, router, kind, option, technology, search);
+                    const nextResults = apps.filter((app) => {
+                      if (kind !== "all" && app.kind !== kind) return false;
+                      if (option !== "all" && app.category !== option) return false;
+                      if (
+                        technology !== "all" &&
+                        !app.stack.some((item) => item.label === technology)
+                      ) {
+                        return false;
+                      }
 
-                    if (!normalizedSearch) return true;
+                      return matchesSearch(app, normalizedSearch);
+                    }).length;
 
-                    const haystack = [
-                      app.name,
-                      app.summary,
-                      app.description,
-                      app.category,
-                      ...app.tags,
-                      ...app.keywords,
-                    ]
-                      .join(" ")
-                      .toLowerCase();
+                    trackFilterChange(kind, option, technology, search, nextResults);
+                  }}
+                  className={cn(
+                    badgeVariants({
+                      color: category === option ? "ppg" : "neutral",
+                      size: "lg",
+                    }),
+                    "cursor-pointer border border-transparent transition-colors hover:opacity-90",
+                  )}
+                >
+                  {option === "all" ? "All categories" : option}
+                </button>
+              ))}
+            </div>
 
-                    return haystack.includes(normalizedSearch);
-                  }).length;
+            <div className="flex flex-wrap items-center gap-2">
+              {technologies.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => {
+                    setTechnology(option);
+                    updateUrl(pathname, router, kind, category, option, search);
+                    const nextResults = apps.filter((app) => {
+                      if (kind !== "all" && app.kind !== kind) return false;
+                      if (category !== "all" && app.category !== category) return false;
+                      if (option !== "all" && !app.stack.some((item) => item.label === option)) {
+                        return false;
+                      }
 
-                  trackFilterChange(kind, option, search, nextResults);
-                }}
-                className={cn(
-                  badgeVariants({
-                    color: category === option ? "ppg" : "neutral",
-                    size: "lg",
-                  }),
-                  "cursor-pointer border border-transparent transition-colors hover:opacity-90",
-                )}
-              >
-                {option === "all" ? "All categories" : option}
-              </button>
-            ))}
+                      return matchesSearch(app, normalizedSearch);
+                    }).length;
+
+                    trackFilterChange(kind, category, option, search, nextResults);
+                  }}
+                  className={cn(
+                    badgeVariants({
+                      color: technology === option ? "ppg" : "neutral",
+                      size: "lg",
+                    }),
+                    "cursor-pointer border border-transparent transition-colors hover:opacity-90",
+                  )}
+                >
+                  {option === "all" ? "All technologies" : option}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="flex items-center justify-between gap-3">
@@ -227,7 +232,8 @@ export function AppsDirectory({
                 No apps matched that filter set.
               </h3>
               <p className="mb-0 mt-2 text-sm text-foreground-neutral-weak">
-                Try clearing the search or switching back to the full app view.
+                Try clearing the search or switching back to the broader category and technology
+                filters.
               </p>
             </Card>
           ) : null}

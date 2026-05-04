@@ -12,6 +12,14 @@ const fallbackAppIcons = [
   "fa-regular fa-bolt",
 ];
 
+const fallbackAppGradients = [
+  "from-[#13252D] via-[#10313A] to-[#18C7BC]",
+  "from-[#181D32] via-[#10253A] to-[#3BB8FF]",
+  "from-[#1F172D] via-[#17303A] to-[#20C997]",
+  "from-[#1D2235] via-[#113442] to-[#4ADE80]",
+  "from-[#23182D] via-[#15303A] to-[#22D3EE]",
+];
+
 function hashString(value: string) {
   let hash = 0;
 
@@ -27,14 +35,25 @@ export function getFallbackAppIcon(seed: string) {
   return fallbackAppIcons[hashString(seed) % fallbackAppIcons.length];
 }
 
-export function getAppDisplayIcon(app: Pick<AppEntry, "slug" | "icon">) {
-  return app.icon || getFallbackAppIcon(app.slug);
-}
-
 export function getAppCardImage(app: Pick<AppEntry, "logo" | "coverImage">) {
   return app.logo || app.coverImage || null;
 }
 
 export function getAppDetailImage(app: Pick<AppEntry, "coverImage" | "logo">) {
   return app.coverImage || app.logo || null;
+}
+
+export function getAppMonogram(app: Pick<AppEntry, "slug" | "name">) {
+  const tokens = app.name
+    .split(/[\s/-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((token) => token[0]?.toUpperCase())
+    .filter(Boolean);
+
+  return (tokens.join("") || app.slug.slice(0, 2)).slice(0, 2);
+}
+
+export function getAppGradient(seed: string) {
+  return fallbackAppGradients[hashString(seed) % fallbackAppGradients.length];
 }

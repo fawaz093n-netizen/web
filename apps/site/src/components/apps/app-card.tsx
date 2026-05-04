@@ -2,8 +2,7 @@
 
 import { AppDeployButton } from "@/components/apps/app-deploy-button";
 import type { AppEntry } from "@/data/apps";
-import { getAppCardImage, getAppDisplayIcon } from "@/lib/app-visuals";
-import { cn } from "@/lib/cn";
+import { getAppCardImage, getAppGradient, getAppMonogram } from "@/lib/app-visuals";
 import { Badge, Button, Card } from "@prisma/eclipse";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -24,7 +23,8 @@ function trackCardNavigation(app: AppEntry) {
 export function AppCard({ app }: { app: AppEntry }) {
   const router = useRouter();
   const visual = getAppCardImage(app);
-  const fallbackIcon = getAppDisplayIcon(app);
+  const monogram = getAppMonogram(app);
+  const gradient = getAppGradient(app.slug);
 
   function navigateToDetail() {
     trackCardNavigation(app);
@@ -62,7 +62,11 @@ export function AppCard({ app }: { app: AppEntry }) {
                 className="size-full object-cover"
               />
             ) : (
-              <i className={cn(fallbackIcon, "text-lg")} aria-hidden />
+              <div
+                className={`flex size-full items-center justify-center bg-linear-to-br ${gradient} text-sm font-black text-white stretch-display font-sans-display`}
+              >
+                {monogram}
+              </div>
             )}
           </div>
 
@@ -87,15 +91,8 @@ export function AppCard({ app }: { app: AppEntry }) {
           {app.stack.slice(0, 4).map((item) => (
             <div
               key={item.label}
-              className="flex items-center gap-2 rounded-full border border-stroke-neutral bg-background-default px-2.5 py-1"
+              className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1"
             >
-              <Image
-                src={item.icon}
-                alt={item.label}
-                width={14}
-                height={14}
-                className="size-3.5 object-contain"
-              />
               <span className="text-xs text-foreground-neutral-weak">{item.label}</span>
             </div>
           ))}

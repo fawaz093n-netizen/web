@@ -110,10 +110,6 @@ export function AppDeployButton({ app, location, className }: AppDeployButtonPro
         onClick={handleClick}
         className={cn("justify-center gap-2", location === "detail" && "w-full")}
       >
-        <i
-          className={cn("fa-regular", isLoading ? "fa-loader animate-spin" : "fa-cloud-arrow-up")}
-          aria-hidden
-        />
         <span>{isLoading ? "Preparing deploy..." : "Deploy on Compute"}</span>
       </Button>
       {message ? <p className="m-0 text-sm text-foreground-neutral-weak">{message}</p> : null}
