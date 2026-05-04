@@ -71,7 +71,7 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
   const relatedApp = (await getRelatedApps(app))[0];
 
   return (
-    <main className="relative -mt-24 flex-1 overflow-x-hidden bg-background-default text-foreground-neutral">
+    <main className="relative -mt-24 flex-1 bg-background-default text-foreground-neutral">
       <JsonLd
         id={`${app.slug}-software-application-structured-data`}
         data={softwareApplicationStructuredData}
