@@ -10,6 +10,7 @@ import {
   createSoftwareApplicationStructuredData,
 } from "@/lib/structured-data";
 import { Button, Card } from "@prisma/eclipse";
+import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -91,7 +92,7 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
                   size="lg"
                   className="justify-start gap-2 px-0"
                 >
-                  <i className="fa-regular fa-arrow-left" aria-hidden />
+                  <ArrowLeft className="size-4" aria-hidden />
                   <span>Back to browsing Prisma Apps</span>
                 </Button>
               </div>

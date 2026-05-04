@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
   Input,
 } from "@prisma/eclipse";
+import { SlidersHorizontal } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { type ChangeEvent, startTransition, useDeferredValue, useEffect, useState } from "react";
@@ -156,7 +157,7 @@ export function AppsDirectory({
               <DropdownMenuTrigger asChild>
                 <Button variant="default-stronger" size="2xl" className="justify-center gap-2">
                   <span>Filters</span>
-                  <i className="fa-regular fa-sliders" aria-hidden />
+                  <SlidersHorizontal className="size-4" aria-hidden />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[280px]">

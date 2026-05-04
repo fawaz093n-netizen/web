@@ -3,7 +3,7 @@
 import { AppDeployButton } from "@/components/apps/app-deploy-button";
 import type { AppEntry } from "@/data/apps";
 import { getAppCardImage, getAppGradient, getAppMonogram } from "@/lib/app-visuals";
-import { Badge, Button, Card } from "@prisma/eclipse";
+import { Badge, Card } from "@prisma/eclipse";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
@@ -102,19 +102,7 @@ export function AppCard({ app }: { app: AppEntry }) {
           className="flex flex-col gap-3 sm:flex-row"
           onClickCapture={stopCardNavigation}
         >
-          <Button
-            variant="default-stronger"
-            size="lg"
-            href={`/apps/${app.slug}`}
-            className="justify-center gap-2"
-            onClick={() => {
-              trackCardNavigation(app);
-            }}
-          >
-            <span>View app</span>
-            <i className="fa-regular fa-arrow-right" aria-hidden />
-          </Button>
-          <AppDeployButton app={app} location="directory" className="flex-1" />
+          <AppDeployButton app={app} location="directory" className="w-full" />
         </div>
       </div>
     </Card>
