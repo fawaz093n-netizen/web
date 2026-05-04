@@ -2,8 +2,18 @@
 
 import { AppCard } from "@/components/apps/app-card";
 import type { AppEntry, AppKind } from "@/data/apps";
-import { cn } from "@/lib/cn";
-import { Card, Input, badgeVariants } from "@prisma/eclipse";
+import {
+  Button,
+  Card,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  Input,
+} from "@prisma/eclipse";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { type ChangeEvent, startTransition, useDeferredValue, useEffect, useState } from "react";
@@ -84,7 +94,7 @@ export function AppsDirectory({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [kind] = useState<"all" | AppKind>(initialKind);
+  const [kind, setKind] = useState<"all" | AppKind>(initialKind);
   const [category, setCategory] = useState(initialCategory);
   const [technology, setTechnology] = useState(initialTechnology);
   const [search, setSearch] = useState(initialSearch);
@@ -128,26 +138,61 @@ export function AppsDirectory({
     <div className="flex flex-col gap-10">
       <section id="directory" className="mx-auto w-full max-w-[1160px]">
         <div className="flex flex-col gap-6">
-          <Input
-            size="2xl"
-            value={search}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              const nextSearch = event.target.value;
-              setSearch(nextSearch);
-              updateUrl(pathname, router, kind, category, technology, nextSearch);
-              trackFilterChange(kind, category, technology, nextSearch, filteredApps.length);
-            }}
-            placeholder="Search one-click apps, AI agents, support inboxes, internal tools..."
-            className="w-full"
-          />
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
+            <Input
+              size="2xl"
+              value={search}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                const nextSearch = event.target.value;
+                setSearch(nextSearch);
+                updateUrl(pathname, router, kind, category, technology, nextSearch);
+                trackFilterChange(kind, category, technology, nextSearch, filteredApps.length);
+              }}
+              placeholder="Search one-click apps, AI agents, support inboxes, internal tools..."
+              className="w-full"
+            />
 
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-wrap items-center gap-2">
-              {categories.map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  onClick={() => {
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="default-stronger" size="2xl" className="justify-center gap-2">
+                  <span>Filters</span>
+                  <i className="fa-regular fa-sliders" aria-hidden />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[280px]">
+                <DropdownMenuLabel>Listing type</DropdownMenuLabel>
+                <DropdownMenuRadioGroup
+                  value={kind}
+                  onValueChange={(nextKind) => {
+                    const resolvedKind = nextKind as "all" | AppKind;
+                    setKind(resolvedKind);
+                    updateUrl(pathname, router, resolvedKind, category, technology, search);
+                    const nextResults = apps.filter((app) => {
+                      if (resolvedKind !== "all" && app.kind !== resolvedKind) return false;
+                      if (category !== "all" && app.category !== category) return false;
+                      if (
+                        technology !== "all" &&
+                        !app.stack.some((item) => item.label === technology)
+                      ) {
+                        return false;
+                      }
+
+                      return matchesSearch(app, normalizedSearch);
+                    }).length;
+
+                    trackFilterChange(resolvedKind, category, technology, search, nextResults);
+                  }}
+                >
+                  <DropdownMenuRadioItem value="all">All listings</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="application">Apps</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="template">Templates</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel>Category</DropdownMenuLabel>
+                <DropdownMenuRadioGroup
+                  value={category}
+                  onValueChange={(option) => {
                     setCategory(option);
                     updateUrl(pathname, router, kind, option, technology, search);
                     const nextResults = apps.filter((app) => {
@@ -165,25 +210,19 @@ export function AppsDirectory({
 
                     trackFilterChange(kind, option, technology, search, nextResults);
                   }}
-                  className={cn(
-                    badgeVariants({
-                      color: category === option ? "ppg" : "neutral",
-                      size: "lg",
-                    }),
-                    "cursor-pointer border border-transparent transition-colors hover:opacity-90",
-                  )}
                 >
-                  {option === "all" ? "All categories" : option}
-                </button>
-              ))}
-            </div>
+                  {categories.map((option) => (
+                    <DropdownMenuRadioItem key={option} value={option}>
+                      {option === "all" ? "All categories" : option}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
 
-            <div className="flex flex-wrap items-center gap-2">
-              {technologies.map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  onClick={() => {
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel>Technology</DropdownMenuLabel>
+                <DropdownMenuRadioGroup
+                  value={technology}
+                  onValueChange={(option) => {
                     setTechnology(option);
                     updateUrl(pathname, router, kind, category, option, search);
                     const nextResults = apps.filter((app) => {
@@ -198,18 +237,15 @@ export function AppsDirectory({
 
                     trackFilterChange(kind, category, option, search, nextResults);
                   }}
-                  className={cn(
-                    badgeVariants({
-                      color: technology === option ? "ppg" : "neutral",
-                      size: "lg",
-                    }),
-                    "cursor-pointer border border-transparent transition-colors hover:opacity-90",
-                  )}
                 >
-                  {option === "all" ? "All technologies" : option}
-                </button>
-              ))}
-            </div>
+                  {technologies.map((option) => (
+                    <DropdownMenuRadioItem key={option} value={option}>
+                      {option === "all" ? "All technologies" : option}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="flex items-center justify-between gap-3">

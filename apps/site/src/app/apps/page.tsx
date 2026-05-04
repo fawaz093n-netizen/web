@@ -106,17 +106,15 @@ export default async function AppsPage({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.17),transparent_42%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_66%)] opacity-80" />
 
         <div className={`${APPS_PAGE_SHELL} relative z-1`}>
-          <div className="mx-auto flex max-w-[860px] flex-col items-center gap-5 text-center">
+          <div className="mx-auto flex max-w-[980px] flex-col items-center gap-5 text-center">
             <Badge color="ppg" label="Apps directory" className="w-fit" />
             <div className="flex flex-col gap-4">
-              <h1 className="m-0 max-w-[14ch] text-[44px] leading-[0.96] font-black text-foreground-neutral md:text-[68px] stretch-display font-sans-display">
-                Deploy complete apps
-                <br />
-                on Prisma Compute.
+              <h1 className="m-0 max-w-[18ch] text-[44px] leading-[0.96] font-black text-foreground-neutral md:text-[68px] stretch-display font-sans-display">
+                Deploy apps on Prisma Compute.
               </h1>
               <p className="m-0 max-w-[640px] self-center text-center text-lg leading-8 text-foreground-neutral-weak">
-                Discover one-click AI agents, internal tools, support apps, and full-stack
-                software ready to deploy and use.
+                Browse one-click AI agents, support tools, internal apps, and full-stack software
+                you can deploy on Prisma Compute.
               </p>
             </div>
           </div>

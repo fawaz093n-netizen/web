@@ -9,12 +9,11 @@ import {
   createBreadcrumbStructuredData,
   createSoftwareApplicationStructuredData,
 } from "@/lib/structured-data";
-import { Badge, Card } from "@prisma/eclipse";
+import { Button, Card } from "@prisma/eclipse";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
 const APPS_DETAIL_SHELL = "mx-auto w-full max-w-[1200px]";
-const APPS_DETAIL_NARROW_SHELL = "mx-auto w-full max-w-[1100px]";
 
 function appMetadata(app: AppEntry) {
   return {
@@ -85,13 +84,16 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
         <div className={`${APPS_DETAIL_SHELL} relative z-1`}>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
             <div className="flex flex-col gap-6">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge
-                  color={app.kind === "application" ? "ppg" : "warning"}
-                  label={app.kind === "application" ? "App" : "Template"}
-                  className="w-fit"
-                />
-                <span className="text-sm text-foreground-neutral-weaker">{app.category}</span>
+              <div>
+                <Button
+                  href="/apps"
+                  variant="default-weaker"
+                  size="lg"
+                  className="justify-start gap-2 px-0"
+                >
+                  <i className="fa-regular fa-arrow-left" aria-hidden />
+                  <span>Back to browsing Prisma Apps</span>
+                </Button>
               </div>
 
               <div className="flex flex-col gap-3">
@@ -131,8 +133,8 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
                         key={feature}
                         className="flex items-start gap-3 text-sm leading-7 text-foreground-neutral-weak"
                       >
-                        <i
-                          className="fa-regular fa-circle-check mt-1 text-foreground-ppg"
+                        <span
+                          className="mt-2 inline-flex size-2 shrink-0 rounded-full bg-foreground-ppg"
                           aria-hidden
                         />
                         <span>{feature}</span>
@@ -151,7 +153,10 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
                         key={reason}
                         className="flex items-start gap-3 text-sm leading-7 text-foreground-neutral-weak"
                       >
-                        <i className="fa-regular fa-bolt mt-1 text-foreground-ppg" aria-hidden />
+                        <span
+                          className="mt-2 inline-flex size-2 shrink-0 rounded-full bg-foreground-ppg"
+                          aria-hidden
+                        />
                         <span>{reason}</span>
                       </div>
                     ))}
@@ -160,50 +165,54 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
               </div>
             </div>
 
-            <Card className="self-start gap-5 border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high lg:sticky lg:top-28">
-              <div className="overflow-hidden rounded-square border border-stroke-neutral bg-background-default">
-                {detailImage ? (
-                  <Image
-                    src={detailImage}
-                    alt={`${app.name} preview`}
-                    width={640}
-                    height={400}
-                    className="aspect-[16/10] w-full object-cover"
-                  />
-                ) : (
-                  <div
-                    className={`flex aspect-[16/10] w-full items-center justify-center bg-linear-to-br ${gradient} text-4xl font-black text-white stretch-display font-sans-display`}
-                  >
-                    {monogram}
-                  </div>
-                )}
-              </div>
+            <div className="self-start lg:sticky lg:top-28">
+              <Card className="h-fit gap-5 border border-stroke-neutral bg-background-neutral-weaker p-5 shadow-box-high">
+                <div className="overflow-hidden rounded-square border border-stroke-neutral bg-background-default">
+                  {detailImage ? (
+                    <Image
+                      src={detailImage}
+                      alt={`${app.name} preview`}
+                      width={640}
+                      height={400}
+                      className="aspect-[16/10] w-full object-cover"
+                    />
+                  ) : (
+                    <div
+                      className={`flex aspect-[16/10] w-full items-center justify-center bg-linear-to-br ${gradient} text-4xl font-black text-white stretch-display font-sans-display`}
+                    >
+                      {monogram}
+                    </div>
+                  )}
+                </div>
 
-              <AppDeployButton app={app} location="detail" className="w-full" />
+                <AppDeployButton app={app} location="detail" className="w-full" />
 
-              <div className="flex flex-wrap gap-2 border-t border-stroke-neutral pt-5">
-                {app.stack.map((item) => (
-                  <span
-                    key={item.label}
-                    className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1 text-xs text-foreground-neutral-weak"
-                  >
-                    {item.label}
-                  </span>
-                ))}
-              </div>
-            </Card>
+                <div className="flex flex-wrap gap-2 border-t border-stroke-neutral pt-5">
+                  {app.stack.map((item) => (
+                    <span
+                      key={item.label}
+                      className="rounded-full border border-stroke-neutral bg-background-default px-3 py-1 text-xs text-foreground-neutral-weak"
+                    >
+                      {item.label}
+                    </span>
+                  ))}
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
 
       {relatedApp ? (
         <section className="px-4 pb-20">
-          <div className={APPS_DETAIL_NARROW_SHELL}>
-            <h2 className="mb-6 mt-0 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
-              More apps
-            </h2>
-            <div className="max-w-[380px]">
-              <AppCard app={relatedApp} />
+          <div className={APPS_DETAIL_SHELL}>
+            <div className="max-w-[760px]">
+              <h2 className="mb-6 mt-0 text-3xl font-black text-foreground-neutral stretch-display font-sans-display">
+                More apps
+              </h2>
+              <div className="max-w-[380px]">
+                <AppCard app={relatedApp} />
+              </div>
             </div>
           </div>
         </section>
