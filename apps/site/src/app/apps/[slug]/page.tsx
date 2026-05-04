@@ -79,7 +79,7 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
       <JsonLd id={`${app.slug}-breadcrumb-structured-data`} data={breadcrumbStructuredData} />
       <AppDetailTracker app={app} />
 
-      <section className="relative px-4 pb-14 pt-52 md:pt-56">
+      <section className="relative px-4 pb-20 pt-52 md:pt-56">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.14),transparent_45%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_70%)] opacity-80" />
 
         <div className={`${APPS_DETAIL_SHELL} relative z-1`}>
@@ -101,6 +101,62 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
                 <p className="m-0 max-w-prose text-lg leading-8 text-foreground-neutral-weak">
                   {app.description}
                 </p>
+              </div>
+              <div className="flex max-w-[760px] flex-col gap-10 border-t border-stroke-neutral pt-8">
+                <section>
+                  <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
+                    What it does
+                  </p>
+                  <div className="mt-4 grid gap-4">
+                    {app.readmeSections.map((section) => (
+                      <div key={section.title} className="max-w-prose">
+                        <h2 className="m-0 text-2xl font-black text-foreground-neutral stretch-display font-sans-display">
+                          {section.title}
+                        </h2>
+                        <p className="mb-0 mt-3 text-base leading-8 text-foreground-neutral-weak">
+                          {section.body}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="border-t border-stroke-neutral pt-8">
+                  <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
+                    Key features
+                  </p>
+                  <div className="mt-4 grid gap-3">
+                    {app.features.map((feature) => (
+                      <div
+                        key={feature}
+                        className="flex items-start gap-3 text-sm leading-7 text-foreground-neutral-weak"
+                      >
+                        <i
+                          className="fa-regular fa-circle-check mt-1 text-foreground-ppg"
+                          aria-hidden
+                        />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="border-t border-stroke-neutral pt-8">
+                  <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
+                    Why it fits Compute
+                  </p>
+                  <div className="mt-4 grid gap-3">
+                    {app.whyCompute.map((reason) => (
+                      <div
+                        key={reason}
+                        className="flex items-start gap-3 text-sm leading-7 text-foreground-neutral-weak"
+                      >
+                        <i className="fa-regular fa-bolt mt-1 text-foreground-ppg" aria-hidden />
+                        <span>{reason}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
               </div>
             </div>
 
@@ -136,64 +192,6 @@ export default async function AppDetailPage({ params }: { params: Promise<{ slug
                 ))}
               </div>
             </Card>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 pb-20">
-        <div className={`${APPS_DETAIL_NARROW_SHELL} max-w-[760px]`}>
-          <div className="flex flex-col gap-10">
-            <section className="border-t border-stroke-neutral pt-8">
-              <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                What it does
-              </p>
-              <div className="mt-4 grid gap-4">
-                {app.readmeSections.map((section) => (
-                  <div key={section.title} className="max-w-prose">
-                    <h2 className="m-0 text-2xl font-black text-foreground-neutral stretch-display font-sans-display">
-                      {section.title}
-                    </h2>
-                    <p className="mb-0 mt-3 text-base leading-8 text-foreground-neutral-weak">
-                      {section.body}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="border-t border-stroke-neutral pt-8">
-              <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                Key features
-              </p>
-              <div className="mt-4 grid gap-3">
-                {app.features.map((feature) => (
-                  <div
-                    key={feature}
-                    className="flex items-start gap-3 text-sm leading-7 text-foreground-neutral-weak"
-                  >
-                    <i className="fa-regular fa-circle-check mt-1 text-foreground-ppg" aria-hidden />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="border-t border-stroke-neutral pt-8">
-              <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-                Why it fits Compute
-              </p>
-              <div className="mt-4 grid gap-3">
-                {app.whyCompute.map((reason) => (
-                  <div
-                    key={reason}
-                    className="flex items-start gap-3 text-sm leading-7 text-foreground-neutral-weak"
-                  >
-                    <i className="fa-regular fa-bolt mt-1 text-foreground-ppg" aria-hidden />
-                    <span>{reason}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
           </div>
         </div>
       </section>
