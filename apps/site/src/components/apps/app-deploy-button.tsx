@@ -110,7 +110,7 @@ export function AppDeployButton({ app, location, className }: AppDeployButtonPro
         onClick={handleClick}
         className={cn("justify-center gap-2", location === "detail" && "w-full")}
       >
-        <span>{isLoading ? "Preparing deploy..." : "Deploy on Compute"}</span>
+        <span>{isLoading ? "Preparing deploy..." : "Deploy on Prisma Compute"}</span>
       </Button>
       {message ? <p className="m-0 text-sm text-foreground-neutral-weak">{message}</p> : null}
     </div>
