@@ -43,8 +43,6 @@ const breadcrumbStructuredData = createBreadcrumbStructuredData([
 ]);
 
 const APPS_PAGE_SHELL = "mx-auto w-full max-w-[1240px]";
-const APPS_PAGE_NARROW_SHELL = "mx-auto w-full max-w-[1040px]";
-
 function parseKind(value: string | string[] | undefined): "all" | AppKind {
   if (!value || Array.isArray(value)) return "all";
   return appKinds.includes(value as AppKind) ? (value as AppKind) : "all";
@@ -92,20 +90,21 @@ export default async function AppsPage({
       <JsonLd id="apps-collection-structured-data" data={collectionStructuredData} />
       <JsonLd id="apps-breadcrumb-structured-data" data={breadcrumbStructuredData} />
 
-      <section className="relative overflow-hidden px-4 pb-12 pt-46">
+      <section className="relative overflow-hidden px-4 pb-14 pt-52 md:pt-56">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.17),transparent_42%),linear-gradient(180deg,var(--color-background-ppg)_0%,transparent_66%)] opacity-80" />
 
         <div className={`${APPS_PAGE_SHELL} relative z-1`}>
-          <div className="mx-auto flex max-w-[860px] flex-col items-center gap-4 text-center">
-            <Badge color="ppg" label="Prisma Apps directory" className="w-fit" />
+          <div className="mx-auto flex max-w-[860px] flex-col items-center gap-5 text-center">
+            <Badge color="ppg" label="Apps directory" className="w-fit" />
             <div className="flex flex-col gap-4">
-              <h1 className="m-0 text-[40px] leading-[0.98] font-black text-foreground-neutral md:text-[60px] stretch-display font-sans-display">
-                Browse apps you can deploy on Prisma Compute.
+              <h1 className="m-0 max-w-[11ch] text-[44px] leading-[0.96] font-black text-foreground-neutral md:text-[68px] stretch-display font-sans-display">
+                Deploy anything
+                <br className="hidden md:block" />
+                <span className="md:ml-3">on Prisma Compute.</span>
               </h1>
-              <p className="m-0 max-w-[760px] text-lg leading-8 text-foreground-neutral-weak">
-                Discover AI agents, internal tools, support inboxes, webhook backends, waitlist
-                apps, and starter kits. Open a listing to see the stack, service layout, and
-                deployment notes before you deploy.
+              <p className="m-0 max-w-[640px] self-center text-center text-lg leading-8 text-foreground-neutral-weak">
+                Browse AI agents, internal tools, backends, and templates built for Prisma
+                Compute.
               </p>
             </div>
           </div>
@@ -120,19 +119,6 @@ export default async function AppsPage({
             initialKind={initialKind}
             initialSearch={initialSearch}
           />
-        </div>
-      </section>
-
-      <section id="submit" className="px-4 pb-20">
-        <div className={`${APPS_PAGE_NARROW_SHELL} text-center`}>
-          <p className="m-0 text-sm font-semibold uppercase tracking-[1.6px] text-foreground-ppg stretch-display font-sans-display">
-            Submit an app
-          </p>
-          <p className="mb-0 mt-3 text-base leading-7 text-foreground-neutral-weak">
-            We plan to support curated listings from `prisma/apps` and discovery through a GitHub
-            topic. A good listing should have a clear README, screenshots, stack metadata, and a
-            deployment shape that makes sense on Compute.
-          </p>
         </div>
       </section>
     </main>

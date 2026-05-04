@@ -33,7 +33,7 @@ export type AppEntry = {
   status: "seed-listing" | "starter" | "active" | "beta" | "coming-soon" | "archived";
   summary: string;
   description: string;
-  icon: string;
+  icon?: string;
   category: string;
   featured: boolean;
   source: AppSource;

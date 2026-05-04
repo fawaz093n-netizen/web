@@ -116,7 +116,7 @@ export const prismaAppManifestSchema = z.object({
   summary: nonEmptyString.max(180),
   description: nonEmptyString,
   category: nonEmptyString,
-  icon: nonEmptyString,
+  icon: nonEmptyString.optional(),
   featured: z.boolean().default(false),
 
   audiences: z.array(nonEmptyString).min(1),

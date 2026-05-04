@@ -14,6 +14,7 @@ import {
   joinRepoPath,
   listDirectory,
 } from "@/lib/prisma-apps-github";
+import { getFallbackAppIcon } from "@/lib/app-visuals";
 import { parsePrismaAppManifest, type PrismaAppManifest } from "@/lib/prisma-app-manifest";
 
 function normalizeManifestToAppEntry(
@@ -28,7 +29,10 @@ function normalizeManifestToAppEntry(
   const sourceType =
     manifest.source.type === "github-topic" ? ("github-topic" as const) : ("prisma/apps" as const);
 
-  const icon = manifest.icon.startsWith("fa-") ? manifest.icon : "fa-regular fa-grid-2";
+  const icon =
+    manifest.icon && manifest.icon.startsWith("fa-")
+      ? manifest.icon
+      : getFallbackAppIcon(manifest.slug);
 
   return {
     slug: manifest.slug,

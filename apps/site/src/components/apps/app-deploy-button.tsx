@@ -108,7 +108,7 @@ export function AppDeployButton({ app, location, className }: AppDeployButtonPro
         variant="ppg"
         size="lg"
         onClick={handleClick}
-        className={cn("justify-center", location === "detail" && "w-full sm:w-fit")}
+        className={cn("justify-center gap-2", location === "detail" && "w-full")}
       >
         <i
           className={cn("fa-regular", isLoading ? "fa-loader animate-spin" : "fa-cloud-arrow-up")}
