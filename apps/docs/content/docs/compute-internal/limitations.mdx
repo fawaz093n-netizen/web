@@ -18,7 +18,9 @@ First-class support: **Next.js**, **Astro**, **Nuxt**, **TanStack Start**, and *
 Framework-specific requirements:
 
 - **Next.js**: must use `output: "standalone"` in `next.config.ts`.
+- **Next.js with pnpm**: if deploy fails with standalone symlink errors, check Next.js workspace root detection. A stray lockfile outside the repo, such as an accidental `~/package-lock.json`, can make Next.js infer the wrong root. Clean `.next` and `node_modules`, remove the accidental lockfile, reinstall, and rebuild before deploying again.
 - **Astro**: needs `@astrojs/node` in standalone mode via the adapter.
+- **TanStack Start**: the current internal CLIs need the Nitro server entry explicitly during deploy: `--entry .output/server/index.mjs` for `@looma/prisma-cli` or `--entrypoint .output/server/index.mjs` for `@prisma/compute-cli`.
 
 ## Environment updates
 

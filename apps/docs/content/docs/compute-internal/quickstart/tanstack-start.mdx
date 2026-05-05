@@ -49,7 +49,10 @@ export default defineConfig({
 
 ```bash
 npx @looma/prisma-cli auth login
-npx @looma/prisma-cli app deploy --app my-app --http-port 3000
+npx @looma/prisma-cli app deploy \
+  --app my-app \
+  --entry .output/server/index.mjs \
+  --http-port 3000
 ```
 
   </CodeBlockTab>
@@ -57,11 +60,16 @@ npx @looma/prisma-cli app deploy --app my-app --http-port 3000
 
 ```bash
 bunx @prisma/compute-cli login
-bunx @prisma/compute-cli deploy --service-name my-app --http-port 3000
+bunx @prisma/compute-cli deploy \
+  --service-name my-app \
+  --entrypoint .output/server/index.mjs \
+  --http-port 3000
 ```
 
   </CodeBlockTab>
 </CodeBlockTabs>
+
+The current internal CLIs need TanStack Start's Nitro server entry explicitly. The entry file is produced during the build at `.output/server/index.mjs`.
 
 The first deploy bootstraps project context. Re-deploys reuse the saved selection, so `app deploy` (or `deploy`) is enough.
 
