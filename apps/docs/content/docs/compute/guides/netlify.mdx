@@ -111,19 +111,6 @@ prisma app deploy \
 Use `--http-port 3000` for most Next.js, Nuxt, TanStack Start, and Bun apps. Use `--http-port 4321` for Astro unless your app serves on a different port.
 
 <Accordions type="single">
-  <Accordion title="TanStack Start: pass the server entrypoint">
-    TanStack Start's build outputs a Nitro server to `.output/server/index.mjs`. Pass that path with `--entry`:
-
-    ```bash
-    prisma app deploy \
-      --app my-app \
-      --entry .output/server/index.mjs \
-      --http-port 3000 \
-      --env DATABASE_URL="postgresql://example" \
-      --env AUTH_SECRET="replace-me"
-    ```
-  </Accordion>
-
   <Accordion title="Export Netlify environment variables with the CLI">
     You can export production environment variables locally with the Netlify CLI:
 
