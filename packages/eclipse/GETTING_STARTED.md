@@ -41,28 +41,7 @@ Import the global styles in your app's entry point:
 import "@prisma/eclipse/styles/globals.css";
 ```
 
-### 3. Add FontAwesome Script
-
-Eclipse components use FontAwesome icons. Add the FontAwesome script to your app's root layout:
-
-```tsx
-import { FontAwesomeScript } from "@prisma-docs/eclipse";
-
-export default function RootLayout({ children }) {
-  return (
-    <html>
-      <body>
-        {children}
-        <FontAwesomeScript />
-      </body>
-    </html>
-  );
-}
-```
-
-This component loads the FontAwesome kit script required for icons used throughout Eclipse components.
-
-### 4. Configure Tailwind (Optional)
+### 3. Configure Tailwind (Optional)
 
 To use Eclipse tokens in your Tailwind config:
 
@@ -83,7 +62,7 @@ const config: Config = {
 export default config;
 ```
 
-### 5. Use Components
+### 4. Use Components
 
 Import and use Eclipse components:
 
