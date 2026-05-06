@@ -101,7 +101,7 @@ export function DatePicker({
             variant="default"
             size="lg"
             className={cn(
-              "w-full p-1.5 text-left font-normal bg-background-default border-stroke-neutral font-family-mono text-foreground-neutral",
+              "w-full p-1.5 text-left font-normal bg-background-default border-stroke-neutral font-mono text-foreground-neutral",
               !date && "text-foreground-neutral-weak",
               isErrored && "border-stroke-error text-foreground-error",
               disabledBtn &&
@@ -148,7 +148,7 @@ export function DatePicker({
             variant="default"
             size="lg"
             className={cn(
-              "w-full p-1.5 justify-start text-left font-normal bg-background-default border-stroke-neutral font-family-mono text-foreground-neutral",
+              "w-full p-1.5 justify-start text-left font-normal bg-background-default border-stroke-neutral font-mono text-foreground-neutral",
               !dateRange && "text-foreground-neutral-weak",
               isErrored && "border-stroke-error text-foreground-error",
               disabledBtn &&
