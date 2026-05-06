@@ -112,7 +112,7 @@ export function DatePicker({
           >
             <i
               className={cn(
-                "text-foreground-neutral-weak fa-duotone fa-calendar-range mr-2 flex h-full items-center text-md",
+                "text-foreground-neutral-weak fa-duotone fa-calendar-range flex h-full items-center text-md before:inset-y-0 -mt-0.5",
                 (isErrored || disabledBtn) && "text-inherit",
               )}
             />
@@ -159,7 +159,7 @@ export function DatePicker({
           >
             <i
               className={cn(
-                "text-foreground-neutral-weak fa-duotone fa-calendar-range mr-2 flex h-full items-center translate-y-px text-md",
+                "text-foreground-neutral-weak fa-duotone fa-calendar-range flex h-full items-center before:inset-y-0 -mt-0.5 text-md",
                 (isErrored || disabledBtn) && "text-inherit",
               )}
             />
