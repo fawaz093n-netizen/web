@@ -184,6 +184,8 @@ const presets = createDateRangePresets();
 **Custom Presets**
 
 ```tsx
+import { startOfWeek } from "date-fns";
+
 const customPresets = [
   {
     label: "Yesterday",
@@ -225,7 +227,11 @@ const customPresets = [
   date={eventDate}
   onDateChange={setEventDate}
   placeholder="Select event date"
-  disabled={(date) => date < new Date()}
+  disabled={(date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  }}
 />
 ```
 
@@ -276,7 +282,11 @@ const analyticsPresets = [
 
 ```tsx
 <DatePickerSingle
-  disabled={(date) => date < new Date()}
+  disabled={(date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  }}
 />
 ```
 
@@ -284,7 +294,11 @@ const analyticsPresets = [
 
 ```tsx
 <DatePickerSingle
-  disabled={(date) => date > new Date()}
+  disabled={(date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date > today;
+  }}
 />
 ```
 
@@ -543,6 +557,10 @@ import { DatePickerSingle } from "@prisma-docs/eclipse";
 
 function MyForm() {
   const { control, handleSubmit, formState: { errors } } = useForm();
+
+  const onSubmit = (data: Record<string, unknown>) => {
+    console.log("Form submitted:", data);
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

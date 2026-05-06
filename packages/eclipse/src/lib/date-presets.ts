@@ -1,3 +1,4 @@
+import { subDays, startOfDay } from "date-fns";
 import type { DateRange } from "react-day-picker";
 
 /**
@@ -9,7 +10,7 @@ export function createDateRangePresets(): Array<{
   dateRange: DateRange;
 }> {
   const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const today = startOfDay(now);
 
   return [
     {
@@ -22,28 +23,28 @@ export function createDateRangePresets(): Array<{
     {
       label: "Last 7 days",
       dateRange: {
-        from: new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000),
+        from: subDays(today, 6),
         to: today,
       },
     },
     {
       label: "Last 14 days",
       dateRange: {
-        from: new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000),
+        from: subDays(today, 13),
         to: today,
       },
     },
     {
       label: "Last 30 days",
       dateRange: {
-        from: new Date(today.getTime() - 29 * 24 * 60 * 60 * 1000),
+        from: subDays(today, 29),
         to: today,
       },
     },
     {
       label: "Last 90 days",
       dateRange: {
-        from: new Date(today.getTime() - 89 * 24 * 60 * 60 * 1000),
+        from: subDays(today, 89),
         to: today,
       },
     },
@@ -82,10 +83,9 @@ export function createDateRangePreset(
  * Get a date range for the last N days
  */
 export function getLastNDays(days: number): DateRange {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const today = startOfDay(new Date());
   return {
-    from: new Date(today.getTime() - (days - 1) * 24 * 60 * 60 * 1000),
+    from: subDays(today, days - 1),
     to: today,
   };
 }
