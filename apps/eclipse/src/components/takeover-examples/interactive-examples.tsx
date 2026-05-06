@@ -94,7 +94,7 @@ export function WizardTakeoverExample() {
             <Button
               onClick={handlePrevious}
               disabled={currentStep === 1}
-              variant="default-weaker"
+              variant="default-weak"
             >
               <i className="fa-regular fa-arrow-left" />
               Previous
@@ -152,7 +152,7 @@ export function SimpleTakeoverMenuExample() {
         {!showMenu && (
           <div className="flex items-center gap-2">
             <p className="text-sm text-foreground-neutral-weak">Menu hidden.</p>
-            <Button variant="default-weaker" onClick={() => setShowMenu(true)}>
+            <Button variant="default-weak" onClick={() => setShowMenu(true)}>
               Show Menu
             </Button>
           </div>
@@ -212,7 +212,7 @@ export function TakeoverWithFooterOnlyExample() {
         </TakeoverContent>
         <TakeoverFooter>
           <div className="flex justify-between items-center">
-            <Button variant="default-weaker">Cancel</Button>
+            <Button variant="default-weak">Cancel</Button>
             <Button variant="default">Save</Button>
           </div>
         </TakeoverFooter>
@@ -235,7 +235,7 @@ export function TakeoverWithHeaderOnlyExample() {
         <TakeoverContent>
           <div className="flex gap-2">
             <Button>Primary</Button>
-            <Button variant="default-weaker">Secondary</Button>
+            <Button variant="default-weak">Secondary</Button>
           </div>
         </TakeoverContent>
       </Takeover>
@@ -268,7 +268,7 @@ export function WizardWithFooterExample() {
         <TakeoverFooter>
           <div className="flex justify-between items-center">
             <Button
-              variant="default-weaker"
+              variant="default-weak"
               onClick={() => setStep(Math.max(1, step - 1))}
               disabled={step === 1}
             >
