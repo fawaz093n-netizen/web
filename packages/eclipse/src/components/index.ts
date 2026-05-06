@@ -190,3 +190,4 @@ export {
   getPreviousMonth,
 } from "./date-picker";
 export type { DatePickerProps } from "./date-picker";
+export type { DateRange } from "./date-picker";

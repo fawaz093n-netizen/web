@@ -1,12 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import type { DateRange, Matcher } from "react-day-picker";
 
 import { cn } from "../lib/cn";
-import { Button, type ButtonProps } from "./button";
+import { Button } from "./button";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
@@ -113,7 +112,7 @@ export function DatePicker({
           >
             <i
               className={cn(
-                "text-foreground-neutral-weak fa-duotone fa-calendar-range mr-2 flex h-full items-center translate-y-px text-md",
+                "text-foreground-neutral-weak fa-duotone fa-calendar-range mr-2 flex h-full items-center text-md",
                 (isErrored || disabledBtn) && "text-inherit",
               )}
             />

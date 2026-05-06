@@ -5,8 +5,8 @@ import {
   DatePickerSingle,
   DatePickerRange,
   createDateRangePresets,
-  type DateRange,
-} from "@prisma-docs/eclipse";
+} from "@prisma/eclipse";
+import type { DateRange } from "@prisma/eclipse";
 
 export function DatePickerSingleExample() {
   const [date, setDate] = useState<Date>();
