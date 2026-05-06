@@ -197,6 +197,7 @@ export function TakeoverWithHeaderOnly() {
 Wizard pattern with footer for step navigation:
 
 ```tsx
+import { useState } from "react";
 import {
   Takeover,
   TakeoverMenu,
@@ -209,7 +210,7 @@ import {
 } from "@prisma/eclipse";
 
 export function WizardWithFooter() {
-  const [step, setStep] = React.useState(1);
+  const [step, setStep] = useState(1);
   
   return (
       <Takeover className="border bg-background-neutral">
@@ -383,7 +384,7 @@ Footer section for additional actions or information at the bottom of the takeov
 - ✅ Flexible composition with semantic components
 - ✅ TakeoverMenu with default and wizard variants
 - ✅ TakeoverFooter for navigation and actions
-- ✅ Two media variants (default and icon)
+
 - ✅ Responsive design with proper spacing
 - ✅ Automatic link styling in descriptions
 - ✅ Centered text alignment
@@ -401,7 +402,7 @@ Footer section for additional actions or information at the bottom of the takeov
 - Always include at least one call-to-action button when possible
 - Use appropriate icons that represent the context (e.g., folder for files, bell for notifications)
 - Keep descriptions concise but informative
-- Use the `icon` variant for small icons, `default` for larger visuals
+
 - Consider adding a border or background for better visual separation
 - Ensure Takeover states are accessible with proper semantic HTML
 - Test Takeover states in different contexts (search, filters, first-time use)
@@ -443,8 +444,7 @@ The Takeover component uses design tokens and can be customized:
 
 - **Container**: Dashed border, rounded corners, padding, centered content
 - **Header**: Vertical layout with gap spacing
-- **Media (icon variant)**: Muted background, size-8, rounded-lg
-- **Media (default variant)**: Transparent background for custom sizing
+
 - **Title**: Small font, medium weight, tracking-tight
 - **Description**: Small relaxed line height, muted foreground color
 - **Links**: Underlined with hover effects to primary color
