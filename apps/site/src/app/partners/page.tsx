@@ -42,9 +42,11 @@ const twoCol = [
       </div>
     ),
     imageUrl: "/illustrations/partners/partners_0",
-    imageAlt: "Partners illustration",
+    imageAlt:
+      "Dashboard for provisioning and managing Prisma Postgres databases via the management API",
     mobileImageUrl: "/illustrations/partners/partners_0",
-    mobileImageAlt: "Partners illustration",
+    mobileImageAlt:
+      "Dashboard for provisioning and managing Prisma Postgres databases via the management API",
     logos: null,
     noShadow: true,
     useDefaultLogos: true,
@@ -91,9 +93,11 @@ const twoCol = [
       </div>
     ),
     imageUrl: "/illustrations/partners/partners_1",
-    imageAlt: "Partners illustration",
+    imageAlt:
+      "Prisma Studio embedded in a partner application showing a table browser with data exploration tools",
     mobileImageUrl: "/illustrations/partners/partners_1",
-    mobileImageAlt: "Partners illustration",
+    mobileImageAlt:
+      "Prisma Studio embedded in a partner application showing a table browser with data exploration tools",
     logos: null,
     noShadow: true,
     useDefaultLogos: true,
@@ -146,9 +150,11 @@ const twoCol = [
       </div>
     ),
     imageUrl: "/illustrations/partners/partners_2",
-    imageAlt: "Partners illustration",
+    imageAlt:
+      "Diagram showing one-click full-stack app deployment with Prisma Postgres and Vercel integration",
     mobileImageUrl: "/illustrations/partners/partners_2",
-    mobileImageAlt: "Partners illustration",
+    mobileImageAlt:
+      "Diagram showing one-click full-stack app deployment with Prisma Postgres and Vercel integration",
     logos: null,
     useDefaultLogos: true,
     noShadow: true,
@@ -159,7 +165,8 @@ const twoCol = [
 
 export const metadata = createPageMetadata({
   title: "Prisma | Partner network",
-  description: "Join our partner network designed for affiliates, technology partners, and resellers.",
+  description:
+    "Join our partner network designed for affiliates, technology partners, and resellers.",
   path: "/partners",
   ogImage: "/og/og-partners.png",
 });

@@ -12,6 +12,7 @@ export const YouTubePlayer = ({
   overlay,
   playOnView = false,
   loading = "lazy",
+  videoTitle,
 }: {
   className?: string;
   serverlessTalk?: boolean;
@@ -21,6 +22,7 @@ export const YouTubePlayer = ({
   autoplay?: boolean;
   overlay?: string;
   loading?: "eager" | "lazy";
+  videoTitle?: string;
 }) => {
   const [playing, setPlaying] = useState(false);
   const [shouldAutoplay, setShouldAutoplay] = useState(autoplay);
@@ -74,7 +76,7 @@ export const YouTubePlayer = ({
           )}
         >
           <img
-            alt="thumbnail"
+            alt={videoTitle ? `Play: ${videoTitle}` : "Play video"}
             src={thumbnail}
             width={558}
             height={300}

@@ -44,7 +44,7 @@ export function ResourcesSection({ data }: { data: ResourcesSectionData }) {
                       }
                     : undefined,
                   imageSrc: card.image,
-                  imageAlt: "Post image",
+                  imageAlt: card.title ?? "Post image",
                   badge: card.badge,
                 }}
               />

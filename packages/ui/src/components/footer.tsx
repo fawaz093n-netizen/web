@@ -163,13 +163,11 @@ const Footer = ({
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         {link.links.map(
-                          (
-                            dropLink: {
-                              title: string;
-                              url: string;
-                              external?: boolean;
-                            },
-                          ) => {
+                          (dropLink: {
+                            title: string;
+                            url: string;
+                            external?: boolean;
+                          }) => {
                             const dropdownHoverClass =
                               color === "orm"
                                 ? "hover:bg-background-orm-strong!"
@@ -182,7 +180,9 @@ const Footer = ({
                               >
                                 <a
                                   href={dropLink.url}
-                                  target={dropLink.external ? "_blank" : "_self"}
+                                  target={
+                                    dropLink.external ? "_blank" : "_self"
+                                  }
                                   rel={
                                     dropLink.external
                                       ? "noopener noreferrer"
@@ -213,7 +213,7 @@ const Footer = ({
                 href="https://trust.prisma.io/"
                 target="__blank"
                 rel="noopener noreferrer"
-                aria-label="Prisma Trust"
+                aria-label="GDPR Compliance – Prisma Trust"
               >
                 {gdpr}
               </a>
@@ -221,7 +221,7 @@ const Footer = ({
                 href="https://trust.prisma.io/"
                 target="__blank"
                 rel="noopener noreferrer"
-                aria-label="Prisma Trust"
+                aria-label="HIPAA Compliance – Prisma Trust"
               >
                 {hipaa}
               </a>
@@ -229,7 +229,7 @@ const Footer = ({
                 href="https://trust.prisma.io/"
                 target="__blank"
                 rel="noopener noreferrer"
-                aria-label="Prisma Trust"
+                aria-label="ISO 27001 – Prisma Trust"
               >
                 {iso27}
               </a>
@@ -237,7 +237,7 @@ const Footer = ({
                 href="https://trust.prisma.io/"
                 target="__blank"
                 rel="noopener noreferrer"
-                aria-label="Prisma Trust"
+                aria-label="SOC 2 – Prisma Trust"
               >
                 {soc2}
               </a>

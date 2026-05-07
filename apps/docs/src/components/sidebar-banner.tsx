@@ -11,6 +11,7 @@ interface BannerSlide {
   gradient?: "orm" | "ppg";
   badge?: string;
   image?: string;
+  imageAlt?: string;
 }
 
 interface SidebarBannerCarouselProps {
@@ -78,7 +79,9 @@ export function SidebarBannerCarousel({ slides }: SidebarBannerCarouselProps) {
           marginRight: inset,
           borderRadius: "12px 12px 0 0",
           borderBottom: "none",
-          opacity: hovered ? 0.4 + (arr.length - i) * 0.15 : 0.25 + (arr.length - i) * 0.1,
+          opacity: hovered
+            ? 0.4 + (arr.length - i) * 0.15
+            : 0.25 + (arr.length - i) * 0.1,
         }}
       />
     );
@@ -91,9 +94,7 @@ export function SidebarBannerCarousel({ slides }: SidebarBannerCarouselProps) {
       onMouseLeave={() => setHovered(false)}
     >
       {/* Peek cards above — each one narrower, creating depth perspective */}
-      {peekCount > 0 && (
-        <div className="flex flex-col -mb-px">{peekCards}</div>
-      )}
+      {peekCount > 0 && <div className="flex flex-col -mb-px">{peekCards}</div>}
 
       {/* Front card */}
       <div
@@ -121,26 +122,36 @@ export function SidebarBannerCarousel({ slides }: SidebarBannerCarouselProps) {
               </span>
             )}
           </div>
-          <p className="text-xs text-foreground-neutral-weak truncate">{front.description}</p>
+          <p className="text-xs text-foreground-neutral-weak truncate">
+            {front.description}
+          </p>
         </div>
 
         {/* Image preview */}
         <div
           className={cn(
             "relative mx-3 mt-2 rounded-square overflow-hidden aspect-video",
-            !front.image && (front.gradient === "ppg" ? "bg-gradient-ppg" : "bg-gradient-orm"),
+            !front.image &&
+              (front.gradient === "ppg"
+                ? "bg-gradient-ppg"
+                : "bg-gradient-orm"),
           )}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           {front.image ? (
             <img
-              src={front.image.startsWith("http") ? front.image : `/docs${front.image}`}
-              alt=""
+              src={
+                front.image.startsWith("http")
+                  ? front.image
+                  : `/docs${front.image}`
+              }
+              alt={front.imageAlt ?? front.title ?? ""}
               className="absolute inset-0 size-full object-cover"
             />
           ) : (
             <div className="flex items-center justify-center size-full">
               <svg
+                aria-hidden="true"
                 viewBox="0 0 28 37"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -190,7 +201,12 @@ export function SidebarBannerCarousel({ slides }: SidebarBannerCarouselProps) {
         </div>
 
         {/* Bottom padding when action bar is hidden */}
-        <div className={cn("transition-all duration-300 ease-out", hovered ? "h-0" : "h-3")} />
+        <div
+          className={cn(
+            "transition-all duration-300 ease-out",
+            hovered ? "h-0" : "h-3",
+          )}
+        />
       </div>
     </div>
   );

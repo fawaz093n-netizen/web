@@ -33,13 +33,7 @@ interface BentoProps {
   color?: "orm" | "ppg";
 }
 
-const HeroContent = ({
-  className = "",
-  hero,
-}: {
-  className?: string;
-  hero?: React.ReactNode;
-}) =>
+const HeroContent = ({ className = "", hero }: { className?: string; hero?: React.ReactNode }) =>
   hero || (
     <div
       className={cn(
@@ -90,11 +84,7 @@ export const Bento = ({ bentoSection, hero, color }: BentoProps) => {
           )}
 
           {secondCenterCard && (
-            <Card
-              color={color}
-              key={secondCenterCard.id}
-              card={secondCenterCard}
-            />
+            <Card color={color} key={secondCenterCard.id} card={secondCenterCard} />
           )}
         </div>
       </>
@@ -165,13 +155,7 @@ export const Card = ({ card, color }: CardProps) => {
       href={card.link}
       target="_blank"
       rel="noopener noreferrer"
-      className={cn(
-        "box",
-        "box-visible",
-        "w-full",
-        isCenterCard && "w-full md:order-0",
-        color,
-      )}
+      className={cn("box", "box-visible", "w-full", isCenterCard && "w-full md:order-0", color)}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -196,7 +180,8 @@ export const Card = ({ card, color }: CardProps) => {
             alt={card.title}
             width={1200}
             height={800}
-            loading="eager"
+            loading="lazy"
+            sizes="(min-width: 1024px) 420px, 100vw"
             className={cn(imageClassName, "dark:hidden")}
           />
           <Image
@@ -204,7 +189,8 @@ export const Card = ({ card, color }: CardProps) => {
             alt={card.title}
             width={1200}
             height={800}
-            loading="eager"
+            loading="lazy"
+            sizes="(min-width: 1024px) 420px, 100vw"
             className={cn(imageClassName, "hidden dark:block")}
           />
         </>

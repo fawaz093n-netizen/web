@@ -1,15 +1,5 @@
-import {
-  type ComponentProps,
-  type FC,
-  type HTMLAttributes,
-  type ReactNode,
-  useMemo,
-} from 'react';
-import {
-  type BaseLayoutProps,
-  renderTitleNav,
-  resolveLinkItems,
-} from '../shared';
+import { type ComponentProps, type FC, type HTMLAttributes, type ReactNode, useMemo } from "react";
+import { type BaseLayoutProps, renderTitleNav, resolveLinkItems } from "../shared";
 import {
   Sidebar,
   SidebarCollapseTrigger,
@@ -18,14 +8,14 @@ import {
   SidebarPageTree,
   SidebarTrigger,
   SidebarViewport,
-} from './sidebar';
-import { TreeContextProvider } from '@fumadocs/base-ui/contexts/tree';
-import { cn } from '@prisma-docs/ui/lib/cn';
-import { buttonVariants } from '../../ui/button';
-import { Languages, Sidebar as SidebarIcon, X } from 'lucide-react';
-import { LanguageToggle } from '../language-toggle';
-import { ThemeToggle } from '../theme-toggle';
-import type * as PageTree from 'fumadocs-core/page-tree';
+} from "./sidebar";
+import { TreeContextProvider } from "@fumadocs/base-ui/contexts/tree";
+import { cn } from "@prisma-docs/ui/lib/cn";
+import { buttonVariants } from "../../ui/button";
+import { Languages, Sidebar as SidebarIcon, X } from "lucide-react";
+import { LanguageToggle } from "../language-toggle";
+import { ThemeToggle } from "../theme-toggle";
+import type * as PageTree from "fumadocs-core/page-tree";
 import {
   LayoutBody,
   LayoutContextProvider,
@@ -34,20 +24,22 @@ import {
   NavbarLinkItem,
   SidebarEnabledFromPageProvider,
   SidebarEnabledGate,
-} from './client';
-import { LargeSearchToggle, SearchToggle } from '../search-toggle';
-import { LinkItem, type LinkItemType } from '../link-item';
-import type { SidebarPageTreeComponents } from '../sidebar/page-tree';
-import { getSidebarTabs } from '../sidebar/tabs';
+} from "./client";
+import { LargeSearchToggle, SearchToggle } from "../search-toggle";
+import { isLinkItemVisibleOn } from "../link-item-visibility";
 import {
-  SidebarTabsDropdown,
-  type SidebarTabWithProps,
-} from '../sidebar/tabs/dropdown';
-import { AIChatSidebar } from '@/components/ai-chat-sidebar';
+  LinkItem,
+  type ButtonItemType,
+  type LinkItemType,
+} from "../link-item";
+import type { SidebarPageTreeComponents } from "../sidebar/page-tree";
+import { getSidebarTabs } from "../sidebar/tabs";
+import { SidebarTabsDropdown, type SidebarTabWithProps } from "../sidebar/tabs/dropdown";
+import { AIChatSidebar } from "@/components/ai-chat-sidebar";
 
 export interface DocsLayoutProps extends BaseLayoutProps {
   tree: PageTree.Root;
-  nav?: BaseLayoutProps['nav'];
+  nav?: BaseLayoutProps["nav"];
 
   sidebar?: SidebarOptions;
 
@@ -55,8 +47,9 @@ export interface DocsLayoutProps extends BaseLayoutProps {
 }
 
 interface SidebarOptions
-  extends ComponentProps<'aside'>,
-    Pick<ComponentProps<typeof Sidebar>, 'defaultOpenLevel' | 'prefetch'> {
+  extends
+    ComponentProps<"aside">,
+    Pick<ComponentProps<typeof Sidebar>, "defaultOpenLevel" | "prefetch"> {
   components?: Partial<SidebarPageTreeComponents>;
 
   /**
@@ -64,8 +57,8 @@ interface SidebarOptions
    */
   tabs?: SidebarTabWithProps[] | false;
 
-  banner?: ReactNode | FC<ComponentProps<'div'>>;
-  footer?: ReactNode | FC<ComponentProps<'div'>>;
+  banner?: ReactNode | FC<ComponentProps<"div">>;
+  footer?: ReactNode | FC<ComponentProps<"div">>;
 
   /**
    * Support collapsing the sidebar on desktop mode
@@ -104,38 +97,39 @@ export function DocsLayout(props: DocsLayoutProps) {
   }, [tabOptions, tree]);
 
   function sidebar() {
-    const {
-      banner,
-      footer,
-      components,
-      collapsible = true,
-      ...rest
-    } = sidebarProps;
+    const { banner, footer, components, collapsible = true, ...rest } = sidebarProps;
 
-    const iconLinks = links.filter((item) => item.type === 'icon');
+    const menuLinks = links.filter(
+      (item) =>
+        item.type !== "icon" &&
+        item.type !== "button" &&
+        isLinkItemVisibleOn(item, "menu"),
+    );
+    const iconLinks = links.filter(
+      (item): item is Extract<LinkItemType, { type: "icon" }> =>
+        item.type === "icon" && isLinkItemVisibleOn(item, "nav"),
+    );
+    const navButtons = links.filter(
+      (item): item is ButtonItemType =>
+        item.type === "button" && isLinkItemVisibleOn(item, "nav"),
+    );
     const Header =
-      typeof banner === 'function'
+      typeof banner === "function"
         ? banner
-        : ({ className, ...props }: ComponentProps<'div'>) => (
-            <div
-              className={cn(
-                'flex flex-col gap-3 p-4 pb-2 empty:hidden',
-                className,
-              )}
-              {...props}
-            >
+        : ({ className, ...props }: ComponentProps<"div">) => (
+            <div className={cn("flex flex-col gap-3 p-4 pb-2 empty:hidden", className)} {...props}>
               {props.children}
               {banner}
             </div>
           );
     const Footer =
-      typeof footer === 'function'
+      typeof footer === "function"
         ? footer
-        : ({ className, ...props }: ComponentProps<'div'>) => (
+        : ({ className, ...props }: ComponentProps<"div">) => (
             <div
               className={cn(
-                'hidden flex-row text-fd-muted-foreground items-center border-t p-4 pt-2',
-                iconLinks.length > 0 && 'max-lg:flex',
+                "hidden flex-row text-fd-muted-foreground items-center border-t p-4 pt-2",
+                iconLinks.length > 0 && "max-lg:flex",
                 className,
               )}
               {...props}
@@ -155,8 +149,8 @@ export function DocsLayout(props: DocsLayoutProps) {
         <SidebarContent {...rest}>
           <Header>
             <SidebarTabsDropdown
-              links={links.filter((item) => item.type !== 'icon')}
-              className={cn('lg:hidden')}
+              links={menuLinks}
+              className={cn("lg:hidden")}
             />
           </Header>
           {viewport}
@@ -167,9 +161,9 @@ export function DocsLayout(props: DocsLayoutProps) {
                 item={item}
                 className={cn(
                   buttonVariants({
-                    size: 'icon-sm',
-                    variant: 'ghost',
-                    className: 'lg:hidden',
+                    size: "icon-sm",
+                    variant: "ghost",
+                    className: "lg:hidden",
                   }),
                 )}
                 aria-label={item.label}
@@ -184,26 +178,40 @@ export function DocsLayout(props: DocsLayoutProps) {
             <SidebarTrigger
               className={cn(
                 buttonVariants({
-                  size: 'icon-sm',
-                  variant: 'ghost',
-                  className: 'ms-auto text-fd-muted-foreground',
+                  size: "icon-sm",
+                  variant: "ghost",
+                  className: "ms-auto text-fd-muted-foreground",
                 }),
               )}
             >
               <X />
             </SidebarTrigger>
-            {links.length > 0 && (
-              <SidebarTabsDropdown
-                links={links.filter((item) => item.type !== 'icon')}
-              />
-            )}
+            {menuLinks.length > 0 && <SidebarTabsDropdown links={menuLinks} />}
           </Header>
+          {navButtons.length > 0 && (
+            <div className="flex flex-col gap-2 px-4 pb-3">
+              {navButtons.map((item, i) => (
+                <LinkItem
+                  key={i}
+                  item={item}
+                  className={cn(
+                    buttonVariants({
+                      variant: item.secondary ? "secondary" : "primary",
+                    }),
+                    "w-full justify-center px-3 py-2",
+                  )}
+                >
+                  {item.text}
+                </LinkItem>
+              ))}
+            </div>
+          )}
           {viewport}
           <Footer
             className={cn(
-              'hidden flex-row items-center justify-end',
-              (i18n || themeSwitch.enabled !== false) && 'flex',
-              iconLinks.length > 0 && 'max-lg:flex',
+              "hidden flex-row items-center justify-end",
+              (i18n || themeSwitch.enabled !== false) && "flex",
+              iconLinks.length > 0 && "max-lg:flex",
             )}
           >
             {iconLinks.map((item, i) => (
@@ -212,11 +220,11 @@ export function DocsLayout(props: DocsLayoutProps) {
                 item={item}
                 className={cn(
                   buttonVariants({
-                    size: 'icon-sm',
-                    variant: 'ghost',
+                    size: "icon-sm",
+                    variant: "ghost",
                   }),
-                  'text-fd-muted-foreground lg:hidden',
-                  i === iconLinks.length - 1 && 'me-auto',
+                  "text-fd-muted-foreground lg:hidden",
+                  i === iconLinks.length - 1 && "me-auto",
                 )}
                 aria-label={item.label}
               >
@@ -230,7 +238,7 @@ export function DocsLayout(props: DocsLayoutProps) {
             )}
             {themeSwitch.enabled !== false &&
               (themeSwitch.component ?? (
-                <ThemeToggle mode={themeSwitch.mode ?? 'light-dark-system'} />
+                <ThemeToggle mode={themeSwitch.mode ?? "light-dark-system"} />
               ))}
           </Footer>
         </SidebarDrawer>
@@ -244,9 +252,7 @@ export function DocsLayout(props: DocsLayoutProps) {
         <Sidebar defaultOpenLevel={defaultOpenLevel} prefetch={prefetch}>
           <SidebarEnabledFromPageProvider layoutEnabled={sidebarEnabled}>
             <LayoutBody {...props.containerProps}>
-              <SidebarEnabledGate>
-                {sidebarEnabled ? sidebar() : null}
-              </SidebarEnabledGate>
+              <SidebarEnabledGate>{sidebarEnabled ? sidebar() : null}</SidebarEnabledGate>
               <DocsNavbar {...props} links={links} tabs={tabs} />
               {props.children}
             </LayoutBody>
@@ -269,90 +275,108 @@ function DocsNavbar({
   links: LinkItemType[];
   tabs: SidebarTabWithProps[];
 }) {
-  const showLayoutTabs = links.some((item) => item.type !== 'icon');
+  const menuLinks = links.filter(
+    (item) =>
+      item.type !== "icon" &&
+      item.type !== "custom" &&
+      item.type !== "button" &&
+      isLinkItemVisibleOn(item, "menu"),
+  );
+  const customLinks = links.filter(
+    (item) => item.type === "custom" && isLinkItemVisibleOn(item, "nav"),
+  );
+  const iconLinks = links
+    .filter(
+      (item): item is Extract<LinkItemType, { type: "icon" }> =>
+        item.type === "icon" && isLinkItemVisibleOn(item, "nav"),
+    )
+    .reverse();
+  const navButtons = links.filter(
+      (item): item is ButtonItemType =>
+        item.type === "button" && isLinkItemVisibleOn(item, "nav"),
+  );
+  const showLayoutTabs = menuLinks.length > 0;
 
   return (
     <LayoutHeader
       id="nd-subnav"
       className={cn(
-        'sticky [grid-area:header] flex flex-col top-(--fd-docs-row-1) z-10 backdrop-blur-sm transition-colors data-[transparent=false]:bg-fd-background/80 layout:[--fd-header-height:--spacing(14)]',
-        showLayoutTabs && 'lg:layout:[--fd-header-height:--spacing(24)]',
+        "sticky [grid-area:header] flex flex-col top-(--fd-docs-row-1) z-10 backdrop-blur-sm transition-colors data-[transparent=false]:bg-fd-background/80 layout:[--fd-header-height:--spacing(14)]",
+        showLayoutTabs && "lg:layout:[--fd-header-height:--spacing(24)]",
       )}
     >
-      <div
-        data-header-body=""
-        className="flex border-b px-4 gap-4 h-14 md:px-6 justify-between"
-      >
+      <div data-header-body="" className="flex border-b px-4 gap-4 h-14 md:px-6 justify-between">
         <div className="items-center flex flex-1">
           {renderTitleNav(nav, {
-            href: nav?.url ?? '/',
-            className: cn('inline-flex items-center gap-2.5 font-semibold'),
+            href: nav?.url ?? "/",
+            className: cn("inline-flex items-center gap-2.5 font-semibold"),
           })}
           {nav.children}
         </div>
         {searchToggle.enabled !== false &&
           (searchToggle.components?.lg ? (
-            <div
-              className={cn(
-                'w-full my-auto max-md:hidden',
-                'rounded-xl max-w-sm',
-              )}
-            >
+            <div className={cn("w-full my-auto max-md:hidden", "rounded-xl max-w-sm")}>
               {searchToggle.components.lg}
             </div>
           ) : (
             <LargeSearchToggle
               hideIfDisabled
-              className={cn(
-                'flex-1 mx-1 my-auto max-md:hidden',
-                'rounded-xl max-w-sm ps-2.5',
-              )}
+              className={cn("flex-1 mx-1 my-auto max-md:hidden", "rounded-xl max-w-sm ps-2.5")}
             />
           ))}
         <div className="flex flex-1 items-center justify-end gap-2">
           <AIChatSidebar />
           <div className="flex items-center gap-2 max-md:hidden">
-            {links
-              .filter((item) => item.type === 'custom')
-              .map((item, i) => (
-                <NavbarLinkItem key={i} item={item} />
-              ))}
+            {customLinks.map((item, i) => (
+              <NavbarLinkItem key={i} item={item} />
+            ))}
             {/* {i18n && ( */}
             {/*   <LanguageToggle> */}
             {/*     <Languages className="size-4.5 text-fd-muted-foreground" /> */}
             {/*   </LanguageToggle> */}
             {/* )} */}
             <div className="flex items-center gap-2 max-md:hidden">
-              {links
-                .filter((item) => item.type === 'icon')
-                .reverse()
-                .map((item, i) => (
-                  <LinkItem
-                    key={i}
-                    item={item}
-                    className={cn(
-                      buttonVariants({ size: 'icon-sm', variant: 'ghost' }),
-                      'text-fd-muted-foreground',
-                    )}
-                    aria-label={item.label}
-                  >
-                    {item.icon}
-                  </LinkItem>
-                ))}
+              {iconLinks.map((item, i) => (
+                <LinkItem
+                  key={i}
+                  item={item}
+                  className={cn(
+                    buttonVariants({ size: "icon-sm", variant: "ghost" }),
+                    "text-fd-muted-foreground",
+                  )}
+                  aria-label={item.label}
+                >
+                  {item.icon}
+                </LinkItem>
+              ))}
+              {navButtons.map((item, i) => (
+                <LinkItem
+                  key={`button-${i}`}
+                  item={item}
+                  className={cn(
+                    buttonVariants({
+                      variant: item.secondary ? "secondary" : "primary",
+                    }),
+                    "px-3 py-2 whitespace-nowrap",
+                  )}
+                >
+                  {item.text}
+                </LinkItem>
+              ))}
             </div>
 
             {themeSwitch.enabled !== false && (
-              <ThemeToggle mode={themeSwitch.mode ?? 'light-dark-system'} />
+              <ThemeToggle mode={themeSwitch.mode ?? "light-dark-system"} />
             )}
             <SidebarEnabledGate>
               {sidebarCollapsible && (
                 <SidebarCollapseTrigger
                   className={cn(
                     buttonVariants({
-                      variant: 'secondary',
-                      size: 'icon-sm',
+                      variant: "secondary",
+                      size: "icon-sm",
                     }),
-                    'text-fd-muted-foreground rounded-full -me-1.5',
+                    "text-fd-muted-foreground rounded-full -me-1.5",
                   )}
                 >
                   <SidebarIcon />
@@ -363,15 +387,13 @@ function DocsNavbar({
 
           <div className="flex items-center md:hidden">
             {searchToggle.enabled !== false &&
-              (searchToggle.components?.sm ?? (
-                <SearchToggle hideIfDisabled className="p-2" />
-              ))}
+              (searchToggle.components?.sm ?? <SearchToggle hideIfDisabled className="p-2" />)}
             <SidebarTrigger
               className={cn(
                 buttonVariants({
-                  variant: 'ghost',
-                  size: 'icon-sm',
-                  className: 'p-2 -me-1.5',
+                  variant: "ghost",
+                  size: "icon-sm",
+                  className: "p-2 -me-1.5",
                 }),
               )}
             >
@@ -384,7 +406,7 @@ function DocsNavbar({
         <LayoutHeaderTabs
           data-header-tabs=""
           className="overflow-x-auto border-b px-6 h-10 max-lg:hidden"
-          links={links}
+          links={menuLinks}
         />
       )}
     </LayoutHeader>

@@ -1,4 +1,5 @@
-import { getPageImage, source, sourceV6 } from "@/lib/source";
+import { getPageImage, source } from "@/lib/source";
+import { getPageTitleText } from "@/lib/page-title";
 import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
 
@@ -100,10 +101,13 @@ function getApiPathSegments(apiPath?: string) {
     return undefined;
   }
 
-  return apiPath.split(API_PATH_SEGMENT_REGEX).filter(Boolean).map((segment) => ({
-    text: segment,
-    color: segment.startsWith("{") && segment.endsWith("}") ? FALLBACK_METHOD_COLOR : "#a0aec0",
-  }));
+  return apiPath
+    .split(API_PATH_SEGMENT_REGEX)
+    .filter(Boolean)
+    .map((segment) => ({
+      text: segment,
+      color: segment.startsWith("{") && segment.endsWith("}") ? FALLBACK_METHOD_COLOR : "#a0aec0",
+    }));
 }
 
 function PrismaOGImage({
@@ -306,44 +310,33 @@ function getFonts() {
 export async function GET(_req: Request, { params }: RouteContext<"/og/[...slug]">) {
   const { slug } = await params;
   const pageSlug = slug.slice(0, -1);
-  // Check v7 first, then v6
-  const page = source.getPage(pageSlug) ?? sourceV6.getPage(pageSlug);
+  const page = source.getPage(pageSlug);
   if (!page) notFound();
 
   const openApiMetadata = (page.data as PageFrontmatter)._openapi;
   const method = openApiMetadata?.method;
   const fonts = await getFonts();
+  const title = getPageTitleText(page.data.title, page.slugs.at(-1) ?? "Prisma Docs");
   const imageProps = {
-    title: page.data.title,
+    title,
     description: page.data.description,
     method,
     methodColor: getMethodColor(method),
     apiPathSegments: getApiPathSegments(openApiMetadata?.path),
     badgeLabel: getSectionLabel(page.slugs[0]),
-    titleFontSize: getTitleFontSize(page.data.title),
+    titleFontSize: getTitleFontSize(title),
   };
 
-  return new ImageResponse(
-    <PrismaOGImage {...imageProps} />,
-    {
-      width: 1200,
-      height: 630,
-      fonts,
-    },
-  );
+  return new ImageResponse(<PrismaOGImage {...imageProps} />, {
+    width: 1200,
+    height: 630,
+    fonts,
+  });
 }
 
 export function generateStaticParams() {
-  // Generate OG images for both v7 and v6 pages
-  const v7Pages = source.getPages().map((page) => ({
+  return source.getPages().map((page) => ({
     lang: page.locale,
     slug: getPageImage(page).segments,
   }));
-
-  const v6Pages = sourceV6.getPages().map((page) => ({
-    lang: page.locale,
-    slug: getPageImage(page).segments,
-  }));
-
-  return [...v7Pages, ...v6Pages];
 }

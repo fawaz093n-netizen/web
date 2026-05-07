@@ -1,43 +1,15 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/page-metadata";
 import Image from "next/image";
 import { Action, Button, Card } from "@prisma/eclipse";
 import { meetups, type Meetup } from "../events/events-data";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Community | Prisma",
   description:
     "Have a question, idea, or contribution for the Prisma ORM? You are not alone! Join hundreds of thousands of Prisma developers.",
-  alternates: {
-    canonical: "https://www.prisma.io/community",
-  },
-  openGraph: {
-    title: "Community | Prisma",
-    description:
-      "Have a question, idea, or contribution for the Prisma ORM? You are not alone! Join hundreds of thousands of Prisma developers.",
-    url: "https://www.prisma.io/community",
-    siteName: "Prisma",
-    locale: "en_US",
-    type: "website",
-    images: [
-      {
-        url: "/og/og-community.png",
-        width: 1200,
-        height: 630,
-        alt: "Database tools for modern developers",
-        type: "image/png",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Community | Prisma",
-    description:
-      "Have a question, idea, or contribution for the Prisma ORM? You are not alone! Join hundreds of thousands of Prisma developers.",
-    images: ["/og/og-community.png"],
-    site: "@prisma",
-    creator: "@prisma",
-  },
-};
+  path: "/community",
+  ogImage: "/og/og-community.png",
+});
 
 const channels = [
   {
@@ -169,8 +141,17 @@ export default function CommunityPage() {
                   </p>
                 </div>
               </div>
-              <Button asChild variant="orm" size="lg" className="shrink-0 w-fit">
-                <a href="https://pris.ly/discord" target="_blank" rel="noopener noreferrer">
+              <Button
+                asChild
+                variant="orm"
+                size="lg"
+                className="shrink-0 w-fit"
+              >
+                <a
+                  href="https://pris.ly/discord"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Join Discord
                   <i className="fa-regular fa-arrow-up-right" aria-hidden />
                 </a>
@@ -378,7 +359,11 @@ export default function CommunityPage() {
             </div>
             <div className="flex flex-col md:flex-row gap-6">
               <Button asChild variant="orm" size="2xl">
-                <a href="https://pris.ly/discord" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://pris.ly/discord"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Join Discord
                   <i className="fa-brands fa-discord" aria-hidden />
                 </a>

@@ -1,10 +1,8 @@
 import { source } from "@/lib/source";
-import { baseOptions, links } from "@/lib/layout.shared";
-import { VersionSwitcher } from "@/components/version-switcher";
-import type { LinkItemType } from "fumadocs-ui/layouts/shared";
+import { authLinks, baseOptions, links } from "@/lib/layout.shared";
+import type { LinkItemType } from "@/components/layout/link-item";
 import { DocsLayout } from "@/components/layout/notebook";
 import { DocsBody, DocsPage } from "@/components/layout/notebook/page";
-import { LATEST_VERSION } from "@/lib/version";
 import { NotFoundTracker } from "@/components/not-found-tracker";
 import type { Metadata } from "next";
 
@@ -16,13 +14,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   const { nav, ...base } = baseOptions();
 
-  const navbarLinks: LinkItemType[] = [
-    ...links,
-    {
-      type: "custom",
-      children: <VersionSwitcher currentVersion={LATEST_VERSION} />,
-    },
-  ];
+  const navbarLinks: LinkItemType[] = [...links, ...authLinks];
 
   return (
     <DocsLayout
@@ -51,10 +43,7 @@ export default function NotFound() {
             <p className="text-2xl font-semibold text-white">
               We could not find the page you were looking for
             </p>
-            <a
-              href="https://www.prisma.io/docs"
-              className="hover:underline transition-colors"
-            >
+            <a href="https://www.prisma.io/docs" className="hover:underline transition-colors">
               Go to docs
             </a>
           </div>

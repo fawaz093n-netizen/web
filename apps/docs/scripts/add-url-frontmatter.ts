@@ -5,17 +5,14 @@
  *
  * Usage:
  *   tsx scripts/add-url-frontmatter.ts                    # content/docs, base /
- *   tsx scripts/add-url-frontmatter.ts content/docs.v6 /v6  # content/docs.v6, base /v6
+ *   tsx scripts/add-url-frontmatter.ts content/docs/orm/v6 /orm/v6  # versioned ORM docs, base /orm/v6
  */
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 
 const [dirArg, baseArg] = process.argv.slice(2);
-const DOCS_DIR = path.join(
-  process.cwd(),
-  dirArg ?? "content/docs"
-);
+const DOCS_DIR = path.join(process.cwd(), dirArg ?? "content/docs");
 const URL_BASE = (baseArg ?? "").replace(/\/$/, "") || ""; // "" for /, "/v6" for /v6
 
 function getUrlFromRelativePath(relativePath: string): string {
@@ -36,7 +33,7 @@ function getUrlFromRelativePath(relativePath: string): string {
 function walkMdxFiles(
   dir: string,
   relativeTo: string,
-  files: { absolute: string; relative: string }[] = []
+  files: { absolute: string; relative: string }[] = [],
 ): { absolute: string; relative: string }[] {
   for (const name of fs.readdirSync(dir, { withFileTypes: true })) {
     const absolute = path.join(dir, name.name);

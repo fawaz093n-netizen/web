@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FooterAccordion } from "@/components/enterprise/footer-accordion";
 import { SwitchEnterprise } from "@/components/enterprise/switch-enterprise";
 import LogoParade from "@/components/logo-parade";
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/page-metadata";
 import { Button, Card, Action } from "@prisma/eclipse";
 import { CardSection } from "@/components/homepage/card-section/card-section";
 import { cn } from "@/lib/cn";
@@ -322,33 +322,16 @@ const abstraction_ease_of_use = [
 ];
 
 const ENTERPRISE_TITLE =
-  "Streamline your enterprise development workflow with Prisma";
+  "Prisma Enterprise | ORM Support and Database Workflows for Teams";
 const ENTERPRISE_DESCRIPTION =
-  "Learn how Prisma ORM can improve your team's productivity and explore our tailored ORM support solutions for enterprises and solution providers.";
+  "See how Prisma helps engineering teams ship faster with better database workflows, enterprise support, and tailored solutions for large organizations.";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: ENTERPRISE_TITLE,
   description: ENTERPRISE_DESCRIPTION,
-  alternates: {
-    canonical: "https://www.prisma.io/enterprise",
-  },
-  openGraph: {
-    title: ENTERPRISE_TITLE,
-    description: ENTERPRISE_DESCRIPTION,
-    url: "https://www.prisma.io/enterprise",
-    images: [
-      {
-        url: "/og/og-enterprise.png",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: ENTERPRISE_TITLE,
-    description: ENTERPRISE_DESCRIPTION,
-    images: ["/og/og-enterprise.png"],
-  },
-};
+  path: "/enterprise",
+  ogImage: "/og/og-enterprise.png",
+});
 
 export default function EnterprisePage() {
   return (
@@ -371,7 +354,12 @@ export default function EnterprisePage() {
             developers can focus on business logic.
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
-            <Button asChild variant="orm" size="3xl" className="font-sans-display! font-[650]">
+            <Button
+              asChild
+              variant="orm"
+              size="3xl"
+              className="font-sans-display! font-[650]"
+            >
               <a href="#contact-us">
                 Get in touch
                 <i className="fa-regular fa-envelope" />
@@ -434,14 +422,14 @@ export default function EnterprisePage() {
                       <div className="bottom-0 left-0 right-0 px-4 after:content-[''] after:absolute after:inset-0 after:bg-[linear-gradient(0deg,var(--color-background-default)_0%,transparent_62.5%)] after:top-0 absolute after:rounded-square">
                         <Image
                           src={`${card.image}.svg`}
-                          alt="Enterprise"
+                          alt="Diagram illustrating Prisma's enterprise-grade architecture and tooling"
                           width={1200}
                           height={900}
                           className="hidden dark:block mx-auto"
                         />
                         <Image
                           src={`${card.image}_light.svg`}
-                          alt="Enterprise"
+                          alt="Diagram illustrating Prisma's enterprise-grade architecture and tooling"
                           width={1200}
                           height={900}
                           className="block dark:hidden mx-auto"
@@ -595,7 +583,7 @@ export default function EnterprisePage() {
       {/* Connect with us */}
       <section className="my-12 px-4" id="contact-us">
         <div className="py-12 gap-8 flex flex-col max-w-221 mx-auto">
-          <h2  className="text-foreground-neutral stretch-display text-center text-4xl font-black! font-sans-display my-0">
+          <h2 className="text-foreground-neutral stretch-display text-center text-4xl font-black! font-sans-display my-0">
             Connect with us
           </h2>
           <p className="text-center text-foreground-neutral max-w-3xl mx-auto">

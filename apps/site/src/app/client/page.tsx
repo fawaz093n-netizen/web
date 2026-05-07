@@ -7,9 +7,9 @@ import { cn } from "@/lib/cn";
 import { Technology } from "@/components/client/technology";
 
 export const metadata = createPageMetadata({
-  title: "Prisma Client - Auto-generated query builder for your data",
+  title: "Prisma Client | Type-Safe Query Builder for Node.js and TypeScript",
   description:
-    "Prisma is a next-generation ORM that can be used to build GraphQL servers, REST APIs, microservices & more.",
+    "Generate a type-safe database client from your Prisma schema to query PostgreSQL, MySQL, SQLite, SQL Server, MongoDB, and CockroachDB with confidence.",
   path: "/client",
   ogImage: "/og/og-client.png",
 });
@@ -233,13 +233,7 @@ export default function Client() {
                       size="4xl"
                       className="h-[75px]! w-[75px]! hover:bg-background-neutral-strong"
                     >
-                      <Image
-                        src={db.icon}
-                        alt={db.name}
-                        width={48}
-                        height={48}
-                        loading="lazy"
-                      />
+                      <Image src={db.icon} alt={db.name} width={48} height={48} loading="lazy" />
                     </Action>
                   </Technology>
                 ))}
@@ -260,13 +254,7 @@ export default function Client() {
                       size="4xl"
                       className="h-[75px]! w-[75px]! hover:bg-background-neutral-strong"
                     >
-                      <Image
-                        src={fw.icon}
-                        alt={fw.name}
-                        width={48}
-                        height={48}
-                        loading="lazy"
-                      />
+                      <Image src={fw.icon} alt={fw.name} width={48} height={48} loading="lazy" />
                     </Action>
                   </Technology>
                 ))}

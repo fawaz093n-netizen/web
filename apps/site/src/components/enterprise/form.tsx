@@ -13,6 +13,7 @@ export const EnterpriseForm = () => (
     />
     <Script
       src="https://tally.so/widgets/embed.js"
+      strategy="lazyOnload"
       onLoad={() => window.Tally?.loadEmbeds()}
     />
   </>

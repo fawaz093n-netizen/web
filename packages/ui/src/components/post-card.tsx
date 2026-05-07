@@ -95,7 +95,7 @@ export function PostCard({
           <img
             src={post.imageSrc}
             alt={post.imageAlt ?? post.title}
-            className={imageClassName}
+            className={cn(imageClassName, "absolute inset-0 w-full h-full")}
             loading={isFeatured ? "eager" : "lazy"}
           />
         </div>

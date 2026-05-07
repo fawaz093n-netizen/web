@@ -1,5 +1,5 @@
 import { EcosystemGrid } from "@/components/ecosystem/grid";
-import Antigravity from "../../components/homepage/antigravity";
+
 import { createPageMetadata } from "@/lib/page-metadata";
 import { Button } from "@prisma/eclipse";
 import { CopyCode } from "@/components/homepage/copy-btn";
@@ -76,8 +76,17 @@ export default function SiteHome() {
             Explore the wide variety of tools created by our amazing community.
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
-            <Button asChild variant="orm" size="3xl" className="font-sans-display! font-[650]">
-              <a href="https://pris.ly/submit-your-package" target="_blank" rel="noopener noreferrer">
+            <Button
+              asChild
+              variant="orm"
+              size="3xl"
+              className="font-sans-display! font-[650]"
+            >
+              <a
+                href="https://pris.ly/submit-your-package"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Submit your package
                 <i className="fa-regular fa-envelope" />
               </a>

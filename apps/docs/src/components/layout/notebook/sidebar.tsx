@@ -1,11 +1,14 @@
 'use client';
 import * as Base from '../sidebar/base';
 import { cn } from '@prisma-docs/ui/lib/cn';
-import { type ComponentProps, useRef } from 'react';
+import { type ComponentProps, Fragment, type ReactNode, useMemo, useRef } from 'react';
 import { cva } from 'class-variance-authority';
-import { createPageTreeRenderer } from '../sidebar/page-tree';
+import { useTreeContext, useTreePath } from '@fumadocs/base-ui/contexts/tree';
+import type * as PageTree from 'fumadocs-core/page-tree';
+import { usePathname } from 'fumadocs-core/framework';
 import { createLinkItemRenderer } from '../sidebar/link-item';
 import { mergeRefs } from '../../../lib/merge-refs';
+import { getVersionedSidebarTree } from '../../../lib/versioned-sidebar-tree';
 
 const itemVariants = cva(
   'relative flex flex-row items-center gap-2 rounded-lg p-2 text-start text-fd-muted-foreground wrap-anywhere [&_svg]:size-4 [&_svg]:shrink-0',
@@ -54,7 +57,7 @@ export function SidebarContent({
           )}
         >
           {collapsed && (
-            <div className="absolute start-0 inset-y-0 w-4" {...rest} />
+            <div className="absolute inset-s-0 inset-y-0 w-4" {...rest} />
           )}
           <aside
             id="nd-sidebar"
@@ -62,7 +65,7 @@ export function SidebarContent({
             data-collapsed={collapsed}
             data-hovered={collapsed && hovered}
             className={cn(
-              'absolute flex flex-col w-full start-0 inset-y-0 items-end text-sm duration-250 *:w-(--fd-sidebar-width)',
+              'absolute flex flex-col w-full inset-s-0 inset-y-0 items-end text-sm duration-250 *:w-(--fd-sidebar-width)',
               collapsed && [
                 'inset-y-2 rounded-xl bg-fd-card transition-transform border w-(--fd-sidebar-width)',
                 hovered
@@ -96,7 +99,7 @@ export function SidebarDrawer({
       <Base.SidebarDrawerOverlay className="fixed z-40 inset-0 backdrop-blur-xs data-[state=open]:animate-fd-fade-in data-[state=closed]:animate-fd-fade-out" />
       <Base.SidebarDrawerContent
         className={cn(
-          'fixed text-[0.9375rem] flex flex-col shadow-lg border-s end-0 inset-y-0 w-[85%] max-w-[380px] z-40 bg-fd-background data-[state=open]:animate-fd-sidebar-in data-[state=closed]:animate-fd-sidebar-out',
+          'fixed text-[0.9375rem] flex flex-col shadow-lg border-s inset-e-0 inset-y-0 w-[85%] max-w-[380px] z-40 bg-fd-background data-[state=open]:animate-fd-sidebar-in data-[state=closed]:animate-fd-sidebar-out',
           className,
         )}
         {...props}
@@ -219,7 +222,7 @@ export function SidebarFolderContent({
         cn(
           'relative',
           depth === 1 &&
-            "before:content-[''] before:absolute before:w-px before:inset-y-1 before:bg-fd-border before:start-2.5",
+            "before:content-[''] before:absolute before:w-px before:inset-y-1 before:bg-fd-border before:inset-s-2.5",
           typeof className === 'function' ? className(s) : className,
         )
       }
@@ -229,14 +232,80 @@ export function SidebarFolderContent({
     </Base.SidebarFolderContent>
   );
 }
-export const SidebarPageTree = createPageTreeRenderer({
-  SidebarFolder,
-  SidebarFolderContent,
-  SidebarFolderLink,
-  SidebarFolderTrigger,
-  SidebarItem,
-  SidebarSeparator,
-});
+
+function PageTreeFolder({
+  item,
+  children,
+}: {
+  item: PageTree.Folder;
+  children: ReactNode;
+}) {
+  const path = useTreePath();
+
+  return (
+    <SidebarFolder
+      collapsible={item.collapsible}
+      active={path.includes(item)}
+      defaultOpen={item.defaultOpen}
+    >
+      {item.index ? (
+        <SidebarFolderLink href={item.index.url} external={item.index.external}>
+          {item.icon}
+          {item.name}
+        </SidebarFolderLink>
+      ) : (
+        <SidebarFolderTrigger>
+          {item.icon}
+          {item.name}
+        </SidebarFolderTrigger>
+      )}
+      <SidebarFolderContent>{children}</SidebarFolderContent>
+    </SidebarFolder>
+  );
+}
+
+export function SidebarPageTree(
+  components: Partial<import('../sidebar/page-tree').SidebarPageTreeComponents>,
+) {
+  const { root } = useTreeContext();
+  const pathname = usePathname();
+  const { Separator, Item, Folder = PageTreeFolder } = components;
+
+  return useMemo(() => {
+    const tree = getVersionedSidebarTree(root as PageTree.Root, pathname);
+
+    function renderSidebarList(nodes: PageTree.Node[]) {
+      return nodes.map((item, i) => {
+        if (item.type === 'separator') {
+          if (Separator) return <Separator key={i} item={item} />;
+          return (
+            <SidebarSeparator key={i}>
+              {item.icon}
+              {item.name}
+            </SidebarSeparator>
+          );
+        }
+
+        if (item.type === 'folder') {
+          return (
+            <Folder key={item.$id ?? i} item={item}>
+              {renderSidebarList(item.children)}
+            </Folder>
+          );
+        }
+
+        if (Item) return <Item key={item.url} item={item} />;
+        return (
+          <SidebarItem key={item.url} href={item.url} external={item.external} icon={item.icon}>
+            {item.name}
+          </SidebarItem>
+        );
+      });
+    }
+
+    return <Fragment key={tree.$id}>{renderSidebarList(tree.children)}</Fragment>;
+  }, [Folder, Item, Separator, pathname, root]);
+}
 
 export const SidebarLinkItem = createLinkItemRenderer({
   SidebarFolder,
