@@ -1,61 +1,270 @@
 {
   "redirects": [
-    { "source": "/docs/tags/alpine", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/apm", "destination": "/docs/query-insights", "permanent": true },
+    {
+      "source": "/docs/accelerate/connection-pooling",
+      "destination": "/docs/postgres/database/connection-pooling",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/alpine",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/apm",
+      "destination": "/docs/query-insights",
+      "permanent": true
+    },
     {
       "source": "/docs/tags/application-performance-monitoring",
       "destination": "/docs/query-insights",
       "permanent": true
     },
-    { "source": "/docs/tags/best-practices", "destination": "/docs/orm/more/best-practices", "permanent": true },
-    { "source": "/docs/tags/ci-cd", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/containerization", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/data-migration", "destination": "/docs/orm/prisma-migrate/getting-started", "permanent": true },
-    { "source": "/docs/tags/database", "destination": "/docs/orm/core-concepts/supported-databases", "permanent": true },
-    { "source": "/docs/tags/datadog", "destination": "/docs/guides/integrations/datadog", "permanent": true },
-    { "source": "/docs/tags/deployment", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/docker", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/dynamic-usage", "destination": "/docs/accelerate", "permanent": true },
-    { "source": "/docs/tags/embedding", "destination": "/docs/studio/integrations/embedding", "permanent": true },
-    { "source": "/docs/tags/expand-and-contract", "destination": "/docs/guides/database/schema-changes", "permanent": true },
-    { "source": "/docs/tags/framework", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/git", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/guides", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/migration", "destination": "/docs/orm/prisma-migrate/getting-started", "permanent": true },
-    { "source": "/docs/tags/monorepo", "destination": "/docs/guides/deployment/turborepo", "permanent": true },
-    { "source": "/docs/tags/multiple-databases", "destination": "/docs/guides/database/multiple-databases", "permanent": true },
-    { "source": "/docs/tags/multiple-prisma-clients", "destination": "/docs/guides/database/multiple-databases", "permanent": true },
-    { "source": "/docs/tags/my-sql", "destination": "/docs/orm/core-concepts/supported-databases/mysql", "permanent": true },
-    { "source": "/docs/tags/nest-js", "destination": "/docs/guides/frameworks/nestjs", "permanent": true },
-    { "source": "/docs/tags/next-js", "destination": "/docs/guides/frameworks/nextjs", "permanent": true },
-    { "source": "/docs/tags/nuxt", "destination": "/docs/guides/frameworks/nuxt", "permanent": true },
-    { "source": "/docs/tags/optimization", "destination": "/docs/query-insights", "permanent": true },
-    { "source": "/docs/tags/orm", "destination": "/docs/orm/prisma-client", "permanent": true },
-    { "source": "/docs/tags/pnpm-workspace", "destination": "/docs/guides/deployment/turborepo", "permanent": true },
-    { "source": "/docs/tags/postgre-sql", "destination": "/docs/orm/core-concepts/supported-databases/postgresql", "permanent": true },
-    { "source": "/docs/tags/postgresql", "destination": "/docs/orm/core-concepts/supported-databases/postgresql", "permanent": true },
-    { "source": "/docs/tags/prisma", "destination": "/docs/orm/prisma-client", "permanent": true },
-    { "source": "/docs/tags/prisma-migrate", "destination": "/docs/orm/prisma-migrate/getting-started", "permanent": true },
-    { "source": "/docs/tags/prisma-orm", "destination": "/docs/orm/prisma-client", "permanent": true },
-    { "source": "/docs/tags/prisma-postgres", "destination": "/docs/postgres", "permanent": true },
-    { "source": "/docs/tags/prisma-studio", "destination": "/docs/studio", "permanent": true },
-    { "source": "/docs/tags/production", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/react-router", "destination": "/docs/guides/frameworks/react-router-7", "permanent": true },
-    { "source": "/docs/tags/rest-api", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/schema", "destination": "/docs/orm/prisma-schema/overview", "permanent": true },
-    { "source": "/docs/tags/schema-evolution", "destination": "/docs/guides/database/schema-changes", "permanent": true },
-    { "source": "/docs/tags/spans", "destination": "/docs/query-insights", "permanent": true },
-    { "source": "/docs/tags/sq-lite", "destination": "/docs/orm/core-concepts/supported-databases/sqlite", "permanent": true },
-    { "source": "/docs/tags/testing", "destination": "/docs/orm/prisma-client/testing/integration-testing", "permanent": true },
-    { "source": "/docs/tags/tracing", "destination": "/docs/query-insights", "permanent": true },
-    { "source": "/docs/tags/turborepo", "destination": "/docs/guides/deployment/turborepo", "permanent": true },
-    { "source": "/docs/tags/tutorials", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/tags/vercel", "destination": "/docs/guides/postgres/vercel", "permanent": true },
-    { "source": "/docs/tags/workflows", "destination": "/docs/orm/prisma-migrate/workflows/development-and-production", "permanent": true },
-    { "source": "/docs/search", "destination": "/docs/getting-started", "permanent": true },
-    { "source": "/docs/tags", "destination": "/docs/guides", "permanent": true },
-    { "source": "/docs/about", "destination": "/docs/guides/making-guides", "permanent": true },
-    { "source": "/docs/about/docs-components", "destination": "/docs/guides/making-guides#common-patterns", "permanent": true },
+    {
+      "source": "/docs/tags/best-practices",
+      "destination": "/docs/orm/more/best-practices",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/ci-cd",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/containerization",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/data-migration",
+      "destination": "/docs/orm/prisma-migrate/getting-started",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/database",
+      "destination": "/docs/orm/core-concepts/supported-databases",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/datadog",
+      "destination": "/docs/guides/integrations/datadog",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/deployment",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/docker",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/dynamic-usage",
+      "destination": "/docs/accelerate",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/embedding",
+      "destination": "/docs/studio/integrations/embedding",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/expand-and-contract",
+      "destination": "/docs/guides/database/schema-changes",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/framework",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/git",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/guides",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/migration",
+      "destination": "/docs/orm/prisma-migrate/getting-started",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/monorepo",
+      "destination": "/docs/guides/deployment/turborepo",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/multiple-databases",
+      "destination": "/docs/guides/database/multiple-databases",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/multiple-prisma-clients",
+      "destination": "/docs/guides/database/multiple-databases",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/my-sql",
+      "destination": "/docs/orm/core-concepts/supported-databases/mysql",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/nest-js",
+      "destination": "/docs/guides/frameworks/nestjs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/next-js",
+      "destination": "/docs/guides/frameworks/nextjs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/nuxt",
+      "destination": "/docs/guides/frameworks/nuxt",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/optimization",
+      "destination": "/docs/query-insights",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/orm",
+      "destination": "/docs/orm/prisma-client",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/pnpm-workspace",
+      "destination": "/docs/guides/deployment/turborepo",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/postgre-sql",
+      "destination": "/docs/orm/core-concepts/supported-databases/postgresql",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/postgresql",
+      "destination": "/docs/orm/core-concepts/supported-databases/postgresql",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/prisma",
+      "destination": "/docs/orm/prisma-client",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/prisma-migrate",
+      "destination": "/docs/orm/prisma-migrate/getting-started",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/prisma-orm",
+      "destination": "/docs/orm/prisma-client",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/prisma-postgres",
+      "destination": "/docs/postgres",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/prisma-studio",
+      "destination": "/docs/studio",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/production",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/react-router",
+      "destination": "/docs/guides/frameworks/react-router-7",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/rest-api",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/schema",
+      "destination": "/docs/orm/prisma-schema/overview",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/schema-evolution",
+      "destination": "/docs/guides/database/schema-changes",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/spans",
+      "destination": "/docs/query-insights",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/sq-lite",
+      "destination": "/docs/orm/core-concepts/supported-databases/sqlite",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/testing",
+      "destination": "/docs/orm/prisma-client/testing/integration-testing",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/tracing",
+      "destination": "/docs/query-insights",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/turborepo",
+      "destination": "/docs/guides/deployment/turborepo",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/tutorials",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/vercel",
+      "destination": "/docs/guides/postgres/vercel",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags/workflows",
+      "destination": "/docs/orm/prisma-migrate/workflows/development-and-production",
+      "permanent": true
+    },
+    {
+      "source": "/docs/search",
+      "destination": "/docs/getting-started",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tags",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/about",
+      "destination": "/docs/guides/making-guides",
+      "permanent": true
+    },
+    {
+      "source": "/docs/about/docs-components",
+      "destination": "/docs/guides/making-guides#common-patterns",
+      "permanent": true
+    },
     {
       "source": "/docs/about/docs-components/frontmatter",
       "destination": "/docs/guides/making-guides#required-frontmatter",
@@ -66,7 +275,11 @@
       "destination": "/docs/guides/making-guides#code-examples",
       "permanent": true
     },
-    { "source": "/docs/about/style-guide", "destination": "/docs/guides/making-guides#writing-style-and-voice", "permanent": true },
+    {
+      "source": "/docs/about/style-guide",
+      "destination": "/docs/guides/making-guides#writing-style-and-voice",
+      "permanent": true
+    },
     {
       "source": "/docs/about/style-guide/boilerplate-content",
       "destination": "/docs/guides/making-guides#guide-template",
@@ -97,13 +310,21 @@
       "destination": "/docs/guides/making-guides#best-practices",
       "permanent": true
     },
-    { "source": "/docs/about/style-guide/word-choice", "destination": "/docs/guides/making-guides#writing-style-and-voice", "permanent": true },
+    {
+      "source": "/docs/about/style-guide/word-choice",
+      "destination": "/docs/guides/making-guides#writing-style-and-voice",
+      "permanent": true
+    },
     {
       "source": "/docs/about/style-guide/writing-style",
       "destination": "/docs/guides/making-guides#writing-style-and-voice",
       "permanent": true
     },
-    { "source": "/docs/about/template", "destination": "/docs/guides/making-guides#guide-template", "permanent": true },
+    {
+      "source": "/docs/about/template",
+      "destination": "/docs/guides/making-guides#guide-template",
+      "permanent": true
+    },
     {
       "source": "/docs/getting-started/prisma-orm/add-to-existing-project/cockroachdb",
       "destination": "/docs/prisma-orm/add-to-existing-project/cockroachdb",
@@ -304,7 +525,11 @@
       "destination": "/docs/guides/authentication/better-auth/nextjs",
       "permanent": true
     },
-    { "source": "/docs/guides/bun", "destination": "/docs/guides/runtimes/bun", "permanent": true },
+    {
+      "source": "/docs/guides/bun",
+      "destination": "/docs/guides/runtimes/bun",
+      "permanent": true
+    },
     {
       "source": "/docs/guides/clerk-astro",
       "destination": "/docs/guides/authentication/clerk/astro",
@@ -505,7 +730,11 @@
       "destination": "/docs/query-insights",
       "permanent": true
     },
-    { "source": "/docs/orm/more", "destination": "/docs/orm/more/releases", "permanent": true },
+    {
+      "source": "/docs/orm/more",
+      "destination": "/docs/orm/more/releases",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/more/ai-tools/chatgpt",
       "destination": "/docs/ai/tools/chatgpt",
@@ -906,8 +1135,16 @@
       "destination": "/docs/console/more/support",
       "permanent": true
     },
-    { "source": "/docs/platform/about", "destination": "/docs/console", "permanent": true },
-    { "source": "/docs/platform", "destination": "/docs/console", "permanent": true },
+    {
+      "source": "/docs/platform/about",
+      "destination": "/docs/console",
+      "permanent": true
+    },
+    {
+      "source": "/docs/platform",
+      "destination": "/docs/console",
+      "permanent": true
+    },
     {
       "source": "/docs/platform/maturity-levels",
       "destination": "/docs/console",
@@ -1098,7 +1335,11 @@
       "destination": "/docs/orm/prisma-client/queries/advanced/query-optimization-performance",
       "permanent": true
     },
-    { "source": "/v6/optimize/:path*", "destination": "/query-insights", "permanent": true },
+    {
+      "source": "/v6/optimize/:path*",
+      "destination": "/query-insights",
+      "permanent": true
+    },
     {
       "source": "/v6/postgres/query-optimization/:path*",
       "destination": "/query-insights",
@@ -1169,7 +1410,11 @@
       "destination": "/docs/orm/prisma-schema/data-model/relations/referential-actions#special-rules-for-sql-server-and-mongodb",
       "permanent": true
     },
-    { "source": "/docs/orm/tools", "destination": "/docs/studio", "permanent": true },
+    {
+      "source": "/docs/orm/tools",
+      "destination": "/docs/studio",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/tools/prisma-cli",
       "destination": "/docs/orm/reference/prisma-cli-reference",
@@ -1225,7 +1470,11 @@
       "destination": "/docs/management-api/sdk",
       "permanent": true
     },
-    { "source": "/docs/postgres/introduction", "destination": "/docs/postgres", "permanent": true },
+    {
+      "source": "/docs/postgres/introduction",
+      "destination": "/docs/postgres",
+      "permanent": true
+    },
     {
       "source": "/docs/postgres/integrations",
       "destination": "/docs/postgres/integrations/raycast",
@@ -1251,7 +1500,11 @@
       "destination": "/docs/postgres/troubleshooting",
       "permanent": true
     },
-    { "source": "/docs/postgres/more/faq", "destination": "/docs/postgres/faq", "permanent": true },
+    {
+      "source": "/docs/postgres/more/faq",
+      "destination": "/docs/postgres/faq",
+      "permanent": true
+    },
     {
       "source": "/docs/postgres/more",
       "destination": "/docs/postgres/error-reference",
@@ -1277,7 +1530,11 @@
       "destination": "/docs/postgres/error-reference",
       "permanent": true
     },
-    { "source": "/docs/showcase", "destination": "/showcase", "permanent": true },
+    {
+      "source": "/docs/showcase",
+      "destination": "/showcase",
+      "permanent": true
+    },
     {
       "source": "/docs/getting-started/quickstart-prismaPostgres",
       "destination": "/docs/prisma-orm/quickstart/prisma-postgres",
@@ -1333,7 +1590,11 @@
       "destination": "/docs/orm/prisma-client/setup-and-configuration/generating-prisma-client",
       "permanent": true
     },
-    { "source": "/docs/get-started", "destination": "/docs/getting-started", "permanent": true },
+    {
+      "source": "/docs/get-started",
+      "destination": "/docs/getting-started",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/prisma-client/setup-and-configuration/databases-configuration/prisma-config-ts",
       "destination": "/docs/orm/reference/prisma-config-reference#configuration-interface",
@@ -1344,7 +1605,11 @@
       "destination": "/docs/orm/prisma-client/setup-and-configuration/introduction",
       "permanent": true
     },
-    { "source": "/docs/v5/guides", "destination": "/docs/guides", "permanent": true },
+    {
+      "source": "/docs/v5/guides",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
     {
       "source": "/docs/guides/database/seed-database",
       "destination": "/docs/cli/db/seed",
@@ -1665,7 +1930,11 @@
       "destination": "https://v1.prisma.io/docs/1.34/prisma-server/database-connector-MYSQL-jgfs/",
       "permanent": true
     },
-    { "source": "/docs/guides/troubleshooting", "destination": "/docs/guides", "permanent": true },
+    {
+      "source": "/docs/guides/troubleshooting",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
     {
       "source": "/docs/guides/troubleshooting/autocompletion-in-graphql-resolvers-with-js",
       "destination": "/docs/orm/more/troubleshooting/graphql-autocompletion",
@@ -2276,7 +2545,11 @@
       "destination": "/docs/orm/more/dev-environment/editor-setup",
       "permanent": true
     },
-    { "source": "/docs/about/about-the-docs", "destination": "/docs/guides/making-guides", "permanent": true },
+    {
+      "source": "/docs/about/about-the-docs",
+      "destination": "/docs/guides/making-guides",
+      "permanent": true
+    },
     {
       "source": "/docs/concepts/components/preview-features/sql-server/sql-server-start-from-scratch-typescript",
       "destination": "/docs/prisma-orm/quickstart/sql-server#1-create-a-new-project",
@@ -3472,7 +3745,11 @@
       "destination": "/docs/orm/prisma-schema/postgresql-extensions",
       "permanent": true
     },
-    { "source": "/docs/concepts/components", "destination": "/docs/studio", "permanent": true },
+    {
+      "source": "/docs/concepts/components",
+      "destination": "/docs/studio",
+      "permanent": true
+    },
     {
       "source": "/docs/reference/api-reference/prisma-client-reference",
       "destination": "/docs/orm/reference/prisma-client-reference",
@@ -3638,7 +3915,11 @@
       "destination": "/docs/orm/reference/prisma-cli-reference",
       "permanent": true
     },
-    { "source": "/docs/data-platform", "destination": "/docs/console", "permanent": true },
+    {
+      "source": "/docs/data-platform",
+      "destination": "/docs/console",
+      "permanent": true
+    },
     {
       "source": "/docs/about/prisma/example-projects",
       "destination": "https://github.com/prisma/prisma-examples/",
@@ -3659,7 +3940,11 @@
       "destination": "/docs/orm/prisma-schema/data-model/models#limitations",
       "permanent": true
     },
-    { "source": "/docs/about/prisma", "destination": "/about", "permanent": true },
+    {
+      "source": "/docs/about/prisma",
+      "destination": "/about",
+      "permanent": true
+    },
     {
       "source": "/docs/concepts/overview/prisma-in-your-stack/graphql",
       "destination": "/docs/orm/v6/overview/prisma-in-your-stack/graphql",
@@ -3670,7 +3955,11 @@
       "destination": "/docs/orm/v6/overview/prisma-in-your-stack/rest",
       "permanent": true
     },
-    { "source": "/docs/accelerate/concepts", "destination": "/docs/accelerate", "permanent": true },
+    {
+      "source": "/docs/accelerate/concepts",
+      "destination": "/docs/accelerate",
+      "permanent": true
+    },
     {
       "source": "/docs/data-platform/accelerate/concepts",
       "destination": "/docs/accelerate#getting-started",
@@ -3741,7 +4030,11 @@
       "destination": "/docs/console/concepts#resources",
       "permanent": true
     },
-    { "source": "/docs/platform/concepts", "destination": "/docs/console", "permanent": true },
+    {
+      "source": "/docs/platform/concepts",
+      "destination": "/docs/console",
+      "permanent": true
+    },
     {
       "source": "/docs/more/roadmap",
       "destination": "/docs/orm/more/releases#roadmap",
@@ -3802,7 +4095,11 @@
       "destination": "/docs/guides/switch-to-prisma-orm/from-drizzle",
       "permanent": true
     },
-    { "source": "/docs/guides/realtime-apps", "destination": "/docs/postgres", "permanent": true },
+    {
+      "source": "/docs/guides/realtime-apps",
+      "destination": "/docs/postgres",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/more/help-and-troubleshooting/creating-bug-reports",
       "destination": "https://github.com/prisma/prisma/issues/new?assignees=&labels=kind/bug&projects=&template=bug_report.yml",
@@ -3933,13 +4230,21 @@
       "destination": "/docs/guides/making-guides",
       "permanent": true
     },
-    { "source": "/docs/guides/cursor", "destination": "/docs/ai/tools/cursor", "permanent": true },
+    {
+      "source": "/docs/guides/cursor",
+      "destination": "/docs/ai/tools/cursor",
+      "permanent": true
+    },
     {
       "source": "/docs/guides/multiple-prisma-clients",
       "destination": "/docs/guides/database/multiple-databases",
       "permanent": true
     },
-    { "source": "/docs/postgres/overview", "destination": "/docs/postgres", "permanent": true },
+    {
+      "source": "/docs/postgres/overview",
+      "destination": "/docs/postgres",
+      "permanent": true
+    },
     {
       "source": "/docs/postgres/mcp-server",
       "destination": "/docs/ai/tools/mcp-server",
@@ -4055,7 +4360,11 @@
       "destination": "/docs/query-insights#how-to-use-it",
       "permanent": true
     },
-    { "source": "/docs/optimize/:path*", "destination": "/docs/query-insights", "permanent": true },
+    {
+      "source": "/docs/optimize/:path*",
+      "destination": "/docs/query-insights",
+      "permanent": true
+    },
     {
       "source": "/docs/postgres/database/api-reference/management-api",
       "destination": "/docs/management-api#getting-started",
@@ -4226,7 +4535,11 @@
       "destination": "/docs/orm/prisma-client/observability-and-logging/opentelemetry-tracing",
       "permanent": true
     },
-    { "source": "/docs/llm-full.txt", "destination": "/docs/llms-full.txt", "permanent": true },
+    {
+      "source": "/docs/llm-full.txt",
+      "destination": "/docs/llms-full.txt",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/prisma-client/setup-and-configuration/databases-connections/mysql",
       "destination": "/docs/orm/core-concepts/supported-databases/mysql",
@@ -4772,7 +5085,11 @@
       "destination": "/docs/orm/prisma-client/deployment/serverless/deploy-to-vercel",
       "permanent": true
     },
-    { "source": "/docs/cli/generate.md", "destination": "/docs/cli/generate", "permanent": true },
+    {
+      "source": "/docs/cli/generate.md",
+      "destination": "/docs/cli/generate",
+      "permanent": true
+    },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases-typescript-postg",
       "destination": "/docs/prisma-orm/quickstart/postgresql",
@@ -4828,7 +5145,11 @@
       "destination": "/docs/prisma-orm/add-to-existing-project/mysql",
       "permanent": true
     },
-    { "source": "/docs/postgres/iac", "destination": "/docs/postgres", "permanent": true },
+    {
+      "source": "/docs/postgres/iac",
+      "destination": "/docs/postgres",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/more/help-and-troubleshooting/help-articles/database-connector-timeout-errors",
       "destination": "/docs/orm/prisma-migrate/workflows/troubleshooting",
@@ -4899,8 +5220,16 @@
       "destination": "/docs/prisma-orm/quickstart/prisma-postgres",
       "permanent": true
     },
-    { "source": "/docs/ai/promt", "destination": "/docs/ai/prompts/prisma-7", "permanent": true },
-    { "source": "/docs/ai/prompt", "destination": "/docs/ai/prompts/prisma-7", "permanent": true },
+    {
+      "source": "/docs/ai/promt",
+      "destination": "/docs/ai/prompts/prisma-7",
+      "permanent": true
+    },
+    {
+      "source": "/docs/ai/prompt",
+      "destination": "/docs/ai/prompts/prisma-7",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/more/development-environment/environment-variables/managing-env-files-and-setting-variables",
       "destination": "/docs/orm/more/dev-environment/environment-variables#using-multiple-env-files",
@@ -5001,7 +5330,11 @@
       "destination": "/docs/orm/prisma-client/setup-and-configuration/introduction",
       "permanent": true
     },
-    { "source": "/docs/pulse/what-is-pulse", "destination": "/docs/postgres", "permanent": true },
+    {
+      "source": "/docs/pulse/what-is-pulse",
+      "destination": "/docs/postgres",
+      "permanent": true
+    },
     {
       "source": "/docs/concepts/more/comparisons/prisma-and-typeorm",
       "destination": "/docs/guides/switch-to-prisma-orm/from-sql-orms",
@@ -5012,7 +5345,11 @@
       "destination": "/docs/orm/prisma-client/queries/crud",
       "permanent": true
     },
-    { "source": "/docs/pulse/getting-started", "destination": "/docs/postgres", "permanent": true },
+    {
+      "source": "/docs/pulse/getting-started",
+      "destination": "/docs/postgres",
+      "permanent": true
+    },
     {
       "source": "/docs/data-platform/data-proxy/prisma-cli-with-data-proxy",
       "destination": "/docs/accelerate/getting-started",
@@ -5133,7 +5470,11 @@
       "destination": "/docs/prisma-orm/add-to-existing-project/prisma-postgres",
       "permanent": true
     },
-    { "source": "/docs/www.google.com", "destination": "/docs/getting-started", "permanent": true },
+    {
+      "source": "/docs/www.google.com",
+      "destination": "/docs/getting-started",
+      "permanent": true
+    },
     {
       "source": "/docs/reference/tools-and-interfaces/prisma-client/advanced-usage-of-generated-types",
       "destination": "/docs/orm/prisma-client/type-safety/operating-against-partial-structures-of-model-types",
@@ -5229,7 +5570,11 @@
       "destination": "/docs/guides/upgrade-prisma-orm/v5",
       "permanent": true
     },
-    { "source": "/docs/more", "destination": "/docs/orm/more/releases", "permanent": true },
+    {
+      "source": "/docs/more",
+      "destination": "/docs/orm/more/releases",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/prisma-migrate/workflows/resolving-migration-issues-in-production",
       "destination": "/docs/orm/prisma-migrate/workflows/troubleshooting",
@@ -5325,19 +5670,31 @@
       "destination": "/docs/orm/prisma-client/observability-and-logging/logging",
       "permanent": true
     },
-    { "source": "/docs/ai/tools", "destination": "/docs/ai", "permanent": true },
+    {
+      "source": "/docs/ai/tools",
+      "destination": "/docs/ai",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/prisma-schema/special-fields-and-types/working-with-json-fields",
       "destination": "/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields",
       "permanent": true
     },
-    { "source": "/docs/guides/other/prisma-dev", "destination": "/docs/cli/dev", "permanent": true },
+    {
+      "source": "/docs/guides/other/prisma-dev",
+      "destination": "/docs/cli/dev",
+      "permanent": true
+    },
     {
       "source": "/docs/concepts/components/prisma-migrate/migration-troubleshooting",
       "destination": "/docs/orm/prisma-migrate/understanding-prisma-migrate/limitations-and-known-issues",
       "permanent": true
     },
-    { "source": "/docs/guide/nextjs", "destination": "/docs/guides/frameworks/nextjs", "permanent": true },
+    {
+      "source": "/docs/guide/nextjs",
+      "destination": "/docs/guides/frameworks/nextjs",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/prisma-client/queries/multi-tenancy",
       "destination": "/docs/guides/database/multiple-databases",
@@ -5453,7 +5810,11 @@
       "destination": "/docs/orm/reference/prisma-schema-reference#datasource",
       "permanent": true
     },
-    { "source": "/docs/pulse", "destination": "/docs/postgres", "permanent": true },
+    {
+      "source": "/docs/pulse",
+      "destination": "/docs/postgres",
+      "permanent": true
+    },
     {
       "source": "/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/connect-your-database-typescript-postgresql-vercel-postgres",
       "destination": "/docs/prisma-orm/quickstart/prisma-postgres#4-initialize-prisma-orm",
@@ -5474,7 +5835,11 @@
       "destination": "/docs/guides/frameworks/nestjs",
       "permanent": true
     },
-    { "source": "/docs/guides/other/nextjs", "destination": "/docs/guides/frameworks/nextjs", "permanent": true },
+    {
+      "source": "/docs/guides/other/nextjs",
+      "destination": "/docs/guides/frameworks/nextjs",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/more/development-environment/environment-variables/env-files",
       "destination": "/docs/orm/v6/overview/prisma-in-your-stack/graphql",
@@ -5765,7 +6130,11 @@
       "destination": "/docs/orm/prisma-migrate/workflows/baselining#baselining-a-database",
       "permanent": true
     },
-    { "source": "/docs/orm/more/changelog", "destination": "/docs/orm/more/releases", "permanent": true },
+    {
+      "source": "/docs/orm/more/changelog",
+      "destination": "/docs/orm/more/releases",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/prisma-migrate/seeding",
       "destination": "/docs/orm/prisma-migrate/workflows/seeding",
@@ -6001,9 +6370,17 @@
       "destination": "/docs/orm/prisma-client/deployment/edge/overview",
       "permanent": true
     },
-    { "source": "/docs/guide/:path*", "destination": "/docs/guides/:path*", "permanent": true },
+    {
+      "source": "/docs/guide/:path*",
+      "destination": "/docs/guides/:path*",
+      "permanent": true
+    },
     { "source": "/docs/-:junk", "destination": "/docs", "permanent": true },
-    { "source": "/docs/tutorials/-:junk", "destination": "/docs/guides", "permanent": true },
+    {
+      "source": "/docs/tutorials/-:junk",
+      "destination": "/docs/guides",
+      "permanent": true
+    },
     {
       "source": "/docs/prisma-orm/:flow/:db/page/:page",
       "destination": "/docs/prisma-orm/:flow/:db",
@@ -6034,7 +6411,11 @@
       "destination": "/docs/guides/upgrade-prisma-orm/v1",
       "permanent": true
     },
-    { "source": "/docs/about/style-guide/:slug", "destination": "/docs", "permanent": true },
+    {
+      "source": "/docs/about/style-guide/:slug",
+      "destination": "/docs",
+      "permanent": true
+    },
     {
       "source": "/docs/orm/overview/introduction/:slug",
       "destination": "/docs/orm/v6/overview/introduction/what-is-prisma",
@@ -6046,7 +6427,11 @@
       "permanent": true
     },
     { "source": "/docs/tags/:slug", "destination": "/docs", "permanent": true },
-    { "source": "/docs/about/:slug", "destination": "/docs", "permanent": true },
+    {
+      "source": "/docs/about/:slug",
+      "destination": "/docs",
+      "permanent": true
+    },
     {
       "source": "/docs/concepts/overview/prisma-in-your-stack/:slug",
       "destination": "/docs/orm",
@@ -6063,7 +6448,11 @@
       "permanent": true
     },
 
-    { "source": "/docs/cli/console/auth", "destination": "/docs/cli/console", "permanent": true },
+    {
+      "source": "/docs/cli/console/auth",
+      "destination": "/docs/cli/console",
+      "permanent": true
+    },
     {
       "source": "/docs/cli/console/workspace",
       "destination": "/docs/cli/console",
@@ -6079,7 +6468,11 @@
       "destination": "/docs/cli/console",
       "permanent": true
     },
-    { "source": "/docs/cli/console/apikey", "destination": "/docs/cli/console", "permanent": true },
+    {
+      "source": "/docs/cli/console/apikey",
+      "destination": "/docs/cli/console",
+      "permanent": true
+    },
     {
       "source": "/docs/cli/console/platform",
       "destination": "/docs/cli/console",
