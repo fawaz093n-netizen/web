@@ -75,4 +75,5 @@ pnpm --filter docs start
 
 ## Note on formatting
 
+
 `.md` and `.mdx` files are not formatted by Prettier because they use [MDX 3](https://mdxjs.com/blog/v3/), which Prettier does not support. See [prettier/prettier#12209](https://github.com/prettier/prettier/issues/12209).
