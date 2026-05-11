@@ -1,3 +1,4 @@
+import React from "react";
 import { formatTag, formatDate } from "@/lib/format";
 import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/mdx-components";
@@ -16,6 +17,7 @@ import {
 } from "@/lib/url";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { cn } from "@prisma-docs/ui/lib/cn";
 
 interface TOCItem {
   title: string;
@@ -118,7 +120,7 @@ function getBlogPostingJsonLd(
       logo: {
         "@type": "ImageObject",
         url: "https://www.prisma.io/logo.png",
-      }
+      },
     },
   };
 
@@ -152,6 +154,15 @@ function getBlogPostingJsonLd(
   return jsonLd;
 }
 
+function extractText(node: React.ReactNode): string {
+  if (typeof node === "string") return node;
+  if (typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (React.isValidElement(node))
+    return extractText((node.props as { children?: React.ReactNode }).children);
+  return "";
+}
+
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
 }) {
@@ -177,7 +188,7 @@ export default async function Page(props: {
           >
             ← Back to Blog
           </Link>
-          <h1 className="mt-3 mb-8 font-bold max-md:text-3xl md:text-5xl   stretch-display font-sans-display text-foreground-neutral">
+          <h1 className="mt-3 mb-8 type-title-5xl text-foreground-neutral">
             {page.data.title}
           </h1>
           <div className="text-sm flex gap-2 items-center text-foreground-neutral mb-4">
@@ -222,6 +233,32 @@ export default async function Page(props: {
             <MDX
               components={getMDXComponents({
                 a: createRelativeLink(blog, page),
+                h2: (props) => {
+                  const providedId =
+                    typeof (props as { id?: unknown }).id === "string"
+                      ? ((props as { id?: string }).id ?? "")
+                      : "";
+                  const final_id =
+                    providedId ||
+                    extractText(props.children)
+                      .trim()
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")
+                      .replace(/[^a-z0-9-]/g, "")
+                      .replace(/-+/g, "-")
+                      .replace(/^-|-$/g, "");
+                  return (
+                    <h2
+                      className="type-title-2xl flex scroll-m-28 flex-row items-center gap-2 hover:[&>i]:opacity-100"
+                      id={final_id}
+                    >
+                      <a data-card href={`#${final_id}`}>
+                        {props.children}
+                      </a>
+                      <i className="fa-regular text-lg! fa-link shrink-0 text-fd-muted-foreground opacity-0 transition-opacity" />
+                    </h2>
+                  );
+                },
               })}
             />
           </div>
