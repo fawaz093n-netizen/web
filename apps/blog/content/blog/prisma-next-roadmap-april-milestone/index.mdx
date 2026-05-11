@@ -1,0 +1,153 @@
+---
+title: "Prisma Next: April milestone complete, the extension API is open"
+slug: "prisma-next-roadmap-april-milestone"
+date: "2026-05-11"
+authors:
+  - "Will Madden"
+metaTitle: "Prisma Next: April milestone complete, the extension API is open"
+metaDescription: "April shipped the first four extensions on the new Prisma Next extension API: pgvector, arktype-json, ParadeDB, and CipherStash. The extension API is open to outside authors. May shifts to Early Access."
+heroImagePath: "/prisma-next-roadmap-april-milestone/imgs/hero.svg"
+metaImagePath: "/prisma-next-roadmap-april-milestone/imgs/meta.png"
+tags:
+  - "orm"
+  - "roadmap"
+  - "prisma-next"
+---
+
+In March we published the [Prisma Next roadmap](https://www.prisma.io/blog/prisma-next-roadmap). April was the month we'd open Prisma Next up to external contributors. May was the month we'd put it into users' hands.
+
+**The April milestone is complete. The extension API is open to outside authors.**
+
+Four extensions are now built on the new extension API: `pgvector`, `arktype-json`, ParadeDB, and CipherStash. The architecture underneath them held up well. One planned piece did not land: streaming subscriptions in the runtime.
+
+If you have an extension you want to build against Prisma Next, this is the moment to start. May shifts to Early Access for users.
+
+## The extension API is open to outside authors
+
+The previous roadmap promised April would open Prisma Next to outside extension authors. That extension API now exists in code, and it is the same API the Prisma Next team uses internally.
+
+An extension can plug into Prisma Next in a few different ways. It can add new schema syntax, new data types, new query operations, and new migration logic.
+
+The first four reference extensions cover that range:
+
+- **`pgvector`** adds vector types and similarity queries to your Postgres schema.
+- **`arktype-json`** lets you store and query JSON columns with [Arktype](https://arktype.io) validation.
+- **ParadeDB** adds full-text and analytical search backed by ParadeDB's Postgres extensions.
+- **CipherStash** brings encryption-in-use to column data, built by the CipherStash team as an asynchronous codec.
+
+The extension API will keep changing as we learn more. It is stable enough now that you can build something real against it and tell us where it bends.
+
+If you're an extension author, the [call for extension authors](https://pris.ly/pn-extension-authors) is the front door.
+
+Proof: [higher-order codecs end to end](https://github.com/prisma/prisma-next/pull/391), [unified CodecDescriptor and per-library JSON extensions](https://github.com/prisma/prisma-next/pull/402), [operations authored as TypeScript functions](https://github.com/prisma/prisma-next/pull/374), [codec call context and AbortSignal](https://github.com/prisma/prisma-next/pull/400), and [CipherStash extension shaping](https://github.com/prisma/prisma-next/pull/411).
+
+## The architecture underneath is solid
+
+Extensions don't matter if the architecture under them can't carry weight. The rest of April's work was the proof that it can.
+
+**The migration system, contract authoring, runtime pipeline, MongoDB, and SQLite all moved from design to working code.**
+
+A few recent posts make that work visible:
+
+- [TypeScript migrations in Prisma Next](https://pris.ly/ts-migrations-pn) walks through how you author migrations and what the compiler produces.
+- The companion post on [data migrations](https://pris.ly/data-migration-pn) shows data transformations living inside the migration system rather than next to it.
+- Our MongoDB posts apply the same architecture to a non-SQL database.
+
+### Migrations got real
+
+The first post explains how you write and run migrations now. The second shows the case that pushed the design hardest: changing data, not just schema.
+
+You can now author migrations in TypeScript. Scaffold a migration file, write the change in code, and the compiler emits a JSON description of what the migration does. The runner picks that file up and applies it alongside your other migrations. That covers schema migrations.
+
+Data migrations, the harder case, are partly there.
+
+After you run a data migration, the system records what the migration changed and what guarantees it leaves behind.
+
+For example, "_every row in this table now has a non-null email_". What still needs to land: using those guarantees at runtime, so queries can automatically take advantage of them. That part carries into May.
+
+Proof: [class-based migration authoring](https://github.com/prisma/prisma-next/pull/359), [migration.ts CLI commands](https://github.com/prisma/prisma-next/pull/354), [migration hash verification](https://github.com/prisma/prisma-next/pull/384), [recording applied invariants](https://github.com/prisma/prisma-next/pull/387), [edge-level invariants on data transforms](https://github.com/prisma/prisma-next/pull/389), and [invariant-aware routing primitives](https://github.com/prisma/prisma-next/pull/394).
+
+### Contract authoring closed the first gap
+
+Prisma Next lets you define your data contract in either `contract.prisma` or TypeScript. April's goal was to prove that both paths produce the same contract from the same underlying pieces, regardless of which one you choose. They do.
+
+Database families like SQL and MongoDB, specific database targets like Postgres, SQLite, and MongoDB, and extension packs all register their building blocks (type definitions, helpers, presets) in one shared place. Whether you author your contract in `contract.prisma` or in TypeScript, both surfaces pull from the same registry and produce the same compiled output.
+
+The next stretch is the less glamorous, more user-facing work: the everyday helpers you reach for, IDE autocomplete, and the patterns a first-time user expects to just work.
+
+Proof: [constructor-first authoring parity](https://github.com/prisma/prisma-next/pull/325), [target-owned terse field presets](https://github.com/prisma/prisma-next/pull/326), [TypeScript authoring redesign](https://github.com/prisma/prisma-next/pull/314), and [Vite/HMR contract emit fixes](https://github.com/prisma/prisma-next/pull/362).
+
+### The runtime is transactional and RSC-safe
+
+Transactions now work on Postgres. The ORM can open a transaction, and the SQL query builder can run inside that same transaction, sharing one database connection.
+
+We also exercised the runtime under React Server Components. That means multiple Server Components running in parallel, sharing runtime state safely, caching query results, and reusing database connections through a pool.
+
+Middleware moved forward too. The hooks that let a middleware function see a query, return a cached result, or rewrite the response are all in place. The full end-to-end caching middleware example did not finish in April, so it carries into May.
+
+Proof: [callback-based transaction API](https://github.com/prisma/prisma-next/pull/346), [ORM transactions](https://github.com/prisma/prisma-next/pull/347), [SQL DSL escape-hatch query](https://github.com/prisma/prisma-next/pull/369), [runtime and middleware SPIs](https://github.com/prisma/prisma-next/pull/338), [runtime executor and query-plan unification across SQL and Mongo](https://github.com/prisma/prisma-next/pull/381), and [middleware compile hook work](https://github.com/prisma/prisma-next/pull/373).
+
+### MongoDB landed as a full family
+
+MongoDB is the cleanest result from April. The architecture generalized.
+
+Prisma Next is no longer SQL with a document database bolted on the side. MongoDB is a first-class database family alongside SQL, and almost every part of the developer experience now works there.
+
+You can introspect an existing MongoDB schema into a Prisma contract. The ORM API for MongoDB looks the same as the SQL version, with the same fluent style. Polymorphic models, models whose stored data can take more than one shape, work across both SQL and MongoDB.
+
+MongoDB schema migrations now cover indexes, JSON Schema validators, and collection options. Data transformations run through the same migration system as SQL. And when you need MongoDB's aggregation pipeline, a type-safe builder gives you a clean way to drop down to it.
+
+This is the strongest evidence yet that database families can be genuinely different and still share the same contract, runtime, and migration concepts.
+
+Proof: [embedded documents and value objects](https://github.com/prisma/prisma-next/pull/309), [Mongo polymorphism](https://github.com/prisma/prisma-next/pull/315), [full index vocabulary, validators, and collection options](https://github.com/prisma/prisma-next/pull/329), [hand-authored Mongo migrations](https://github.com/prisma/prisma-next/pull/344), [MongoDB data transform operations](https://github.com/prisma/prisma-next/pull/349), [polymorphic index generation](https://github.com/prisma/prisma-next/pull/395), and [type-safe Mongo query builder work](https://github.com/prisma/prisma-next/pull/361).
+
+### SQLite validated the second SQL target
+
+SQLite did not reach MongoDB's level of completeness in April, but it did the job we asked of it. It exposed places where Postgres assumptions were still hiding in the SQL layer.
+
+A second SQL database tests different assumptions than MongoDB does. MongoDB proves that non-SQL databases fit the architecture. SQLite proves that our SQL support is genuinely target-agnostic, and not secretly hard-coded to Postgres.
+
+Proof: [SQLite migrations](https://github.com/prisma/prisma-next/pull/386) and the [D1 support implementation plan](https://github.com/prisma/prisma-next/pull/363).
+
+## What did not land
+
+Streaming subscriptions did not start in April.
+
+The plan was to validate a Supabase Realtime-style flow. That meant an adapter that receives a stream of changes from the database, a `subscribe()` call in the runtime, proper cancellation and cleanup, and a single change event flowing through middleware.
+
+Streaming behaves differently from one-shot queries. If we lock down the runtime and middleware APIs for contributors before we test streaming, we may have to change those APIs later.
+
+May needs an explicit call on this. Either we validate streaming before the contributor-facing APIs settle further, or we accept that adding streaming later might force breaking changes.
+
+## May: Early Access for users
+
+April asked whether the architecture could support meaningful external contribution. May asks a different question:
+
+**_Can someone build a real app with Prisma Next without constantly hitting roadblocks?_**
+
+The way we will find out is by porting real applications. The team is porting a Management API service and assessing what [Dub.co](https://dub.co) would need in order to adopt Prisma Next.
+
+Every gap we hit gets logged and sent back to the team that owns the affected piece, instead of being papered over. Unit tests and reference demos are necessary, but real applications surface the friction that designed examples never show you.
+
+Two things to watch in May:
+
+- **The April carry-overs close out.** Caching middleware, the rest of data migrations, and transactions beyond Postgres-on-Node are the pieces that need to land.
+- **The first end-to-end user experience starts to feel coherent.** `db init`, `db update`, schema authoring for a new project, and a predictable CLI and error format sit at the front of that.
+
+Cloudflare Workers is in scope this month because one of the application ports runs there. The scope is narrow on purpose. We want Postgres working in the specific way that workload needs, not a broad deployment promise for every host.
+
+If you are comfortable updating often while the API settles, you can start building against Prisma Next today. If you would rather wait for steadier ground, this is the month to watch closely. Prisma Next is not yet production-ready, though: Prisma 7 remains the right choice for production today, and when Prisma Next is ready for general use, it becomes Prisma 8.
+
+## Follow along
+
+The fastest way in is [`#prisma-next` on Discord](https://pris.ly/discord), especially if you are building against the API or weighing whether your tool should integrate with it. Conversations there feed directly into the work while the API is still easy to shape.
+
+For the broader cadence, subscribe to the [Prisma blog](https://www.prisma.io/blog) for the monthly update, and star or watch [prisma/prisma-next on GitHub](https://pris.ly/pn-gh) to see the work as it lands.
+
+April closed with the extension API open to outside authors and the architecture proven. May is the test of whether all of it survives contact with real applications. The next update lands at the start of June.
+
+## Further reading
+
+Planning and status documents live alongside the code in `prisma/prisma-next`. The [previous roadmap post](https://www.prisma.io/blog/prisma-next-roadmap) framed the work. The [April milestone plan](https://github.com/prisma/prisma-next/blob/main/docs/planning/april-milestone.md) and the [May milestone plan](https://github.com/prisma/prisma-next/blob/main/docs/planning/may-milestone.md) set the scope on either side of this update, and the [runtime April status and May handoff](https://github.com/prisma/prisma-next/blob/main/docs/planning/april-ws3-status.md) walks through the carry-overs in detail.
+
+April moved through more than 2,000 commits in `prisma/prisma-next`, concentrated across framework, SQL, MongoDB, targets, extensions, examples, integration tests, and architecture docs.
