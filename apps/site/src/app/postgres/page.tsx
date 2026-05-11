@@ -132,7 +132,7 @@ export default async function SiteHome() {
               <span>Prisma Postgres</span>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl stretch-display mb-0 text-center mt-0 font-sans-display text-foreground-neutral max-w-4xl mx-auto">
-              Managed PostgreSQL for <br />
+              Managed PostgreSQL for
               modern deployments
             </h1>
             
