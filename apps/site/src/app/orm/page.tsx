@@ -242,7 +242,7 @@ const features = [
     image: "/illustrations/orm/ide",
     alt: "Manage dbs",
     icon: "fa-light fa-screwdriver-wrench",
-    link: "https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/overview",
+    link: "https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/mental-model",
   },
   {
     title: "Queries generated from your schema",
@@ -303,15 +303,11 @@ export default function ORM() {
               Type-safe queries<br/> generated from your schema
             </h1>
           </div>
-          <p className="text-center text-foreground-neutral max-w-2xl mx-auto">
+          <p className="text-center text-foreground-neutral max-w-3xl mx-auto">
             Prisma ORM keeps your schema, migrations, and queries in code for
             PostgreSQL, MySQL, SQLite, SQL Server, MongoDB, and CockroachDB, so
             you can move from data model to production with strong guarantees
             and predictable behavior.
-          </p>
-          <p className="text-center text-foreground-neutral-weak max-w-3xl mx-auto text-sm">
-            Supports PostgreSQL, MySQL, SQLite, SQL Server, MongoDB, and
-            CockroachDB.
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <Button
