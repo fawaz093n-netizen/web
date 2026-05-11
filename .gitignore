@@ -40,3 +40,4 @@ next-env.d.ts
 # opensrc - source code for packages
 opensrc
 .env
+prisma-next/

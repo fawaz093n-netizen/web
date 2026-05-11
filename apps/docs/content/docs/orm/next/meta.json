@@ -1,0 +1,12 @@
+{
+  "title": "Next",
+  "defaultOpen": true,
+  "root": true,
+  "pages": [
+    "---Introduction---",
+    "index",
+    "---Getting started---",
+    "quickstart",
+    "add-to-existing-project"
+  ]
+}

@@ -1,0 +1,207 @@
+---
+title: Postgres
+description: Add Prisma Next to an existing PostgreSQL project.
+url: /orm/next/add-to-existing-project/postgresql
+metaTitle: Add Prisma Next to an existing Postgres project
+metaDescription: Add Prisma Next to an existing PostgreSQL project.
+badge: early-access
+---
+
+This guide shows how to add Prisma Next to a project that already exists and already talks to PostgreSQL. The idea is to keep the first pass small: initialize Prisma Next, infer a contract from the live schema, sign the database, and then run a couple of queries.
+
+:::warning[Prisma Next is still in development]
+
+Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommended choice for production applications today.
+
+:::
+
+## Prerequisites
+
+Before you start, make sure you can already reach the PostgreSQL database this project uses today.
+
+- Node.js 24 or newer
+- npm
+- An existing PostgreSQL database
+
+## 1. Make sure you can run the example script
+
+This first step keeps the rest of the guide smooth by making sure the small TypeScript examples can run locally.
+
+If your project already runs TypeScript scripts, you can skip this step.
+
+Otherwise, install the script tooling:
+
+```npm
+npm install --save-dev typescript tsx @types/node
+```
+
+Then make sure `package.json` contains `"type": "module"`:
+
+```json title="package.json"
+{
+  "type": "module"
+}
+```
+
+## 2. Initialize Prisma Next
+
+Now that the project can run the examples, this step adds the Prisma Next files without changing your existing application code yet.
+
+From the root of your existing project, run:
+
+```npm
+npx prisma-next init --write-env
+```
+
+When Prisma Next asks a few setup questions:
+
+- choose `PostgreSQL`
+- choose `PSL`
+- keep the default schema path, `prisma/contract.prisma`
+
+## 3. Set your database connection string
+
+With the Prisma Next files in place, the next step is to point them at the same database your app already uses.
+
+Update `.env` with the connection string for the database your app already uses:
+
+```text title=".env"
+DATABASE_URL="postgres://username:password@host:5432/database?sslmode=require"
+```
+
+## 4. Infer a starter contract from the live database
+
+This step gives you a starting contract by reading the schema that already exists in PostgreSQL.
+
+Run:
+
+```npm
+npx prisma-next contract infer --output ./prisma/contract.prisma
+```
+
+This reads the live PostgreSQL schema and writes a first draft of `prisma/contract.prisma`.
+
+Open that file and review it before you go on. This is the moment to clean up model names, keep only the tables you want Prisma Next to know about first, and make the file easier to read.
+
+## 5. Emit the generated artifacts
+
+Once the contract looks right, this step turns it into the generated files the runtime and CLI use.
+
+After you are happy with the contract, run:
+
+```npm
+npx prisma-next contract emit
+```
+
+This refreshes `prisma/contract.json` and `prisma/contract.d.ts` so the runtime and query APIs are aligned with the contract you just reviewed.
+
+## 6. Sign the database
+
+After the artifacts are emitted, this step records that the current database matches that contract.
+
+Now record that the live database matches the emitted contract:
+
+```npm
+npx prisma-next db sign
+```
+
+This step matters in two common cases:
+
+- the database has never been signed by Prisma Next before
+- the database was signed earlier, but under an older contract hash
+
+## 7. Run a simple high-level query
+
+With the database signed, you can test the higher-level API first and confirm Prisma Next is reading the existing schema correctly.
+
+Create a `script.ts` file:
+
+```typescript title="script.ts"
+import "dotenv/config";
+import { db } from "./prisma/db";
+
+async function main() {
+  const runtime = await db.connect({ url: process.env.DATABASE_URL! });
+
+  const users = await db.orm.User
+    .select("id", "email", "name")
+    .take(2)
+    .all();
+
+  console.log(users);
+
+  await runtime.close();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+```
+
+Run it:
+
+```npm
+npx tsx script.ts
+```
+
+## 8. Run a simple low-level query
+
+After the ORM example, this step shows the lower-level SQL builder against the same existing schema.
+
+Replace `script.ts` with this version:
+
+```typescript title="script.ts"
+import "dotenv/config";
+import { db } from "./prisma/db";
+
+async function main() {
+  const runtime = await db.connect({ url: process.env.DATABASE_URL! });
+
+  const plan = db.sql.user
+    .select("id", "email", "name")
+    .limit(2)
+    .build();
+
+  const rows = await db.runtime().execute(plan);
+  console.log(rows);
+
+  await runtime.close();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+```
+
+Run it again:
+
+```npm
+npx tsx script.ts
+```
+
+## 9. Commands you will use next
+
+Once Prisma Next is connected to the existing database, these are the PostgreSQL commands you will keep using as the project evolves.
+
+Once Prisma Next is in the project, these are the PostgreSQL commands to remember:
+
+```npm
+npx prisma-next contract emit
+```
+
+Run this after you change `prisma/contract.prisma`.
+
+```npm
+npx prisma-next db update
+```
+
+Use this when you want Prisma Next to update the live database directly so it matches the latest contract.
+
+```npm
+npx prisma-next migration plan --name add-user-bio
+npx prisma-next migration apply
+```
+
+Use these when you want checked-in migration packages instead of a direct database update.

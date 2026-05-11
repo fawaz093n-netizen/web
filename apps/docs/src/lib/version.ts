@@ -152,7 +152,7 @@ export function getOrmVersionFromRoute(route?: string | string[]): Version | nul
 
 export function getOrmVersions(tree: PageTree.Root): Version[] {
   const ormNode = findOrmNode(tree as TreeNode);
-  const versions = new Set<Version>();
+  const versions = new Set<Version>(["next", "v6"]);
 
   for (const child of ormNode?.children ?? []) {
     const version = getVersionFromNode(child);
@@ -161,5 +161,5 @@ export function getOrmVersions(tree: PageTree.Root): Version[] {
     }
   }
 
-  return [LATEST_VERSION, "v6", ...Array.from(versions).sort(compareVersionsDescending)];
+  return [LATEST_VERSION, ...Array.from(versions).sort(compareVersionsDescending)];
 }

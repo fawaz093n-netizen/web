@@ -1,0 +1,199 @@
+---
+title: MongoDB
+description: Add Prisma Next to an existing MongoDB project.
+url: /orm/next/add-to-existing-project/mongodb
+metaTitle: Add Prisma Next to an existing MongoDB project
+metaDescription: Add Prisma Next to an existing MongoDB project.
+badge: early-access
+---
+
+This guide shows how to add Prisma Next to a project that already exists and already talks to MongoDB. The first goal is simple: initialize Prisma Next, describe the collections you want to work with, emit the generated artifacts, and then run a couple of queries.
+
+:::warning[Prisma Next is still in development]
+
+Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommended choice for production applications today.
+
+:::
+
+## Prerequisites
+
+Before you start, make sure you can already reach the MongoDB deployment this project uses today.
+
+- Node.js 24 or newer
+- npm
+- An existing MongoDB 6.0 or newer deployment
+
+For local development, use a replica set. MongoDB Atlas already gives you that.
+
+## 1. Make sure you can run the example script
+
+This first step keeps the rest of the guide smooth by making sure the small TypeScript examples can run locally.
+
+If your project already runs TypeScript scripts, you can skip this step.
+
+Otherwise, install the script tooling:
+
+```npm
+npm install --save-dev typescript tsx @types/node
+```
+
+Then make sure `package.json` contains `"type": "module"`:
+
+```json title="package.json"
+{
+  "type": "module"
+}
+```
+
+## 2. Initialize Prisma Next
+
+Now that the project can run the examples, this step adds the Prisma Next files without changing your existing application code yet.
+
+From the root of your existing project, run:
+
+```npm
+npx prisma-next init --write-env
+```
+
+When Prisma Next asks a few setup questions:
+
+- choose `MongoDB`
+- choose `PSL`
+- keep the default schema path, `prisma/contract.prisma`
+
+## 3. Set your database connection string
+
+With the Prisma Next files in place, the next step is to point them at the same MongoDB deployment your app already uses.
+
+Update `.env` with the connection string for the MongoDB deployment your app already uses:
+
+```text title=".env"
+DATABASE_URL="mongodb://127.0.0.1:27017/my-app?replicaSet=rs0"
+```
+
+## 4. Describe the collections you want Prisma Next to know about
+
+This is the key adoption step for MongoDB, because you decide which part of the existing database Prisma Next should model first.
+
+PostgreSQL has `contract infer`. MongoDB does not, so this step is manual.
+
+Open `prisma/contract.prisma` and make it match the collections you want Prisma Next to query first. If your existing database already has `users` and `posts` collections with `email`, `name`, `title`, and `authorId`, the starter contract is already a useful first draft:
+
+```prisma title="prisma/contract.prisma"
+model User {
+  id    ObjectId @id @map("_id")
+  email String   @unique
+  name  String?
+  posts Post[]
+  @@map("users")
+}
+
+model Post {
+  id       ObjectId @id @map("_id")
+  title    String
+  content  String?
+  author   User     @relation(fields: [authorId], references: [id])
+  authorId ObjectId
+  @@map("posts")
+}
+```
+
+You do not need to model every collection on day one. Start with the part of the database you want to read and write first.
+
+## 5. Emit the generated artifacts
+
+Once the contract looks right, this step turns it into the generated files the runtime and query APIs use.
+
+Run:
+
+```npm
+npx prisma-next contract emit
+```
+
+This refreshes `prisma/contract.json` and `prisma/contract.d.ts` so the runtime and query APIs are aligned with the contract you just reviewed.
+
+## 6. Run a simple high-level query
+
+With the emitted artifacts in place, you can test the higher-level API first and confirm Prisma Next can read the existing collections.
+
+Create a `script.ts` file:
+
+```typescript title="script.ts"
+import "dotenv/config";
+import { db } from "./prisma/db";
+
+async function main() {
+  const user = await db.orm.users.where({ email: "existing@example.com" }).first();
+  console.log(user);
+
+  await db.close();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+```
+
+Run it:
+
+```npm
+npx tsx script.ts
+```
+
+## 7. Run a simple low-level query
+
+After the ORM example, this step shows the lower-level MongoDB pipeline builder against the same existing collections.
+
+Replace `script.ts` with this version:
+
+```typescript title="script.ts"
+import "dotenv/config";
+import { db } from "./prisma/db";
+
+async function main() {
+  const runtime = await db.runtime();
+  const plan = db.query
+    .from("users")
+    .match((fields) => fields.email.eq("existing@example.com"))
+    .project("email", "name")
+    .build();
+
+  const rows = await runtime.execute(plan);
+  console.log(rows);
+
+  await db.close();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+```
+
+Run it again:
+
+```npm
+npx tsx script.ts
+```
+
+## 8. Commands you will use next
+
+Once Prisma Next is connected to the existing collections, these are the MongoDB commands you will keep using as the project evolves.
+
+Once Prisma Next is in the project, these are the MongoDB commands to remember:
+
+```npm
+npx prisma-next contract emit
+```
+
+Run this after you change `prisma/contract.prisma`.
+
+```npm
+npx prisma-next migration plan --name add-user-bio
+npx prisma-next migration apply
+```
+
+Use these when you want Prisma Next to manage a schema change for the collections in your contract.
+
+You do not need to create a migration just to start reading collections that already exist. Create a migration when you are ready for Prisma Next to own a change.

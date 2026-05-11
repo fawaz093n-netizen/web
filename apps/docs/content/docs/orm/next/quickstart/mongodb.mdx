@@ -1,0 +1,273 @@
+---
+title: MongoDB
+description: Set up Prisma Next from scratch with MongoDB.
+url: /orm/next/quickstart/mongodb
+metaTitle: 'Quickstart: Prisma Next with MongoDB'
+metaDescription: Set up Prisma Next from scratch with MongoDB.
+badge: early-access
+---
+
+[MongoDB](https://www.mongodb.com/) is a document database. In this guide, you will create a small Prisma Next project from scratch, connect it to MongoDB, create the first migration package, apply it, and run both a high-level and a low-level query.
+
+:::warning[Prisma Next is still in development]
+
+Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommended choice for production applications today.
+
+:::
+
+## Prerequisites
+
+Before you start, make sure your machine can run the Prisma Next CLI and can connect to a MongoDB deployment that matches the assumptions in this guide.
+
+- Node.js 24 or newer
+- npm
+- A MongoDB 6.0 or newer deployment
+
+For local development, use a replica set. MongoDB Atlas already gives you that. A single standalone `mongod` is not the setup this guide assumes.
+
+## 1. Create a new project
+
+This gives you a clean folder so it is easy to see which files Prisma Next creates for you.
+
+Start with an empty folder:
+
+```shell
+mkdir hello-prisma-next-mongo
+cd hello-prisma-next-mongo
+```
+
+Create a `package.json`:
+
+```npm
+npm init -y
+```
+
+## 2. Initialize Prisma Next
+
+This is the setup step where Prisma Next writes the starting files we will use for the rest of the guide.
+
+Run:
+
+```npm
+npx prisma-next init --write-env
+```
+
+When Prisma Next asks a few setup questions:
+
+- choose `MongoDB`
+- choose `PSL`
+- keep the default schema path, `prisma/contract.prisma`
+
+This creates the Prisma Next files for you, including `prisma/contract.prisma`, `prisma/db.ts`, `prisma-next.config.ts`, and a starter `.env` file.
+
+## 3. Add script tooling for the examples
+
+We add this now so the query examples later run without any extra setup in the middle of the guide.
+
+The query examples in this guide use a small TypeScript script. Install the tools for that now:
+
+```npm
+npm install --save-dev typescript tsx @types/node
+```
+
+Then open `package.json` and add `"type": "module"`:
+
+```json title="package.json"
+{
+  "type": "module"
+}
+```
+
+`prisma-next init` already created a `tsconfig.json`, so you do not need to create one by hand.
+
+## 4. Add your MongoDB connection string
+
+Now that the project files exist, the next step is to point them at the MongoDB deployment you want to use.
+
+Update `.env` with your MongoDB connection string:
+
+```text title=".env"
+DATABASE_URL="mongodb://127.0.0.1:27017/prisma_next?replicaSet=rs0"
+```
+
+If you are using MongoDB Atlas, your value will usually start with `mongodb+srv://...`.
+
+## 5. Review the starter contract
+
+Before Prisma Next plans any changes, it helps to look at the contract it is about to use.
+
+Open `prisma/contract.prisma`. After `init`, the starter contract looks like this:
+
+```prisma title="prisma/contract.prisma"
+model User {
+  id    ObjectId @id @map("_id")
+  email String   @unique
+  name  String?
+  posts Post[]
+  @@map("users")
+}
+
+model Post {
+  id       ObjectId @id @map("_id")
+  title    String
+  content  String?
+  author   User     @relation(fields: [authorId], references: [id])
+  authorId ObjectId
+  @@map("posts")
+}
+```
+
+That is enough for the first run, so you can keep it as-is.
+
+## 6. Create and apply the first migration package
+
+This is the first database-facing step, so it is where the contract turns into MongoDB collections and indexes.
+
+For MongoDB, this guide uses the checked-in migration flow from the start:
+
+```npm
+npx prisma-next migration plan --name init
+npx prisma-next migration apply
+```
+
+That creates the `users` and `posts` collections, adds the `users.email` unique index, and records the migration history for later changes.
+
+## 7. Run a simple high-level query
+
+With the collections in place, you can test the higher-level API first and confirm the setup is working end to end.
+
+Create a `script.ts` file:
+
+```typescript title="script.ts"
+import "dotenv/config";
+import { db } from "./prisma/db";
+
+async function main() {
+  const createdUser = await db.orm.users.create({
+    email: `alice+${Date.now()}@example.com`,
+    name: "Alice",
+  });
+
+  console.log(createdUser);
+
+  await db.close();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+```
+
+Run it:
+
+```npm
+npx tsx script.ts
+```
+
+This is the high-level path. You work with the `users` collection through the ORM surface.
+
+## 8. Run a simple low-level query
+
+After the ORM example, this step shows the lower-level MongoDB pipeline builder against the same contract and database.
+
+Replace `script.ts` with this version:
+
+```typescript title="script.ts"
+import "dotenv/config";
+import { db } from "./prisma/db";
+
+async function main() {
+  const email = `alice+${Date.now()}@example.com`;
+
+  await db.orm.users.create({
+    email,
+    name: "Alice",
+  });
+
+  const runtime = await db.runtime();
+  const plan = db.query
+    .from("users")
+    .match((fields) => fields.email.eq(email))
+    .project("email", "name")
+    .build();
+
+  const rows = await runtime.execute(plan);
+  console.log(rows);
+
+  await db.close();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+```
+
+Run it again:
+
+```npm
+npx tsx script.ts
+```
+
+This is the lower-level path. You build a typed MongoDB pipeline yourself and then execute it.
+
+## 9. Commands you will use next
+
+Once the first query works, these are the MongoDB commands you will keep reaching for as the project grows.
+
+After the first setup, these are the MongoDB commands to remember:
+
+```npm
+npx prisma-next contract emit
+```
+
+Run this after you change `prisma/contract.prisma`.
+
+```npm
+npx prisma-next migration plan --name add-user-bio
+npx prisma-next migration apply
+```
+
+Use these to create and apply the next contract-driven change.
+
+This guide uses the migration package workflow on purpose. It gives you a clear, reviewable record of what changed.
+
+## Want the full Prisma Next docs right now?
+
+If you want to keep going after this quickstart, the Prisma Next repo already has more examples, demos, and internal docs than we have brought over here so far. Those materials will be cleaned up and moved into the main docs closer to GA.
+
+Until then, clone the repo and use it as the source of truth for deeper MongoDB examples:
+
+```shell
+git clone https://github.com/prisma/prisma-next.git
+cd prisma-next
+```
+
+For MongoDB, the most useful places to start are:
+
+- [`README.md`](https://github.com/prisma/prisma-next/blob/main/README.md)
+- [`examples/mongo-demo`](https://github.com/prisma/prisma-next/tree/main/examples/mongo-demo)
+- [`examples/mongo-blog-leaderboard`](https://github.com/prisma/prisma-next/tree/main/examples/mongo-blog-leaderboard)
+- [`docs`](https://github.com/prisma/prisma-next/tree/main/docs)
+
+If you want help from an assistant after cloning the repo, paste this prompt:
+
+```text
+I cloned the Prisma Next repo locally at ./prisma-next.
+
+Database: MongoDB
+My exact question: <replace this with the thing you want to do>
+Examples:
+- How do I add a new field and ship it with migration plan and migration apply?
+- How do I write this read with db.query instead of db.orm?
+- How do I model my existing users and posts collections in contract.prisma?
+
+Please use README.md, docs/, examples/mongo-demo/, and examples/mongo-blog-leaderboard/ as the source of truth.
+Please answer with:
+1. The exact commands I should run
+2. The exact files I should open or edit
+3. A minimal code example that matches the repo style
+4. Any caveats if the repo and public docs differ
+5. The specific repo files you used
+```
