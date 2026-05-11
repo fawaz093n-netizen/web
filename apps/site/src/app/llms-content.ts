@@ -151,18 +151,16 @@ Key Prisma ORM features:
 ## Prisma Postgres
 
 URL: ${toAbsoluteUrl(baseUrl, "/postgres")}
-Title: Prisma Postgres | Instant Global Databases
-Description: Free to start, no setup, no commitments. Easily grow your database as your app scales.
+Title: Prisma Postgres | Managed PostgreSQL for Serverless Apps
+Description: Managed PostgreSQL for serverless and modern deployments with built-in connection pooling. Works with any ORM, query builder, raw SQL, and Prisma ORM.
 
 Key Prisma Postgres features:
-- Managed Postgres with zero configuration
+- Managed PostgreSQL for serverless and modern deployments
+- Built-in connection pooling
+- Works with any ORM, query builder, or raw SQL
+- Direct integration with Prisma ORM
 - Standard SQL and PostgreSQL wire protocol
 - Compatibility with Postgres extensions such as pgvector
-- Automatic connection pooling
-- Automated backups
-- Encryption at rest and in transit
-- Full tenant isolation
-- Built for production workloads from day one
 
 ## Prisma Studio
 

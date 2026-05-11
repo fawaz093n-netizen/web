@@ -18,7 +18,7 @@ const postgresStructuredData = createSoftwareApplicationStructuredData({
   path: "/postgres",
   name: "Prisma Postgres",
   description:
-    "Managed serverless PostgreSQL database built for modern applications. Instant provisioning, zero configuration, global availability, connection pooling, automated backups, and encryption at rest and in transit.",
+    "Managed PostgreSQL for serverless and modern deployments. Built-in connection pooling, standard SQL and PostgreSQL wire protocol, support for extensions like pgvector, automated backups, encryption at rest and in transit, and full tenant isolation.",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Web",
   offers: {
@@ -36,13 +36,38 @@ const twoCol = [
     content: (
       <>
         <h2 className="text-foreground-neutral type-title-xl mt-0 mb-4">
-          The database <br />
-          you already know
+          Built-in pooling for <br />
+          serverless deployments
         </h2>
         <p className="text-foreground-neutral-weak! text-base">
-          This is the mature, proven, and production-tested PostgreSQL millions
-          of developers already rely on. Standard SQL and wire protocol,
-          Postgres extensions like pgvector, and data import with pg_dump.
+          Built-in connection pooling helps Prisma Postgres handle serverless,
+          edge, and other bursty deployment models without the connection limits
+          that break traditional Postgres setups.
+        </p>
+      </>
+    ),
+    imageUrl: "/illustrations/postgres/postgres_8",
+    imageAlt: "Postgres experience",
+    mobileImageUrl: "/illustrations/postgres/postgres_8",
+    mobileImageAlt: "Postgres experience",
+    logos: null,
+    useDefaultLogos: true,
+    noShadow: true,
+    visualPosition: "right" as const,
+    visualType: "image" as const,
+    step: "fa-regular fa-rocket-launch",
+  },
+  {
+    content: (
+      <>
+        <h2 className="text-foreground-neutral type-title-xl mt-0 mb-4">
+          Standard PostgreSQL, <br />
+          no lock-in
+        </h2>
+        <p className="text-foreground-neutral-weak! text-base">
+          Use Prisma Postgres like Postgres. Connect with standard SQL and the
+          PostgreSQL wire protocol, keep familiar tools like pg_dump, and use
+          extensions such as pgvector.
         </p>
       </>
     ),
@@ -61,38 +86,13 @@ const twoCol = [
     content: (
       <>
         <h2 className="text-foreground-neutral type-title-xl mt-0 mb-4">
-          Instant provisioning with
-          <br />
-          zero configuration
+          Direct integration with <br />
+          Prisma ORM
         </h2>
         <p className="text-foreground-neutral-weak! text-base">
-          Handles connection pooling automatically, and runs on bare metal and
-          unikernels for maximum performance.
-        </p>
-      </>
-    ),
-    imageUrl: "/illustrations/postgres/postgres_8",
-    imageAlt: "Postgres experience",
-    mobileImageUrl: "/illustrations/postgres/postgres_8",
-    mobileImageAlt: "Postgres experience",
-    noShadow: true,
-    logos: null,
-    useDefaultLogos: true,
-    visualPosition: "right" as const,
-    visualType: "image" as const,
-    step: "fa-regular fa-rocket-launch",
-  },
-  {
-    content: (
-      <>
-        <h2 className="text-foreground-neutral type-title-xl mt-0 mb-4">
-          Production-ready <br />
-          from day one
-        </h2>
-        <p className="text-foreground-neutral-weak! text-base">
-          Automated backups, encryption at rest and in transit, full tenant
-          isolation and enterprise-grade compliance. Everything you need to ship
-          with confidence, managed automatically.
+          If you use Prisma ORM, Prisma Postgres fits directly into your schema,
+          migration, and connection workflow. You still keep the option to run
+          raw SQL whenever you need native Postgres control.
         </p>
       </>
     ),
@@ -109,9 +109,9 @@ const twoCol = [
   },
 ];
 export const metadata = createPageMetadata({
-  title: "Prisma Postgres | Serverless PostgreSQL with Instant Setup",
+  title: "Prisma Postgres | Managed PostgreSQL for Serverless Apps",
   description:
-    "Create a serverless PostgreSQL database in seconds with built-in connection pooling, global availability, automated backups, and usage-based pricing.",
+    "Managed PostgreSQL for serverless and modern deployments with built-in connection pooling. Works with any ORM, query builder, raw SQL, and Prisma ORM.",
   path: "/postgres",
   ogImage: "/og/og-postgres.png",
 });
@@ -131,13 +131,16 @@ export default async function SiteHome() {
               <i className="fa-solid fa-chart-pyramid" />
               <span>Prisma Postgres</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl stretch-display mb-0 text-center mt-0 font-sans-display text-foreground-neutral max-w-224 mx-auto">
-              The fastest way <br />
-              to real Postgres
+            <h1 className="text-4xl sm:text-5xl md:text-6xl stretch-display mb-0 text-center mt-0 font-sans-display text-foreground-neutral max-w-4xl mx-auto">
+              Managed PostgreSQL for <br />
+              modern deployments
             </h1>
+            
           </div>
-          <p className="text-center text-foreground-neutral max-w-2xl mx-auto text-xl">
-            Build, test and ship faster with zero infrastructure to manage.
+          <p className="text-center text-foreground-neutral max-w-3xl mx-auto text-xl">
+            Built-in connection pooling for serverless and modern deployments,
+            with the standard PostgreSQL experience and support for Prisma ORM,
+            Drizzle, TypeORM, Kysely, or raw SQL.
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <Button
@@ -174,7 +177,7 @@ export default async function SiteHome() {
       <section className="my-12 px-4 py-12">
         <div className="py-12 relative gap-8 flex flex-col max-w-300 mx-auto w-full">
           <h3 className="text-center text-foreground-neutral stretch-display text-3xl stretch-display font-sans-display my-0">
-            Postgres that fits your stack
+            Deploy Prisma Postgres with the stack you already use
           </h3>
         </div>
         <div className="grid md:grid-cols-2 gap-6 max-w-300 mx-auto w-full">
@@ -240,7 +243,7 @@ export default async function SiteHome() {
       <section className="my-12">
         <div className="pt-12 relative gap-8 flex flex-col max-w-249 w-full mx-auto">
           <h3 className="text-center text-foreground-neutral stretch-display text-3xl stretch-display font-sans-display my-0 -mb-12 px-4">
-            Real Postgres. Better experience.
+            Managed PostgreSQL for serverless deployments
           </h3>
           <CardSection cardSection={twoCol} />
         </div>
@@ -253,12 +256,13 @@ export default async function SiteHome() {
       >
         <div className="web-cta flex gap-4 md:gap-12 items-center mx-auto md:p-4 flex-col md:flex-row md:bg-none bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_330.76%)] md:border-none border border-stroke-neutral md:max-w-none max-w-137 w-full md:w-fit p-12 md:rounded-none rounded-square-high">
           <h3 className="text-2xl text-foreground-neutral font-sans-display font-bold text-center md:text-left md:mb-0 mb-3">
-            Pay as you scale
+            Start free, scale with usage
           </h3>
           <div className="content flex flex-col lg:flex-row gap-3 lg:gap-12 items-center md:items-start lg:items-center">
             <p className="max-w-94 w-full text-center md:text-left text-foreground-neutral-weak text-md">
-              Usage-based pricing, with a generous free tier. Spend limits
-              included, so you never get surprised.
+              Create a managed Postgres database without upfront commitment,
+              then scale with usage-based pricing and spend limits as traffic
+              grows.
             </p>
             <Button asChild variant="ppg" size="2xl">
               <a href="/pricing">
@@ -272,7 +276,7 @@ export default async function SiteHome() {
       <section className="my-12 px-4">
         <div className="py-12 gap-12 flex flex-col max-w-[1200px] mx-auto">
           <h2 className="text-foreground-neutral stretch-display text-center text-4xl font-black! font-sans-display ">
-            Made for every kind of app
+            Common Postgres workflows
           </h2>
           <ScrollCarousel
             ariaLabel="Made for every kind of app carousel"
@@ -290,11 +294,12 @@ export default async function SiteHome() {
           <div className="flex flex-col gap-6 items-center justify-center text-center max-w-[549px] mx-auto">
             <div className="max-w-[420px]">
               <h2 className="m-0 text-3xl text-foreground-neutral font-sans-display [font-variation-settings:'wght'_900]">
-                See Postgres in action
+                Create a database and connect Prisma ORM in minutes
               </h2>
               <p className="m-0 mt-4 text-base leading-6 text-foreground-neutral-weak">
-                See how to get started in just a couple of minutes, with Prisma
-                Postgres.
+                Watch how to create a managed Postgres database, connect Prisma
+                ORM, and get started with standard Postgres workflows in just a
+                few minutes.
               </p>
             </div>
 
@@ -311,7 +316,7 @@ export default async function SiteHome() {
               videoId="O1S0ax7GlL8"
               width="100%"
               height="400"
-              title="See how Prisma Studio works"
+              title="Prisma ORM + Prisma Postgres: 5-Minutes Quickstart"
             />
           </div>
         </div>
@@ -324,7 +329,8 @@ export default async function SiteHome() {
                 Try Prisma Postgres
               </h2>
               <p className="text-foreground-neutral-weak">
-                Deploy a Postgres database instantly.
+                Managed PostgreSQL with built-in pooling, standard Postgres
+                compatibility, and direct Prisma ORM integration.
               </p>
             </div>
             <div className="flex flex-col md:flex-row gap-6">
