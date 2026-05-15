@@ -5,8 +5,14 @@
   "pages": [
     "---Introduction---",
     "index",
-    "---Getting started---",
-    "quickstart",
-    "add-to-existing-project"
+
+    "---Core Concepts---",
+    "...concepts",
+
+    "---Guides---",
+    "...guides",
+
+    "---Extensions---",
+    "...extensions"
   ]
 }

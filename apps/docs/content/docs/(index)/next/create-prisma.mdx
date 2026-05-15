@@ -1,0 +1,80 @@
+---
+title: create-prisma@next
+description: Scaffold a new Prisma Next app with create-prisma@next.
+url: /next/create-prisma
+metaTitle: Scaffold a Prisma Next app with create-prisma@next
+metaDescription: Use create-prisma@next to create a new Prisma Next app with templates, database scripts, and runtime helpers.
+---
+
+`create-prisma@next` creates a new Prisma Next project from an app template. It installs the Prisma Next packages and adds the files and scripts needed to start developing.
+
+:::warning[Prisma Next is still in development]
+
+Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommended choice for production applications today.
+
+:::
+
+Use this when you want to start from a working app template. If you already have an app, use [Add Prisma Next to an existing PostgreSQL project](/next/add-to-existing-project/postgresql) or [Add Prisma Next to an existing MongoDB project](/next/add-to-existing-project/mongodb).
+
+## Create a project
+
+Run:
+
+```npm
+npx create-prisma@next
+```
+
+Then choose a project name, app template, database provider, contract authoring style, and package manager.
+
+Generated Node.js projects expect Node.js 24 LTS or newer.
+
+## Skip the prompts
+
+Pass flags when you already know the project shape:
+
+```npm
+npx create-prisma@next --name my-app --template next --provider postgres
+```
+
+Use `--name .` to create the project in the current directory.
+
+Useful flags:
+
+| Flag | What it does |
+| --- | --- |
+| `--template <name>` | Chooses the app template. |
+| `--provider postgres\|mongodb` | Chooses the database provider. |
+| `--authoring psl\|typescript` | Chooses the contract authoring style. |
+| `--package-manager <name>` | Chooses `npm`, `pnpm`, `yarn`, `bun`, or `deno`. |
+| `--database-url <url>` | Writes `DATABASE_URL` during setup. |
+| `--no-install` | Scaffolds files without installing dependencies. |
+| `--no-emit` | Skips `prisma-next contract emit`. |
+| `--force` | Allows scaffolding into a non-empty directory. |
+
+## What gets created
+
+The generated project includes Prisma Next dependencies, a contract file, Prisma Next configuration, environment files, and package scripts for local development.
+
+Supported templates include Hono, Elysia, NestJS, Next.js, SvelteKit, Astro, Nuxt, TanStack Start, and Turborepo.
+
+## Start the app
+
+Review `DATABASE_URL` in `.env`, then initialize the database.
+
+For PostgreSQL:
+
+```npm
+npm run db:init
+npm run dev
+```
+
+For MongoDB:
+
+```npm
+npm run db:up
+npm run migration:plan -- --name init
+npm run migration:apply
+npm run dev
+```
+
+To add Prisma Next to an app you already have, use the [PostgreSQL existing-project guide](/next/add-to-existing-project/postgresql) or [MongoDB existing-project guide](/next/add-to-existing-project/mongodb).

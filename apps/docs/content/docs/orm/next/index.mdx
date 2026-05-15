@@ -1,13 +1,13 @@
 ---
-title: Prisma Next
-description: 'Learn what Prisma Next is, why it exists, and how its main pieces fit together.'
+title: What is Prisma Next?
+description: Learn the Prisma Next ORM model, from contracts to query APIs, migrations, and extensions.
 url: /orm/next
 metaTitle: What is Prisma Next?
-metaDescription: Learn what Prisma Next is, why it exists, and how its main pieces fit together.
+metaDescription: Learn the Prisma Next ORM model, from contracts to query APIs, migrations, and extensions.
 badge: early-access
 ---
 
-Prisma Next is the next foundation for Prisma ORM. The goal is simple: describe your data once, keep that description in version control, and use it to drive both your queries and your database changes.
+Prisma Next is the next foundation for Prisma ORM. It keeps the familiar idea of modeling application data in one place, then makes that model more explicit: you emit a contract, load that contract at runtime, verify databases against it, and use it from more than one query API.
 
 :::warning[Prisma Next is still in development]
 
@@ -15,158 +15,54 @@ Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommend
 
 :::
 
-If you want the broader story first, read [The Next Evolution of Prisma ORM](https://www.prisma.io/blog/the-next-evolution-of-prisma-orm).
-
 ## Why Prisma Next exists
 
-Prisma Next keeps the part of Prisma that feels approachable. You still describe your data in one place, and you still get a typed way to query it from TypeScript.
+Prisma Next is built around a contract that can be checked by both tooling and runtime code. That gives you a clearer path for early-access workflows that need:
 
-The main change is how much of that workflow becomes explicit. Prisma Next treats your schema as a contract that can be emitted, inspected, compared, and verified. That helps with a few practical problems:
+- contract artifacts that can be generated, committed, and inspected
+- database verification before code that depends on a contract is deployed
+- model-oriented ORM queries and lower-level SQL plans in the same project
+- extension packs for capabilities such as vector search, geospatial queries, and searchable encrypted columns
 
-- it is easier to see what your app expects from the database
-- it is easier to choose how database changes should be applied
-- it is easier for tools, CI, and AI assistants to work from the same source of truth
+## How Prisma Next fits together
 
-So the big idea is not "more features first." The big idea is a clearer foundation that makes the rest of the workflow easier to reason about.
+The ORM workflow has four main pieces:
 
-## The main pieces to know
+| Piece | What it does |
+| --- | --- |
+| Contract | The schema your application expects. You can author it in PSL or TypeScript. |
+| Emitted artifacts | `contract.json` and `contract.d.ts`, generated with `prisma-next contract emit`. |
+| Runtime client | The database-specific client that loads the emitted contract. |
+| Query APIs | `db.orm` for model queries, `db.sql` for PostgreSQL plans, and `db.query` for MongoDB plans. |
 
-The easiest way to understand Prisma Next is to follow the workflow from setup, to contract, to runtime, and then to database changes.
+Database changes build on the same contract. You can initialize or reconcile a database directly with `db init` and `db update`, or create checked-in migration packages with `migration plan` and `migration apply`.
 
-### `prisma-next init`
+## How it differs from Prisma ORM 7
 
-`prisma-next init` is the starting point. It scaffolds the files Prisma Next needs so you do not have to guess the shape of the project or wire the basics by hand.
+| Prisma ORM 7 | Prisma Next |
+| --- | --- |
+| Generates a client from `schema.prisma`. | Emits an explicit contract used by tooling and runtime clients. |
+| Uses Prisma Client as the main query API. | Provides `db.orm` plus lower-level query builders such as `db.sql`. |
+| Migration workflows are centered on Prisma Migrate. | Migration and verification commands operate from the emitted contract. |
+| Preview database capabilities are usually part of the main ORM surface. | Optional capabilities can be composed through extension packs. |
 
-In the guides below, `init` creates a contract file, generated artifacts, a small runtime entrypoint, and a config file for the CLI. That means you can move from "empty folder" to "working project structure" in one step, then spend your time editing the contract instead of setting up plumbing.
+## Typical workflow
 
-In practice, the generated pieces are:
+1. Define a contract in PSL or TypeScript.
+2. Run `prisma-next contract emit`.
+3. Use `db init`, `db update`, or `migration plan` to align the database.
+4. Query through `db.orm`, `db.sql`, or `db.query`.
+5. Run `db verify` in CI or before deployment to catch drift.
 
-- `prisma/contract.prisma` for the contract you edit
-- `prisma/contract.json` and `prisma/contract.d.ts` for emitted artifacts
-- `prisma/db.ts` for the runtime client
-- `prisma-next.config.ts` for CLI configuration
+## Start with the right section
 
-### Your contract and emitted artifacts
+Use [Getting Started](/next) when you want setup instructions, including [`create-prisma@next`](/next/create-prisma). `create-prisma@next` scaffolds a complete application template and adds package scripts for contract emission, database initialization, verification, and migrations.
 
-The contract is the center of the workflow. It describes the models, fields, and relations your application expects. That part is close to what many Prisma users already know.
+Stay in this ORM section when you want to understand the Prisma Next model:
 
-What is new is that Prisma Next treats the emitted output as a first-class artifact. When you run `prisma-next contract emit`, Prisma Next turns the contract into machine-readable JSON and matching TypeScript types. The JSON is useful for tooling and verification. The TypeScript types are useful for the runtime and query surfaces.
+- [Contract-first design](/orm/next/concepts/contract-first-design)
+- [Schema definition and contract emission](/orm/next/concepts/schema-definition-and-contract-emission)
+- [Query APIs](/orm/next/concepts/query-apis)
+- [Extension packs](/orm/next/concepts/extension-packs)
 
-That split matters because it gives different parts of the system a dependable artifact to work from. Humans edit the contract. Tooling and runtimes consume the emitted output.
-
-### The runtime client
-
-Once the contract is emitted, you create a runtime client from it. This is where Prisma Next starts to feel concrete.
-
-In the PostgreSQL demo app inside the Prisma Next repo, the runtime is created in `examples/prisma-next-demo/src/prisma/db.ts` like this:
-
-```typescript title="prisma-next/examples/prisma-next-demo/src/prisma/db.ts"
-import pgvector from '@prisma-next/extension-pgvector/runtime';
-import { createTelemetryMiddleware } from '@prisma-next/middleware-telemetry';
-import postgres from '@prisma-next/postgres/runtime';
-import { budgets, lints } from '@prisma-next/sql-runtime';
-import type { Contract } from './contract.d';
-import contractJson from './contract.json' with { type: 'json' };
-
-export const db = postgres<Contract>({
-  contractJson,
-  extensions: [pgvector],
-  middleware: [
-    createTelemetryMiddleware(),
-    lints(),
-    budgets({
-      maxRows: 10_000,
-      defaultTableRows: 10_000,
-      tableRows: { user: 10_000, post: 10_000 },
-      maxLatencyMs: 1_000,
-    }),
-  ],
-});
-```
-
-This is a good example of what Prisma Next is aiming for. The contract is the core input, then you compose in extras like middleware, budgets, or extension packs around it.
-
-The MongoDB examples follow the same idea. In `examples/mongo-blog-leaderboard/src/db.ts`, the runtime is created from the emitted contract with a Mongo-specific runtime entrypoint:
-
-```typescript title="prisma-next/examples/mongo-blog-leaderboard/src/db.ts"
-import mongo from '@prisma-next/mongo/runtime';
-import { ifDefined } from '@prisma-next/utils/defined';
-import type { Contract } from './contract';
-import contractJson from './contract.json' with { type: 'json' };
-
-export function createClient(options: { url: string; dbName?: string }) {
-  return mongo<Contract>({
-    contractJson,
-    url: options.url,
-    ...ifDefined('dbName', options.dbName),
-  });
-}
-```
-
-So even though the databases are different, the shape is familiar: emit a contract, load it, then create a runtime client for that database family.
-
-### Two query styles
-
-Prisma Next gives you two ways to work because not every query wants the same level of abstraction.
-
-For day-to-day work, the high-level ORM API is usually the easiest path. In the retail store example in the Prisma Next repo, a Mongo helper that reads one user can stay very small:
-
-```typescript title="prisma-next/examples/retail-store/src/data/users.ts"
-export function findUserById(db: Db, id: string) {
-  return db.orm.users.where({ _id: id }).first();
-}
-```
-
-This is the "just let me work with models" side of Prisma Next.
-
-When you want a more explicit query plan, Prisma Next also gives you a lower-level builder. In the PostgreSQL demo, `examples/prisma-next-demo/src/queries/get-users.ts` builds a SQL plan and then executes it:
-
-```typescript title="prisma-next/examples/prisma-next-demo/src/queries/get-users.ts"
-import { db } from '../prisma/db';
-
-export async function getUsers(limit = 10) {
-  const plan = db.sql.user.select('id', 'email', 'createdAt', 'kind').limit(limit).build();
-  return db.runtime().execute(plan);
-}
-```
-
-MongoDB has an equivalent lower-level surface, but it uses `db.query` instead of `db.sql`. In the retail store example, pagination is written like this:
-
-```typescript title="prisma-next/examples/retail-store/src/data/products.ts"
-export async function findProductsPaginated(db: Db, skip: number, take: number): Promise<Product[]> {
-  const plan = db.query.from('products').sort({ _id: 1 }).skip(skip).limit(take).build();
-  return collectResults<Product>(db, plan);
-}
-```
-
-That is the basic mental model:
-
-- use `db.orm` when you want the higher-level model API
-- use `db.sql` for PostgreSQL when you want an explicit SQL plan
-- use `db.query` for MongoDB when you want an explicit pipeline
-
-### Database change commands
-
-Prisma Next can apply contract changes in more than one way, and this is one of the most important parts to understand.
-
-For PostgreSQL, you can use direct database reconciliation commands like `db init` and `db update`. That path is helpful when you want Prisma Next to bring a database in line with the contract directly. PostgreSQL can also use checked-in migration packages with `migration plan` and `migration apply`, which is useful when you want a reviewable change record in version control.
-
-For MongoDB, the guides below focus on the checked-in migration flow. That means you plan a migration package, review it, and then apply it.
-
-For existing projects, there is one more piece to know on the PostgreSQL side: `contract infer` and `db sign`. `contract infer` gives you a starter contract from a live schema. `db sign` records that the live database matches the emitted contract so Prisma Next can verify future work against it.
-
-If you want the background on why Prisma Next is approaching changes this way, start with [Rethinking Database Migrations](https://www.prisma.io/blog/rethinking-database-migrations). For more detail on the Prisma Next workflow itself, see [TypeScript Migrations in Prisma Next](https://www.prisma.io/blog/typescript-migrations-in-prisma-next) and [Data Migrations in Prisma Next](https://www.prisma.io/blog/data-migrations-in-prisma-next).
-
-## Choose your path
-
-The guides below are split by both starting point and database so each path can stay specific and easy to follow.
-
-If you are starting fresh, use one of these quickstarts:
-
-- [Quickstart for PostgreSQL](/orm/next/quickstart/postgresql)
-- [Quickstart for MongoDB](/orm/next/quickstart/mongodb)
-
-If you want to add Prisma Next to an app that already exists, use one of these:
-
-- [Add Prisma Next to an existing PostgreSQL project](/orm/next/add-to-existing-project/postgresql)
-- [Add Prisma Next to an existing MongoDB project](/orm/next/add-to-existing-project/mongodb)
+Use the [Prisma Next CLI reference](/cli/next) when you need exact command flags.

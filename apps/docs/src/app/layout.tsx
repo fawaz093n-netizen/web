@@ -1,11 +1,15 @@
 import { Provider } from "@/components/provider";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@prisma-docs/ui/lib/cn";
 import { getBaseUrl } from "@/lib/urls";
 import "./global.css";
 import { Inter, Barlow } from "next/font/google";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import Link from "next/link";
 import Script from "next/script";
 import { FontAwesomeScript as EclipseFA } from "@prisma/eclipse";
+import { Banner } from "fumadocs-ui/components/banner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -82,6 +86,27 @@ export default function Layout({ children }: { children: ReactNode }) {
         />
       </head>
       <body className="flex flex-col min-h-screen">
+        <Banner
+          id="prisma-next-docs"
+          height="3.25rem"
+          className="border-b border-fd-border bg-fd-background text-fd-foreground"
+        >
+          <div className="flex w-full items-center justify-center gap-2 pr-8 text-xs sm:text-sm">
+            <span className="font-semibold">Prisma Next is in early access.</span>
+            <span className="hidden text-fd-muted-foreground sm:inline">
+              Explore the next Prisma ORM workflow.
+            </span>
+            <Link
+              href="/next"
+              className={cn(
+                buttonVariants({ variant: "secondary", size: "sm" }),
+                "h-7 shrink-0 whitespace-nowrap px-2 py-1 text-xs",
+              )}
+            >
+              Read the docs
+            </Link>
+          </div>
+        </Banner>
         <Provider>{children}</Provider>
         {/* Tolt affiliate tracking — type="text/plain" + data-cookieyes mirrors
             the consent-gate pattern used in the site app; stays inert until

@@ -5,6 +5,7 @@
     "---Getting Started---",
     "index",
     "getting-started",
+    "next",
     "---Prisma ORM---",
     "...prisma-orm",
     "---Prisma Postgres---",

@@ -1,13 +1,12 @@
 ---
 title: Postgres
 description: Add Prisma Next to an existing PostgreSQL project.
-url: /orm/next/add-to-existing-project/postgresql
+url: /next/add-to-existing-project/postgresql
 metaTitle: Add Prisma Next to an existing Postgres project
 metaDescription: Add Prisma Next to an existing PostgreSQL project.
-badge: early-access
 ---
 
-This guide shows how to add Prisma Next to a project that already exists and already talks to PostgreSQL. The idea is to keep the first pass small: initialize Prisma Next, infer a contract from the live schema, sign the database, and then run a couple of queries.
+This guide shows how to add Prisma Next to a project that already uses PostgreSQL. You will initialize Prisma Next, infer a contract from the live schema, sign the database, and run a couple of queries.
 
 :::warning[Prisma Next is still in development]
 
@@ -25,27 +24,17 @@ Before you start, make sure you can already reach the PostgreSQL database this p
 
 ## 1. Make sure you can run the example script
 
-This first step keeps the rest of the guide smooth by making sure the small TypeScript examples can run locally.
-
 If your project already runs TypeScript scripts, you can skip this step.
 
 Otherwise, install the script tooling:
 
 ```npm
-npm install --save-dev typescript tsx @types/node
+npm install --save-dev tsx typescript
 ```
 
-Then make sure `package.json` contains `"type": "module"`:
-
-```json title="package.json"
-{
-  "type": "module"
-}
-```
+Later, `prisma-next init` will also add the Node.js types it needs and make sure the generated Prisma Next files can run as ES modules. If your project already declares `"type": "commonjs"`, Prisma Next leaves that choice alone and prints a warning so you can decide how to wire the generated helper into your app.
 
 ## 2. Initialize Prisma Next
-
-Now that the project can run the examples, this step adds the Prisma Next files without changing your existing application code yet.
 
 From the root of your existing project, run:
 
@@ -60,8 +49,6 @@ When Prisma Next asks a few setup questions:
 - keep the default schema path, `prisma/contract.prisma`
 
 ## 3. Set your database connection string
-
-With the Prisma Next files in place, the next step is to point them at the same database your app already uses.
 
 Update `.env` with the connection string for the database your app already uses:
 
@@ -97,9 +84,7 @@ This refreshes `prisma/contract.json` and `prisma/contract.d.ts` so the runtime 
 
 ## 6. Sign the database
 
-After the artifacts are emitted, this step records that the current database matches that contract.
-
-Now record that the live database matches the emitted contract:
+Record that the live database matches the emitted contract:
 
 ```npm
 npx prisma-next db sign
@@ -182,8 +167,6 @@ npx tsx script.ts
 ```
 
 ## 9. Commands you will use next
-
-Once Prisma Next is connected to the existing database, these are the PostgreSQL commands you will keep using as the project evolves.
 
 Once Prisma Next is in the project, these are the PostgreSQL commands to remember:
 

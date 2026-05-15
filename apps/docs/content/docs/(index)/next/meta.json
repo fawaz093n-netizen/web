@@ -1,0 +1,11 @@
+{
+  "title": "Next",
+  "defaultOpen": true,
+  "root": true,
+  "pages": [
+    "---Getting Started---",
+    "index",
+    "create-prisma",
+    "add-to-existing-project"
+  ]
+}

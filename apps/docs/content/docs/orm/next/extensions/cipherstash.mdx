@@ -1,0 +1,172 @@
+---
+title: CipherStash extension
+description: Add searchable encrypted columns to Prisma Next with CipherStash.
+url: /orm/next/extensions/cipherstash
+metaTitle: CipherStash extension in Prisma Next
+metaDescription: Learn how to configure CipherStash encryption and searchable encrypted queries in Prisma Next.
+---
+
+The `@prisma-next/extension-cipherstash` pack adds searchable encrypted column support for PostgreSQL.
+
+Use it when values should be encrypted at rest but still queried through CipherStash-supported operations such as equality, text search, range search, and JSON search.
+
+## Install the package
+
+```bash
+npm install @prisma-next/extension-cipherstash
+```
+
+You also need a CipherStash workspace, credentials for your app, and the database-side EQL bundle required by your encryption setup.
+
+## Configure the extension
+
+Register the control descriptor:
+
+```typescript title="prisma-next.config.ts"
+import { defineConfig } from "@prisma-next/postgres/config";
+import cipherstash from "@prisma-next/extension-cipherstash/control";
+
+export default defineConfig({
+  contract: "./prisma/contract.prisma",
+  extensions: [cipherstash],
+});
+```
+
+Register the runtime descriptor and middleware:
+
+```typescript title="src/db.ts"
+import { bulkEncryptMiddleware } from "@prisma-next/extension-cipherstash/middleware";
+import { createCipherstashRuntimeDescriptor } from "@prisma-next/extension-cipherstash/runtime";
+import postgres from "@prisma-next/postgres/runtime";
+import type { Contract } from "./prisma/contract.d";
+import contractJson from "./prisma/contract.json" with { type: "json" };
+import { createCipherstashSdk } from "./sdk";
+
+const sdk = createCipherstashSdk();
+
+export const db = postgres<Contract>({
+  contractJson,
+  extensions: [createCipherstashRuntimeDescriptor({ sdk })],
+  middleware: [bulkEncryptMiddleware(sdk)],
+});
+```
+
+## Define encrypted fields
+
+CipherStash provides six encrypted column types:
+
+| PSL constructor | Plain JavaScript value | Search modes |
+| --- | --- | --- |
+| `cipherstash.EncryptedString()` | `string` | Equality, text search, order and range. |
+| `cipherstash.EncryptedDouble()` | `number` | Equality, order and range. |
+| `cipherstash.EncryptedBigInt()` | `bigint` | Equality, order and range. |
+| `cipherstash.EncryptedDate()` | `Date` | Equality, order and range. |
+| `cipherstash.EncryptedBoolean()` | `boolean` | Equality. |
+| `cipherstash.EncryptedJson()` | JSON value | Searchable JSON. |
+
+```prisma title="prisma/contract.prisma"
+// use prisma-next
+
+model User {
+  id            String @id
+  email         cipherstash.EncryptedString()
+  salary        cipherstash.EncryptedDouble()
+  accountId     cipherstash.EncryptedBigInt()  @map("accountid")
+  birthday      cipherstash.EncryptedDate()
+  emailVerified cipherstash.EncryptedBoolean() @map("emailverified")
+  preferences   cipherstash.EncryptedJson()
+
+  @@map("users")
+}
+```
+
+Search flags default to enabled for the modes supported by each encrypted type. Disable modes explicitly when a column should be storage-only or should expose fewer query operators.
+
+## Insert encrypted values
+
+Wrap plaintext values with the encrypted runtime classes:
+
+```typescript
+import {
+  EncryptedBoolean,
+  EncryptedDate,
+  EncryptedDouble,
+  EncryptedJson,
+  EncryptedString,
+} from "@prisma-next/extension-cipherstash/runtime";
+
+await db.orm.User.create({
+  id: "user-1",
+  email: EncryptedString.from("alice@example.com"),
+  salary: EncryptedDouble.from(95_000),
+  birthday: EncryptedDate.from(new Date("1990-04-12")),
+  emailVerified: EncryptedBoolean.from(true),
+  preferences: EncryptedJson.from({ theme: "dark" }),
+});
+```
+
+The middleware groups encryption work before the query reaches the database.
+
+## Query encrypted values
+
+CipherStash operators are exposed only on compatible encrypted columns:
+
+```typescript
+const users = await db.orm.User
+  .where((user) => user.email.cipherstashIlike("%@example.com"))
+  .all();
+```
+
+Range operators are available on encrypted string, number, bigint, and date fields:
+
+```typescript
+const users = await db.orm.User
+  .where((user) => user.salary.cipherstashGt(100_000))
+  .all();
+```
+
+Equality-style lookups can use array operators:
+
+```typescript
+const users = await db.orm.User
+  .where((user) => user.emailVerified.cipherstashInArray([true]))
+  .all();
+```
+
+## Decrypt returned rows
+
+Use `decryptAll` to batch-decrypt envelopes from a result set:
+
+```typescript
+import { decryptAll } from "@prisma-next/extension-cipherstash/runtime";
+
+const rows = await db.orm.User
+  .where((user) => user.email.cipherstashEq("alice@example.com"))
+  .all();
+
+await decryptAll(rows);
+
+console.log(await rows[0]?.email.decrypt());
+```
+
+## Operator reference
+
+| Operator | Applies to |
+| --- | --- |
+| `cipherstashEq(value)` | All encrypted types with equality enabled. |
+| `cipherstashNe(value)` | All encrypted types with equality enabled. |
+| `cipherstashInArray(values)` | All encrypted types with equality enabled. |
+| `cipherstashNotInArray(values)` | All encrypted types with equality enabled. |
+| `cipherstashIlike(pattern)` | `EncryptedString` with text search enabled. |
+| `cipherstashNotIlike(pattern)` | `EncryptedString` with text search enabled. |
+| `cipherstashGt(value)`, `cipherstashGte(value)` | String, number, bigint, and date fields with order and range enabled. |
+| `cipherstashLt(value)`, `cipherstashLte(value)` | String, number, bigint, and date fields with order and range enabled. |
+| `cipherstashBetween(min, max)` | String, number, bigint, and date fields with order and range enabled. |
+| `cipherstashNotBetween(min, max)` | String, number, bigint, and date fields with order and range enabled. |
+| `cipherstashJsonbPathExists(path)` | `EncryptedJson` with searchable JSON enabled. |
+
+The runtime package also exports helpers such as `cipherstashAsc`, `cipherstashDesc`, `cipherstashJsonbPathQueryFirst`, and `cipherstashJsonbGet` for sort and projection use cases.
+
+## Security notes
+
+Searchable encryption intentionally exposes limited search behavior through configured indexes. Enable only the search modes your application needs, protect CipherStash credentials like production secrets, and keep encryption setup in a controlled deployment workflow.

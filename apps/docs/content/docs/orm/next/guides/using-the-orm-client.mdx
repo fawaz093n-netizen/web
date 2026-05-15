@@ -1,0 +1,147 @@
+---
+title: Using the ORM client with Prisma Next
+description: Use db.orm for model-oriented Prisma Next queries.
+url: /orm/next/guides/using-the-orm-client
+metaTitle: Using the Prisma Next ORM client
+metaDescription: Learn how to use db.orm for model-oriented Prisma Next queries.
+---
+
+Use `db.orm` for model-oriented reads and writes. It is the highest-level Prisma Next query API and the best default for application code.
+
+## Create records
+
+```typescript
+await db.orm.User.create({
+  id: crypto.randomUUID(),
+  email: "alice@example.com",
+  createdAt: new Date(),
+});
+```
+
+Use the values your contract requires. Prisma Next checks model and field names from the emitted contract.
+
+## Filter records
+
+```typescript
+const user = await db.orm.User
+  .where((user) => user.email.eq("alice@example.com"))
+  .first();
+```
+
+Use `.all()` when you expect multiple rows:
+
+```typescript
+const users = await db.orm.User
+  .where((user) => user.createdAt.gte(new Date("2026-01-01")))
+  .all();
+```
+
+You can chain filters:
+
+```typescript
+const posts = await db.orm.Post
+  .where((post) => post.title.ilike("%prisma%"))
+  .where((post) => post.createdAt.gte(new Date("2026-01-01")))
+  .all();
+```
+
+## Order, skip, and limit records
+
+```typescript
+const newestUsers = await db.orm.User
+  .orderBy((user) => user.createdAt.desc())
+  .take(10)
+  .all();
+```
+
+Use an array when you need stable ordering by more than one field:
+
+```typescript
+const feed = await db.orm.Post
+  .orderBy([(post) => post.createdAt.desc(), (post) => post.id.asc()])
+  .skip(20)
+  .take(20)
+  .all();
+```
+
+## Select fields
+
+Use `select` to return only the fields a view needs:
+
+```typescript
+const users = await db.orm.User
+  .select("id", "email", "createdAt")
+  .take(20)
+  .all();
+```
+
+## Include relations
+
+Use `include` to load relations from the same model query:
+
+```typescript
+const users = await db.orm.User
+  .include("posts", (posts) =>
+    posts
+      .select("id", "title", "createdAt")
+      .orderBy((post) => post.createdAt.desc())
+      .take(5),
+  )
+  .take(10)
+  .all();
+```
+
+`include` works best for user-facing views that need a parent row and a small, bounded set of related rows.
+
+## Update records
+
+Filter before updating:
+
+```typescript
+await db.orm.User
+  .where((user) => user.email.eq("alice@example.com"))
+  .update({ email: "alice@prisma.io" });
+```
+
+For MongoDB collections, update helpers can also express operations such as pushing or pulling array values.
+
+## Delete records
+
+Filter before deleting:
+
+```typescript
+await db.orm.User
+  .where((user) => user.email.eq("alice@prisma.io"))
+  .delete();
+```
+
+Avoid unbounded mutations in application code. Keep destructive actions behind explicit filters and reviewable workflows.
+
+## Run ORM queries in transactions
+
+The Postgres runtime facade exposes a transaction helper:
+
+```typescript
+await db.transaction(async (tx) => {
+  const id = crypto.randomUUID();
+
+  await tx.orm.User.create({
+    id,
+    email: "alice@example.com",
+    createdAt: new Date(),
+  });
+
+  await tx.orm.Post.create({
+    id: crypto.randomUUID(),
+    userId: id,
+    title: "Hello Prisma Next",
+    createdAt: new Date(),
+  });
+});
+```
+
+The transaction commits when the callback resolves and rolls back when the callback throws.
+
+## When to switch to a lower-level API
+
+Stay with `db.orm` for normal model work. Switch to [`db.sql`](/orm/next/guides/building-queries-with-sql-dsl) when you need explicit PostgreSQL projections, computed columns, extension functions, or a query plan you want to review directly.

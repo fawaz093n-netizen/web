@@ -1,0 +1,10 @@
+{
+  "title": "Guides",
+  "pages": [
+    "using-the-orm-client",
+    "building-queries-with-sql-dsl",
+    "managing-database-migrations",
+    "deploying-to-serverless-runtimes",
+    "error-handling-patterns"
+  ]
+}

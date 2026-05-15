@@ -1,0 +1,105 @@
+---
+title: Schema definition and contract emission
+description: Define a Prisma Next contract in PSL or TypeScript and emit generated artifacts.
+url: /orm/next/concepts/schema-definition-and-contract-emission
+metaTitle: Schema definition and contract emission in Prisma Next
+metaDescription: Define a Prisma Next contract in PSL or TypeScript and emit contract.json and contract.d.ts.
+---
+
+Prisma Next lets you author a contract in PSL or TypeScript. Both paths emit the same kind of generated artifacts for runtime clients, database verification, and migration planning.
+
+## PSL authoring
+
+PSL keeps the contract close to the Prisma schema syntax many users already know:
+
+```prisma title="prisma/contract.prisma"
+// use prisma-next
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+```
+
+The config points Prisma Next at that contract source:
+
+```typescript title="prisma-next.config.ts"
+import "dotenv/config";
+import { defineConfig } from "@prisma-next/postgres/config";
+
+export default defineConfig({
+  contract: "./prisma/contract.prisma",
+  db: {
+    connection: process.env["DATABASE_URL"]!,
+  },
+});
+```
+
+MongoDB projects use the same shape with `@prisma-next/mongo/config`.
+
+## TypeScript authoring
+
+TypeScript authoring uses builder APIs instead of a `.prisma` file. It is useful when you want a programmable schema surface or want to compose shared schema pieces in code.
+
+Choose TypeScript authoring when you scaffold:
+
+```bash
+npx create-prisma@next --authoring typescript
+```
+
+Or when you initialize the lower-level CLI workflow:
+
+```bash
+prisma-next init --authoring typescript
+```
+
+## Emit the contract
+
+Run `contract emit` after changing the contract source:
+
+```bash
+prisma-next contract emit
+```
+
+The command is offline. It reads `prisma-next.config.ts`, validates the contract source, and writes the generated artifacts.
+
+| Artifact | Purpose |
+| --- | --- |
+| `contract.json` | The canonical contract used by runtimes, verification, and migration tooling. |
+| `contract.d.ts` | Generated TypeScript declarations used by query code. |
+
+Do not edit these generated files by hand. Re-run `prisma-next contract emit` when the contract source changes.
+
+## Load the emitted contract at runtime
+
+Your runtime client imports the emitted JSON contract and its generated type:
+
+```typescript title="prisma/db.ts"
+import postgres from "@prisma-next/postgres/runtime";
+import type { Contract } from "./contract.d";
+import contractJson from "./contract.json" with { type: "json" };
+
+export const db = postgres<Contract>({
+  contractJson,
+  url: process.env["DATABASE_URL"]!,
+});
+```
+
+For serverless runtimes, use the serverless facade instead:
+
+```typescript title="prisma/db.ts"
+import postgresServerless from "@prisma-next/postgres/serverless";
+import type { Contract } from "./contract.d";
+import contractJson from "./contract.json" with { type: "json" };
+
+export const db = postgresServerless<Contract>({
+  contractJson,
+});
+```
+
+## No-emit authoring
+
+Some development workflows can pass a TypeScript-authored contract directly to the runtime client instead of loading `contract.json`. This is useful for local experimentation, but emitted artifacts are still the clearest boundary for CI, deployments, and database verification.
+
+Use emitted contracts when you need repeatable builds or any CLI command that checks or changes a database.

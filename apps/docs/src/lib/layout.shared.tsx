@@ -22,13 +22,15 @@ export const links: LinkItemTypeWithActivePaths[] = [
     text: "Getting Started",
     url: "/",
     active: "nested-url",
-    activePaths: ["/", "/prisma-orm", "/prisma-postgres"],
+    activePaths: ["/", "/next", "/prisma-orm", "/prisma-postgres"],
+    preserveDocsVersion: true,
   },
   {
     text: "ORM",
     url: "/orm",
     active: "nested-url",
-    activePaths: ["/orm", "/orm/v6"],
+    activePaths: ["/orm", "/orm/next", "/orm/v6"],
+    preserveDocsVersion: true,
   },
   {
     text: "Postgres",
@@ -39,6 +41,7 @@ export const links: LinkItemTypeWithActivePaths[] = [
     text: "CLI",
     url: "/cli",
     active: "nested-url",
+    preserveDocsVersion: true,
   },
   {
     text: "Guides",

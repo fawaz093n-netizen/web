@@ -1,0 +1,9 @@
+{
+  "title": "Core Concepts",
+  "pages": [
+    "contract-first-design",
+    "schema-definition-and-contract-emission",
+    "query-apis",
+    "extension-packs"
+  ]
+}

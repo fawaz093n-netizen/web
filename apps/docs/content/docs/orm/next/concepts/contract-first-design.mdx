@@ -1,0 +1,78 @@
+---
+title: Contract-first design in Prisma Next
+description: Understand how Prisma Next uses a contract as the source of truth for runtime queries and database changes.
+url: /orm/next/concepts/contract-first-design
+metaTitle: Contract-first design in Prisma Next
+metaDescription: Understand how Prisma Next uses a contract as the source of truth for runtime queries and database changes.
+---
+
+Prisma Next is contract-first. The contract describes the data shape your application expects, and Prisma Next uses that contract to drive generated types, runtime clients, verification, and database changes.
+
+The contract-first model answers the important questions from one source of truth:
+
+- What models, fields, relations, enums, and custom types can application code use?
+- Which generated TypeScript types should query code receive?
+- Which extension capabilities are required by this application?
+- What database shape must exist before this code runs?
+- Has the live database drifted away from the contract?
+
+## What the contract contains
+
+The emitted `contract.json` is the canonical machine-readable artifact. It is generated from your PSL or TypeScript contract source and then consumed by Prisma Next tooling and runtime clients.
+
+At a high level, the contract includes:
+
+| Area | Examples |
+| --- | --- |
+| Target information | Database family, target database, and extension pack requirements. |
+| Application shape | Models, fields, enums, relations, mapped table names, and custom types. |
+| Storage mapping | Column types, database names, constraints, indexes, and defaults. |
+| Generated metadata | Hashes and metadata used by verification and migration tooling. |
+
+`contract.d.ts` sits next to `contract.json` and gives TypeScript a typed view of the same contract.
+
+## Contract lifecycle
+
+A typical Prisma Next workflow starts by emitting the contract:
+
+```bash
+prisma-next contract emit
+```
+
+Then run the database workflow that fits the environment:
+
+| Workflow | Use it when |
+| --- | --- |
+| `db init` | You are creating missing database structures from the current contract. |
+| `db update` | You want Prisma Next to reconcile an existing database directly. |
+| `migration plan` and `migration apply` | You want reviewable migration packages in version control. |
+| `db verify` | You want to check a live database against the emitted contract. |
+
+## Drift detection
+
+Prisma Next verification compares the database marker and live schema with the emitted contract:
+
+```bash
+prisma-next db verify --db "$DATABASE_URL"
+```
+
+Use verification before deploying code that depends on a changed contract. In CI, prefer JSON output so failures can be parsed reliably:
+
+```bash
+prisma-next db verify --db "$DATABASE_URL" --json
+```
+
+## Control plane and runtime plane
+
+Prisma Next separates the tools that understand and change the database from the runtime client that executes application queries.
+
+| Plane | Where it is used | What it does |
+| --- | --- | --- |
+| Control plane | `prisma-next.config.ts` and CLI commands | Emits contracts, introspects schemas, plans migrations, verifies drift, and applies changes. |
+| Runtime plane | Application code | Loads `contract.json`, exposes query APIs, encodes values, decodes rows, and runs queries. |
+
+Extension packs usually have both planes. For example, `@prisma-next/extension-pgvector/control` teaches the CLI about vector columns and migration requirements, while `@prisma-next/extension-pgvector/runtime` teaches runtime queries how to encode vectors and expose vector operations.
+
+## Contracts are not just documentation
+
+The contract is an executable boundary between your app and the database. If the contract changes, emit it again. If the database changes, verify it again. That is the heart of Prisma Next's design.

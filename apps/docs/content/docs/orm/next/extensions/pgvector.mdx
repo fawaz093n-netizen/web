@@ -1,0 +1,141 @@
+---
+title: pgvector extension
+description: Add vector similarity search to Prisma Next with pgvector.
+url: /orm/next/extensions/pgvector
+metaTitle: pgvector extension in Prisma Next
+metaDescription: Learn how to configure pgvector and run vector similarity queries in Prisma Next.
+---
+
+The `@prisma-next/extension-pgvector` pack adds pgvector columns and vector similarity operations for PostgreSQL.
+
+Use it when your app stores embeddings and needs nearest-neighbor style queries, such as semantic search, recommendations, or similarity ranking.
+
+## Install the package
+
+```bash
+npm install @prisma-next/extension-pgvector
+```
+
+## Configure the extension
+
+Register the control descriptor in `prisma-next.config.ts`:
+
+```typescript title="prisma-next.config.ts"
+import { defineConfig } from "@prisma-next/postgres/config";
+import pgvector from "@prisma-next/extension-pgvector/control";
+
+export default defineConfig({
+  contract: "./prisma/contract.prisma",
+  extensions: [pgvector],
+});
+```
+
+Register the runtime descriptor in your database client:
+
+```typescript title="prisma/db.ts"
+import pgvector from "@prisma-next/extension-pgvector/runtime";
+import postgres from "@prisma-next/postgres/runtime";
+import type { Contract } from "./contract.d";
+import contractJson from "./contract.json" with { type: "json" };
+
+export const db = postgres<Contract>({
+  contractJson,
+  extensions: [pgvector],
+});
+```
+
+## Define vector fields
+
+Every vector column must declare a dimension:
+
+```prisma title="prisma/contract.prisma"
+// use prisma-next
+
+types {
+  Embedding1536 = pgvector.Vector(1536)
+}
+
+model Post {
+  id        String         @id @default(uuid())
+  title     String
+  embedding Embedding1536?
+}
+```
+
+The emitted `contract.d.ts` uses a dimensioned `Vector<1536>` type so query results preserve the vector size in TypeScript.
+
+## Emit and apply database setup
+
+After adding the extension and vector field, emit the contract:
+
+```bash
+prisma-next contract emit
+```
+
+Then run your database workflow:
+
+```bash
+prisma-next db init --db "$DATABASE_URL"
+```
+
+The extension pack contributes a baseline migration that installs pgvector with:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+
+If your database is managed, make sure the provider allows the pgvector extension.
+
+## Query by similarity with the ORM
+
+Use vector operations on vector fields:
+
+```typescript
+const similarPosts = await db.orm.Post
+  .where((post) => post.embedding.cosineDistance(queryVector).lt(0.3))
+  .orderBy((post) => post.embedding.cosineDistance(queryVector).asc())
+  .take(10)
+  .all();
+```
+
+Use the ORM surface when you want model rows ordered by similarity.
+
+## Query by similarity with the SQL DSL
+
+Use the SQL DSL when you also want to project the computed distance:
+
+```typescript
+const plan = db.sql.post
+  .select("id", "title")
+  .select("distance", (field, fns) => fns.cosineDistance(field.embedding, queryVector))
+  .orderBy((field, fns) => fns.cosineDistance(field.embedding, queryVector), {
+    direction: "asc",
+  })
+  .limit(10)
+  .build();
+
+const rows = await db.runtime().execute(plan);
+```
+
+## Operations
+
+| Operation | Returns | Use it for |
+| --- | --- | --- |
+| `cosineDistance(rhs)` | `number` | Ranking nearest vectors first. Lower values are closer. |
+| `cosineSimilarity(rhs)` | `number` | Ranking by similarity score. Higher values are more similar. |
+
+Both operations are available only on vector fields from the pgvector extension.
+
+## Type exports
+
+Use the codec types when a helper needs to reference vector values directly:
+
+```typescript
+import type { Vector } from "@prisma-next/extension-pgvector/codec-types";
+
+function normalizeEmbedding(value: Vector<1536>) {
+  return value;
+}
+```
+
+For TypeScript-authored contracts, the package also exports `vector` from `@prisma-next/extension-pgvector/column-types` and a pure pack descriptor from `@prisma-next/extension-pgvector/pack`.

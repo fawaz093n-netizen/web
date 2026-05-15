@@ -1,0 +1,180 @@
+---
+title: PostGIS extension
+description: Add geospatial types and queries to Prisma Next with PostGIS.
+url: /orm/next/extensions/postgis
+metaTitle: PostGIS extension in Prisma Next
+metaDescription: Learn how to configure PostGIS and write geospatial queries in Prisma Next.
+---
+
+The `@prisma-next/extension-postgis` pack adds geospatial column types and PostGIS-backed query operations for PostgreSQL.
+
+Use it when your app stores points, routes, neighborhoods, service areas, or any other location-aware data.
+
+## Install the package
+
+```bash
+npm install @prisma-next/extension-postgis
+```
+
+Your PostgreSQL server must allow the PostGIS extension. For local development, a PostGIS-enabled PostgreSQL image is usually the easiest path.
+
+## Configure the extension
+
+Register the control descriptor:
+
+```typescript title="prisma-next.config.ts"
+import { defineConfig } from "@prisma-next/postgres/config";
+import postgis from "@prisma-next/extension-postgis/control";
+
+export default defineConfig({
+  contract: "./prisma/contract.prisma",
+  extensions: [postgis],
+});
+```
+
+Register the runtime descriptor:
+
+```typescript title="prisma/db.ts"
+import postgis from "@prisma-next/extension-postgis/runtime";
+import postgres from "@prisma-next/postgres/runtime";
+import type { Contract } from "./contract.d";
+import contractJson from "./contract.json" with { type: "json" };
+
+export const db = postgres<Contract>({
+  contractJson,
+  extensions: [postgis],
+});
+```
+
+## Define geospatial fields
+
+Declare a `Geometry` type in PSL. SRID `4326` is the common WGS84 longitude and latitude coordinate system:
+
+```prisma title="prisma/contract.prisma"
+// use prisma-next
+
+types {
+  WgsGeometry = postgis.Geometry(4326)
+}
+
+model Cafe {
+  id       String      @id @default(uuid())
+  name     String
+  location WgsGeometry
+}
+
+model Neighborhood {
+  id       String      @id @default(uuid())
+  name     String
+  boundary WgsGeometry
+}
+```
+
+`postgis.Geometry()` without an SRID is also valid when your schema needs to store mixed coordinate systems.
+
+## Create geometry values
+
+Use the helpers from `@prisma-next/extension-postgis/geojson`:
+
+```typescript
+import { bboxPolygon, point, polygon } from "@prisma-next/extension-postgis/geojson";
+
+const ferryBuilding = point(-122.3937, 37.7955, 4326);
+
+const downtown = bboxPolygon([-122.425, 37.775, -122.4, 37.8], 4326);
+
+const boundary = polygon(
+  [
+    [-122.418, 37.77],
+    [-122.4, 37.77],
+    [-122.4, 37.785],
+    [-122.418, 37.785],
+    [-122.418, 37.77],
+  ],
+  4326,
+);
+```
+
+Coordinates are longitude first, then latitude.
+
+## Query geospatial data with the ORM
+
+Use geospatial operations on geometry fields:
+
+```typescript
+const cafes = await db.orm.Cafe
+  .where((cafe) => cafe.location.within(boundary))
+  .all();
+```
+
+Find rows within a radius and order nearest first:
+
+```typescript
+const nearby = await db.orm.Cafe
+  .where((cafe) => cafe.location.distanceSphere(ferryBuilding).lte(2_000))
+  .orderBy((cafe) => cafe.location.distanceSphere(ferryBuilding).asc())
+  .take(10)
+  .all();
+```
+
+Use `intersectsBbox` for map viewport queries:
+
+```typescript
+const visible = await db.orm.Cafe
+  .where((cafe) => cafe.location.intersectsBbox(downtown))
+  .all();
+```
+
+## Query geospatial data with the SQL DSL
+
+Use the SQL DSL when you want an explicit PostGIS projection or sort:
+
+```typescript
+const plan = db.sql.cafe
+  .select("id", "name")
+  .select("meters", (field, fns) => fns.distanceSphere(field.location, ferryBuilding))
+  .orderBy((field, fns) => fns.distanceSphere(field.location, ferryBuilding), {
+    direction: "asc",
+  })
+  .limit(5)
+  .build();
+
+const rows = await db.runtime().execute(plan);
+```
+
+## Operations
+
+| Operation | Use it for |
+| --- | --- |
+| `distance(other)` | Cartesian distance in the geometry's native units. |
+| `distanceSphere(other)` | Approximate metres between longitude and latitude geometries. |
+| `dwithin(other, distance)` | Index-friendly "within this distance" checks. |
+| `contains(other)` | Polygon or geometry containment. |
+| `within(other)` | The inverse of `contains`. |
+| `intersects(other)` | Any overlap between geometries. |
+| `intersectsBbox(other)` | Fast 2D bounding-box overlap for viewport filtering. |
+
+## SRID and units
+
+Declare an SRID at the column level when you know the coordinate system. Values created with `point`, `polygon`, and `bboxPolygon` should use the same SRID.
+
+For SRID 4326 data, `distance` returns degrees. Use `distanceSphere` when the product needs metres.
+
+## Wire format and types
+
+Runtime values are GeoJSON-shaped objects with optional SRID metadata. The codec handles the PostGIS wire format for you.
+
+```typescript
+import type { Geometry } from "@prisma-next/extension-postgis/codec-types";
+
+const route: Geometry = {
+  type: "LineString",
+  coordinates: [
+    [-122.4194, 37.7749],
+    [-122.4106, 37.7765],
+  ],
+  srid: 4326,
+};
+```
+
+The extension declares the `postgis.geometry` capability, which gates the geometry type and the operations above.

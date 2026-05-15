@@ -1,0 +1,136 @@
+---
+title: Building queries with the SQL DSL
+description: Build explicit PostgreSQL query plans with Prisma Next db.sql.
+url: /orm/next/guides/building-queries-with-sql-dsl
+metaTitle: Building queries with Prisma Next SQL DSL
+metaDescription: Learn how to build explicit PostgreSQL query plans with Prisma Next db.sql.
+---
+
+Use `db.sql` when you want an explicit PostgreSQL query plan while keeping contract-aware fields, result types, and extension operations.
+
+`db.sql` builds a plan. The runtime executes the plan:
+
+```typescript
+const plan = db.sql.user
+  .select("id", "email", "createdAt")
+  .limit(10)
+  .build();
+
+const rows = await db.runtime().execute(plan);
+```
+
+## Select fields
+
+```typescript
+const plan = db.sql.user
+  .select("id", "email", "createdAt")
+  .limit(10)
+  .build();
+```
+
+Select only the fields your caller needs. The result type follows the projection.
+
+## Add filters
+
+Use the `fns` helper in `where` callbacks for SQL predicates:
+
+```typescript
+const plan = db.sql.user
+  .select("id", "email")
+  .where((field, fns) => fns.eq(field.email, "alice@example.com"))
+  .build();
+```
+
+Chain `where` calls to add more conditions:
+
+```typescript
+const plan = db.sql.post
+  .select("id", "title", "createdAt")
+  .where((field, fns) => fns.ilike(field.title, "%prisma%"))
+  .where((field, fns) => fns.gte(field.createdAt, new Date("2026-01-01")))
+  .build();
+```
+
+## Order and limit
+
+```typescript
+const plan = db.sql.post
+  .select("id", "title", "createdAt")
+  .orderBy((field) => field.createdAt, { direction: "desc" })
+  .orderBy((field) => field.id, { direction: "asc" })
+  .limit(20)
+  .build();
+```
+
+Use a stable tie-breaker such as `id` when a query powers pagination or a feed.
+
+## Add computed projections
+
+Extension packs can add query operations to the SQL DSL. For example, pgvector exposes cosine distance:
+
+```typescript
+const plan = db.sql.post
+  .select("id", "title")
+  .select("distance", (field, fns) => fns.cosineDistance(field.embedding, queryVector))
+  .orderBy((field, fns) => fns.cosineDistance(field.embedding, queryVector), {
+    direction: "asc",
+  })
+  .limit(10)
+  .build();
+```
+
+This is the kind of query where the SQL DSL is a better fit than the ORM surface: the result includes a computed column that is not part of the model.
+
+## Insert, update, and delete
+
+The SQL DSL also builds mutation plans:
+
+```typescript
+const insertPlan = db.sql.user
+  .insert({
+    id: crypto.randomUUID(),
+    email: "alice@example.com",
+    createdAt: new Date(),
+  })
+  .returning("id", "email")
+  .build();
+
+const inserted = await db.runtime().execute(insertPlan);
+```
+
+```typescript
+const updatePlan = db.sql.user
+  .update({ email: "alice@prisma.io" })
+  .where((field, fns) => fns.eq(field.id, userId))
+  .returning("id", "email")
+  .build();
+
+const updated = await db.runtime().execute(updatePlan);
+```
+
+```typescript
+const deletePlan = db.sql.user
+  .delete()
+  .where((field, fns) => fns.eq(field.id, userId))
+  .returning("id")
+  .build();
+
+const deleted = await db.runtime().execute(deletePlan);
+```
+
+## Build first, execute later
+
+Because `db.sql` returns plans, you can pass plans through your own helpers before execution:
+
+```typescript
+function usersByDomain(domain: string) {
+  return db.sql.user
+    .select("id", "email")
+    .where((field, fns) => fns.ilike(field.email, `%@${domain}`))
+    .build();
+}
+
+const rows = await db.runtime().execute(usersByDomain("example.com"));
+```
+
+User input is passed as parameters by the query builder. Do not build SQL by concatenating strings.

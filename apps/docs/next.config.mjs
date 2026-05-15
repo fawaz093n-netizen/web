@@ -258,11 +258,35 @@ const config = {
         destination: "/orm/v6/:path*",
         permanent: true,
       },
+      {
+        source: "/orm/next/create-prisma",
+        destination: "/next/create-prisma",
+        permanent: false,
+      },
+      {
+        source: "/next/quickstart",
+        destination: "/next/create-prisma",
+        permanent: false,
+      },
+      {
+        source: "/next/quickstart/:path*",
+        destination: "/next/create-prisma",
+        permanent: false,
+      },
+      {
+        source: "/orm/next/quickstart/:path*",
+        destination: "/next/create-prisma",
+        permanent: false,
+      },
+      {
+        source: "/orm/next/add-to-existing-project/:path*",
+        destination: "/next/add-to-existing-project/:path*",
+        permanent: false,
+      },
     ];
   },
   async rewrites() {
     return [
-    
       // {
       //   source: "/orm/:path((?!latest(?:/|$)|v6(?:/|$)).*)",
       //   destination: "/orm/latest/:path",

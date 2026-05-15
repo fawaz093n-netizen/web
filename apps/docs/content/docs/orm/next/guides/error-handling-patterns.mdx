@@ -1,0 +1,93 @@
+---
+title: Error handling patterns in Prisma Next
+description: Handle Prisma Next CLI and runtime errors in local development, CI, and application code.
+url: /orm/next/guides/error-handling-patterns
+metaTitle: Error handling patterns in Prisma Next
+metaDescription: Learn practical error handling patterns for Prisma Next CLI commands and runtime code.
+---
+
+Prisma Next is early-access, so error handling should make failures easy to inspect and safe to automate.
+
+## Common failure categories
+
+| Category | Where it appears | Typical fix |
+| --- | --- | --- |
+| Config errors | CLI startup | Check `prisma-next.config.ts`, `--config`, and database target wiring. |
+| Missing database URL | Database and migration commands | Pass `--db` or set `db.connection` in the config. |
+| Contract drift | `db verify`, runtime verification | Emit the contract again, apply the required database changes, then verify. |
+| Extension mismatch | CLI database commands or runtime startup | Register the same extension packs in config and runtime. |
+| Query/runtime errors | Application code | Catch errors at request or job boundaries and return an application-level error. |
+
+## Use JSON output in automation
+
+Use `--json` for scripts and CI:
+
+```bash
+prisma-next db verify --db "$DATABASE_URL" --json
+```
+
+JSON output is easier to parse than terminal text and avoids brittle log matching.
+
+## Keep verification separate from deployment
+
+Run verification before code that depends on a new contract is deployed:
+
+```bash
+prisma-next contract emit
+prisma-next db verify --db "$DATABASE_URL" --strict
+```
+
+Use `--strict` when extra database schema elements should fail the check.
+
+## Add trace output only when debugging
+
+Use trace output when a command fails in a way you need to report or debug:
+
+```bash
+prisma-next db verify --db "$DATABASE_URL" --trace
+```
+
+Keep trace output out of normal CI logs unless you need it.
+
+## Handle runtime failures at boundaries
+
+Create and close runtimes at request or job boundaries. Keep query code focused on the application operation, and translate Prisma Next failures into errors your API can return consistently.
+
+```typescript
+export async function loadUsers() {
+  try {
+    return await db.orm.User
+      .select("id", "email")
+      .take(50)
+      .all();
+  } catch (error) {
+    console.error(error);
+    throw new Error("Could not load users");
+  }
+}
+```
+
+For serverless handlers, dispose the runtime even when a query fails:
+
+```typescript
+try {
+  await using runtime = await db.connect({ url: env.HYPERDRIVE.connectionString });
+  return Response.json(
+    await runtime.execute(db.sql.user.select("id", "email").build()),
+  );
+} catch (error) {
+  console.error(error);
+  return Response.json({ error: "Could not load users" }, { status: 500 });
+}
+```
+
+## Handle migration errors conservatively
+
+Migration failures should stop deployment. Prefer this order:
+
+1. Run `prisma-next migration status --db "$DATABASE_URL"` before applying.
+2. Run `prisma-next migration apply --db "$DATABASE_URL"` from a controlled job.
+3. Run `prisma-next db verify --db "$DATABASE_URL"` after applying.
+4. Deploy application code only after verification succeeds.
+
+If a migration fails partway through, inspect the database state and migration history before retrying. Do not blindly re-run destructive changes in production.
