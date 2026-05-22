@@ -1,5 +1,6 @@
 @import "tw-animate-css";
 @import "./fonts.css";
+@import "./marketing.css";
 
 @source "../components/**/*.{tsx,mjs,js}";
 
@@ -48,11 +49,12 @@
 
   /* Typography - Font Families */
   --font-sans-display:
-    "Mona Sans VF", "Inter", "Roboto", "Helvetica Neue", "Arial Nova", "Nimbus Sans", "Arial",
-    sans-serif;
-  --font-sans-display-settings: "ss01" on, "ss02" on, "ss05" on, "ss06" on;
+    var(--font-plus-jakarta-sans, "Plus Jakarta Sans"), var(--font-inter, "Inter"), "Roboto",
+    "Helvetica Neue", "Arial Nova", "Nimbus Sans", "Arial", sans-serif;
+  --font-sans-display-settings: normal;
   --font-sans:
-    "Inter", "Roboto", "Helvetica Neue", "Arial Nova", "Nimbus Sans", "Arial", sans-serif;
+    var(--font-inter, "Inter"), "Roboto", "Helvetica Neue", "Arial Nova", "Nimbus Sans",
+    "Arial", sans-serif;
   --font-sans-settings: "cv01" on, "cv02" on, "cv06" on, "cv07" on, "cv08" on, "cv10" on;
   --font-mono:
     "Mona Sans Mono VF", ui-monospace, "Cascadia Code", "Source Code Pro", "Menlo", "Consolas",
@@ -220,7 +222,13 @@
   --chart-6: var(--color-foreground-neutral-weak);
 }
 
-.dark {
+:root {
+  color-scheme: light;
+}
+
+:root:is(.dark, [data-theme="dark"]) {
+  color-scheme: dark;
+
   /* Background Colors */
   --color-disabled: #4a5568;
   --color-background-default: #030712;

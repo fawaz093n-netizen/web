@@ -2,7 +2,7 @@ import { Provider } from "@/components/provider";
 import { createSiteStructuredData } from "@/lib/structured-data";
 import { getBaseUrl } from "@/lib/url";
 import "./global.css";
-import { Inter } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import type React from "react";
@@ -22,6 +22,11 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta-sans",
+});
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -34,10 +39,13 @@ export const metadata: Metadata = {
   description: SITE_HOME_DESCRIPTION,
 };
 
+const siteStructuredData = createSiteStructuredData();
+const THEME_STORAGE_KEY = "prisma-site-theme";
+
 const themeInitScript = `
 (() => {
   try {
-    const storageKey = "theme";
+    const storageKey = "${THEME_STORAGE_KEY}";
     const stored = localStorage.getItem(storageKey);
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const resolved =
@@ -50,13 +58,12 @@ const themeInitScript = `
     const root = document.documentElement;
     root.setAttribute("data-theme", resolved);
     root.classList.toggle("dark", resolved === "dark");
+    root.style.colorScheme = resolved;
   } catch {
     // Ignore storage/media-query failures and use CSS defaults.
   }
 })();
 `;
-
-const siteStructuredData = createSiteStructuredData();
 
 function baseOptions() {
   return {
@@ -153,7 +160,11 @@ function baseOptions() {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${plusJakartaSans.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <Script
@@ -197,7 +208,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body className="flex flex-col min-h-screen relative">
         <div className="bg-background-default absolute inset-0 -z-1 overflow-hidden" />
         <Provider>
-          <ThemeProvider defaultTheme="system" storageKey="theme">
+          <ThemeProvider defaultTheme="system" storageKey={THEME_STORAGE_KEY}>
             <UtmPersistence />
             <NavigationWrapper
               links={baseOptions().links}

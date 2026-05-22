@@ -1,0 +1,155 @@
+{
+  "edition": {
+    "title": "The Prisma Manifesto",
+    "edition": "Edition 1 · 2026",
+    "status": "Now in public beta"
+  },
+  "hero": {
+    "eyebrow": "A new kind of platform",
+    "headline": "The agentic software platform.",
+    "headlineLines": ["The agentic software", "platform."],
+    "ledePrimary": "Production infrastructure for software your AI builds. Three products designed end-to-end so the result is a real shippable app, not a prototype.",
+    "ledeSecondary": "The way software gets made is changing. The product builder is not a coder; they are a thinker with an AI. The platform that runs what they build should be designed for that — not retrofitted from a decade ago.",
+    "continueLabel": "Continue reading ↓"
+  },
+  "logos": {
+    "label": "Teams already operating this way"
+  },
+  "thesis": {
+    "eyebrow": "§ I · The thesis",
+    "meta": "Six observations · One platform",
+    "items": [
+      {
+        "n": "01",
+        "title": "The product builder is not a coder.",
+        "body": "The person shipping software now is a thinker with an AI in front of them. They review what gets written; they rarely write it themselves. The platform underneath needs to be designed for that shape of work, not retrofitted from a decade ago."
+      },
+      {
+        "n": "02",
+        "title": "Prototype quality is the floor, not the bar.",
+        "body": "Vibe-coding tools spin up a working demo in minutes. That's now table stakes. The work that matters is what comes after: a real database, real data, real users, real revisions, real production. That's where the platform earns its keep."
+      },
+      {
+        "n": "03",
+        "title": "Glue is the bottleneck — not the model.",
+        "body": "Every team building seriously with AI assembles the same stack: a data layer, a database, a hosting target, a CI flow, a preview environment. Each piece works; the seams don't. The model is great. The integration tax is where the weeks go."
+      },
+      {
+        "n": "04",
+        "title": "The PR is the new build artifact.",
+        "body": "You don't ship code. You ship a working product — a URL with a real database behind it that a non-technical person can actually try. The unit of work is a previewable, mergeable pull request. Production becomes the path of least resistance."
+      },
+      {
+        "n": "05",
+        "title": "Schemas are the contract AI must respect.",
+        "body": "Your AI can write almost anything. What it can't do is silently break production data. A platform that takes the schema seriously — typed end-to-end, branchable per PR, shadowed for safe diffs — is what lets the AI ship without anyone flinching."
+      },
+      {
+        "n": "06",
+        "title": "One platform. One config. One bill.",
+        "body": "You shouldn't be navigating five dashboards to ship something your AI built in three minutes. The platform should compose into a single typed file your AI can read, your team can review, and your invoice doesn't fragment across."
+      }
+    ]
+  },
+  "platform": {
+    "eyebrow": "§ II · The platform",
+    "headline": "So we built one.",
+    "body": "Three products — Prisma Data for the data layer, Prisma Compute for hosting, Prisma Postgres for the database — composed into one platform. Designed end-to-end so the result is a real, previewable, shippable product.",
+    "products": [
+      {
+        "label": "01 · Build",
+        "title": "Prisma Data",
+        "body": "Your AI reads, writes, and migrates schemas. Typed end-to-end, safe by default.",
+        "icon": "fa-light fa-cube",
+        "brand": true
+      },
+      {
+        "label": "02 · Deploy",
+        "title": "Prisma Compute",
+        "body": "TypeScript on Bun. Repo to URL in seconds. Your agent deploys, reads logs, fixes itself.",
+        "icon": "fa-light fa-rocket-launch"
+      },
+      {
+        "label": "03 · Store",
+        "title": "Prisma Postgres",
+        "body": "Real Postgres. Every branch gets one — seeded, queryable, mergeable.",
+        "icon": "fa-light fa-database"
+      },
+      {
+        "label": "04 · Ship",
+        "title": "Previews & production",
+        "body": "Every PR becomes a working app. Review the UI, the data, the deploy — then merge.",
+        "icon": "fa-light fa-paper-plane"
+      }
+    ],
+    "footLeft": "prisma.config.ts",
+    "footRight": "one platform · one CLI · one bill"
+  },
+  "exhibit": {
+    "eyebrow": "§ III · Exhibit A",
+    "meta": "prisma.config.ts · One file",
+    "headline": "The whole thing, in one typed file.",
+    "bodyPrimary": "Not a dashboard. Not a YAML matrix. A TypeScript module that lives next to your code, ships with your repo, and changes through pull requests like everything else.",
+    "bodySecondary": "Your AI reads it to plan. The platform reads it to provision. You read it to understand what's running. There is no other source of truth.",
+    "footnoteLabel": "Footnote · § III.a",
+    "footnote": "\"AGENTS.md\" tells your AI how the codebase works. \"prisma.config.ts\" tells the platform. Both are versioned. Neither is a secret."
+  },
+  "pullQuote": {
+    "eyebrow": "§ IV · A note to the reader",
+    "quote": "If you've already decided your product gets built with AI, you're who we built this for.",
+    "attribution": "Prisma · 2026"
+  },
+  "closing": {
+    "eyebrow": "§ V · Now",
+    "headline": "Build with the platform that was built for this.",
+    "headlineLines": ["Build with the platform", "that was built for this."],
+    "subhead": "Free during public beta. No credit card. Live preview in 60 seconds.",
+    "footer": "End of manifesto · § V · Begin building →"
+  },
+  "timeline": {
+    "title": "your agent · building on Prisma",
+    "meta": "RUNNING · 00:41",
+    "foot": "Every PR is a real app · live preview, real database, real URL",
+    "rows": [
+      {
+        "tag": "PROMPT",
+        "body": "Add subscription billing to my app",
+        "dur": "00:04"
+      },
+      {
+        "tag": "WRITE",
+        "body": "src/billing/checkout.tsx",
+        "dur": "00:11",
+        "code": true
+      },
+      {
+        "tag": "SCHEMA",
+        "body": "Subscription, Plan models added to Prisma Data",
+        "dur": "00:14"
+      },
+      {
+        "tag": "DB",
+        "body": "Migrated · pr-142 branch on Prisma Postgres (iad1)",
+        "dur": "00:19",
+        "ok": true
+      },
+      {
+        "tag": "WRITE",
+        "body": "src/api/webhooks/stripe.ts",
+        "dur": "00:25"
+      },
+      {
+        "tag": "TEST",
+        "body": "8 pass · 0 fail",
+        "dur": "00:33",
+        "ok": true
+      },
+      {
+        "tag": "DEPLOY",
+        "body": "Preview live on Prisma Compute · ready for review",
+        "dur": "00:41",
+        "ok": true
+      }
+    ]
+  }
+}

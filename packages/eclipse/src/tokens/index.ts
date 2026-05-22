@@ -233,9 +233,9 @@ export const size = {
 // Typography Tokens
 export const typography = {
   fontFamily: {
-    "sans-display": "Inter",
+    "sans-display": "Plus Jakarta Sans",
     sans: "Inter",
-    mono: "Mona Sans Mono",
+    mono: "Mona Sans Mono VF",
   },
   fontSize: {
     "2xs": 11,

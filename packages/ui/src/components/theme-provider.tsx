@@ -83,6 +83,7 @@ export function ThemeProvider({
 
     const root = document.documentElement;
     root.setAttribute(attribute, themeValue);
+    root.style.colorScheme = themeValue;
 
     // Also update class for Tailwind dark mode
     if (themeValue === "dark") {
