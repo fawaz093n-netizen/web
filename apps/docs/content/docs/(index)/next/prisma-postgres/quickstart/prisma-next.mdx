@@ -1,0 +1,48 @@
+---
+title: Prisma Next
+description: Create a Prisma Next app with Prisma Postgres.
+url: /next/prisma-postgres/quickstart/prisma-next
+metaTitle: 'Quickstart: Prisma Next with Prisma Postgres'
+metaDescription: Create a Prisma Next app, provision Prisma Postgres, seed data, and run your first query.
+badge: early-access
+---
+
+Create a Prisma Next app backed by Prisma Postgres.
+
+## Quick start
+
+```npm
+npx create-prisma@next
+cd <project-directory>
+npm run db:init
+npm run db:seed
+npm run dev
+```
+
+When prompted, choose PostgreSQL and Prisma Postgres. Setup provisions the database, writes `DATABASE_URL`, and adds the scripts used for the first run.
+
+## Prerequisites
+
+You need:
+
+- Node.js 24 or newer
+- npm
+- a Prisma Data Platform account
+
+## 1. Create the app
+
+Run `create-prisma@next` and choose the minimal template if you want the fastest first run. Choose a framework template when you want the first query wired into an app route or page.
+
+## 2. Initialize and seed
+
+`db:init` applies the starter schema to Prisma Postgres. `db:seed` inserts sample data so the first query returns something immediately.
+
+## 3. Run the app
+
+Use the URL or terminal output shown by your template to confirm the sample query runs successfully.
+
+## Next steps
+
+- Open the generated contract and change the starter model.
+- Use [Import from PostgreSQL](/next/prisma-postgres/import-from-existing-database-postgresql) or [Import from MySQL](/next/prisma-postgres/import-from-existing-database-mysql) when you want to move an existing database to Prisma Postgres.
+- Use the [PostgreSQL existing-project guide](/next/add-to-existing-project/postgresql) when your app already has a Prisma Postgres database.

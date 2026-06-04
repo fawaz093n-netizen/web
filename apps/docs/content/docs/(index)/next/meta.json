@@ -1,11 +1,15 @@
 {
-  "title": "Next",
+  "title": "Prisma Next",
   "defaultOpen": true,
   "root": true,
   "pages": [
     "---Getting Started---",
     "index",
+    "getting-started",
+    "---Prisma ORM---",
     "quickstart",
-    "add-to-existing-project"
+    "add-to-existing-project",
+    "---Prisma Postgres---",
+    "...prisma-postgres"
   ]
 }

@@ -30,7 +30,7 @@ If your project already runs TypeScript scripts, you can skip this step.
 
 Otherwise, install the script tooling:
 
-```npm title="Terminal"
+```npm
 npm install --save-dev tsx typescript
 ```
 
@@ -40,7 +40,7 @@ Later, `prisma-next init` will also add the Node.js types it needs and make sure
 
 From the root of your existing project, run:
 
-```npm title="Terminal"
+```npm
 npx prisma-next init
 ```
 
@@ -66,7 +66,7 @@ This step gives you a starting contract by reading the schema that already exist
 
 Run:
 
-```npm title="Terminal"
+```npm
 npx prisma-next contract infer --output ./prisma/contract.prisma
 ```
 
@@ -80,7 +80,7 @@ Once the contract looks right, this step turns it into the generated files the r
 
 After you are happy with the contract, run:
 
-```npm title="Terminal"
+```npm
 npx prisma-next contract emit
 ```
 
@@ -90,7 +90,7 @@ This refreshes `prisma/contract.json` and `prisma/contract.d.ts` so the runtime 
 
 Record that the live database matches the emitted contract:
 
-```npm title="Terminal"
+```npm
 npx prisma-next db sign
 ```
 
@@ -130,7 +130,7 @@ main().catch((error) => {
 
 Run it:
 
-```npm title="Terminal"
+```npm
 npx tsx script.ts
 ```
 
@@ -166,7 +166,7 @@ main().catch((error) => {
 
 Run it again:
 
-```npm title="Terminal"
+```npm
 npx tsx script.ts
 ```
 
@@ -174,7 +174,7 @@ npx tsx script.ts
 
 When you change `prisma/contract.prisma`, emit the contract again:
 
-```npm title="Terminal"
+```npm
 npx prisma-next contract emit
 ```
 
