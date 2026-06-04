@@ -24,14 +24,15 @@ const NEXT_GETTING_STARTED_PATHS_BY_LATEST_PATH = new Map<string, string>([
   ["/", NEXT_GETTING_STARTED_ROOT],
   ["/getting-started", NEXT_GETTING_STARTED_ROOT],
   ["/prisma-orm", NEXT_GETTING_STARTED_ROOT],
-  ["/prisma-orm/quickstart/postgresql", "/next/create-prisma"],
-  ["/prisma-orm/quickstart/mongodb", "/next/create-prisma"],
+  ["/prisma-orm/quickstart/postgresql", "/next/quickstart/postgresql"],
+  ["/prisma-orm/quickstart/mongodb", "/next/quickstart/mongodb"],
   ["/prisma-orm/add-to-existing-project/postgresql", "/next/add-to-existing-project/postgresql"],
   ["/prisma-orm/add-to-existing-project/mongodb", "/next/add-to-existing-project/mongodb"],
 ]);
 const LATEST_GETTING_STARTED_PATHS_BY_NEXT_PATH = new Map<string, string>([
   [NEXT_GETTING_STARTED_ROOT, "/"],
-  ["/next/create-prisma", "/"],
+  ["/next/quickstart/postgresql", "/prisma-orm/quickstart/postgresql"],
+  ["/next/quickstart/mongodb", "/prisma-orm/quickstart/mongodb"],
   ["/next/add-to-existing-project/postgresql", "/prisma-orm/add-to-existing-project/postgresql"],
   ["/next/add-to-existing-project/mongodb", "/prisma-orm/add-to-existing-project/mongodb"],
 ]);

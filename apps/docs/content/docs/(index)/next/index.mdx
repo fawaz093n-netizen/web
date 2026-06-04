@@ -1,13 +1,13 @@
 ---
 title: Get started with Prisma Next
-description: Start a new Prisma Next app or add Prisma Next to an existing project.
+description: Start with create-prisma@next, then choose a Prisma Next quickstart or existing-project path.
 url: /next
 metaTitle: Get started with Prisma Next
-metaDescription: Start a Prisma Next project with create-prisma@next or add Prisma Next to an existing project.
+metaDescription: Start with create-prisma@next, then choose a Prisma Next quickstart or existing-project guide.
 badge: early-access
 ---
 
-Prisma Next is the next foundation for Prisma ORM. Start here if you want to try the Prisma Next workflow.
+Prisma Next is the next foundation for Prisma ORM. If you are trying Prisma Next for the first time, start with `create-prisma@next`.
 
 :::warning[Prisma Next is still in development]
 
@@ -15,15 +15,51 @@ Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommend
 
 :::
 
-## Start a new project
+## Start here
 
-- [Scaffold a Prisma Next app with create-prisma@next](/next/create-prisma)
+Create a new Prisma Next app:
 
-## Add Prisma Next to an existing project
+```npm title="Terminal"
+npx create-prisma@next
+```
 
-- [Add Prisma Next to an existing PostgreSQL project](/next/add-to-existing-project/postgresql)
-- [Add Prisma Next to an existing MongoDB project](/next/add-to-existing-project/mongodb)
+Then follow the quickstart for the database you picked:
 
-## Learn the ORM workflow
+<Cards>
+  <Card href="/next/quickstart/postgresql" title="Quickstart with PostgreSQL" icon={<Rocket className="text-primary" />}>
+    Create the app, initialize PostgreSQL, seed data, and run it locally.
+  </Card>
+  <Card href="/next/quickstart/mongodb" title="Quickstart with MongoDB" icon={<Database className="text-primary" />}>
+    Create the app, migrate MongoDB, seed data, and run it locally.
+  </Card>
+</Cards>
 
-Read the [Prisma Next overview](/orm/next) to learn about contracts, emitted artifacts, runtime clients, query styles, and database change commands.
+## Already have an app?
+
+Already have an app and database? Use `prisma-next init` from your project root.
+
+```npm title="Terminal"
+npx prisma-next init
+```
+
+The existing-project guides walk through setup for the database your app already uses.
+
+<Cards>
+  <Card href="/next/add-to-existing-project/postgresql" title="Add to PostgreSQL" icon={<Database className="text-primary" />}>
+    Connect Prisma Next to an existing PostgreSQL app and infer a starter contract from the live schema.
+  </Card>
+  <Card href="/next/add-to-existing-project/mongodb" title="Add to MongoDB" icon={<Database className="text-primary" />}>
+    Connect Prisma Next to an existing MongoDB app and model the collections you want to query first.
+  </Card>
+</Cards>
+
+## Explore
+
+<Cards>
+  <Card href="/orm/next" title="Prisma Next overview" icon={<BookOpen className="text-primary" />}>
+    Learn the core ideas behind contracts, emitted artifacts, runtime clients, query styles, and database changes.
+  </Card>
+  <Card href="/cli/next" title="Prisma Next CLI" icon={<Terminal className="text-primary" />}>
+    Look up command details after you know which workflow you need.
+  </Card>
+</Cards>

@@ -260,22 +260,22 @@ const config = {
       },
       {
         source: "/orm/next/create-prisma",
-        destination: "/next/create-prisma",
+        destination: "/next",
+        permanent: false,
+      },
+      {
+        source: "/next/create-prisma",
+        destination: "/next",
         permanent: false,
       },
       {
         source: "/next/quickstart",
-        destination: "/next/create-prisma",
-        permanent: false,
-      },
-      {
-        source: "/next/quickstart/:path*",
-        destination: "/next/create-prisma",
+        destination: "/next/quickstart/postgresql",
         permanent: false,
       },
       {
         source: "/orm/next/quickstart/:path*",
-        destination: "/next/create-prisma",
+        destination: "/next/quickstart/:path*",
         permanent: false,
       },
       {
