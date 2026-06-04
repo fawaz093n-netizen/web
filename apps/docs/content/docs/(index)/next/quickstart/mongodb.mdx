@@ -26,19 +26,19 @@ npm run db:seed
 npm run dev
 ```
 
-When prompted, choose MongoDB. If you use MongoDB Atlas or another existing deployment, set `DATABASE_URL` and skip `db:up`.
+When prompted, choose MongoDB. The generated local setup gives you a MongoDB replica set through `db:up`; if you use MongoDB Atlas or another existing deployment, set `DATABASE_URL` and skip `db:up`.
 
-## What you need
+## Prerequisites
 
 You need:
 
 - Node.js 24 or newer
 - npm
-- a MongoDB 6.0 or newer deployment, or the generated local setup
+- the generated local MongoDB setup, or a MongoDB 6.0 or newer deployment
 
-For local development, use a replica set. MongoDB Atlas already provides one, and the generated `db:up` script can start one for you.
+For local development, use a replica set. MongoDB Atlas already provides one, and the generated `db:up` script starts one for you.
 
-## Check the database connection
+## 1. Check the database connection
 
 Open `.env` and confirm that `DATABASE_URL` points to the MongoDB deployment you want Prisma Next to use.
 
@@ -48,11 +48,11 @@ DATABASE_URL="mongodb://127.0.0.1:27017/app?replicaSet=rs0"
 
 If you use MongoDB Atlas, replace this with the connection string from your Atlas cluster.
 
-## Start MongoDB and migrate
+## 2. Start MongoDB and migrate
 
 For the generated local MongoDB setup, `db:up` starts the local replica set. `migration:plan` creates the first migration from the starter schema, and `migrate` applies it.
 
-## Seed and run the app
+## 3. Seed and run the app
 
 Use the URL or terminal output shown by your template to confirm the sample query runs successfully. You should see the seeded users returned from MongoDB.
 

@@ -26,7 +26,7 @@ npm run dev
 
 When prompted, choose PostgreSQL. Pick Prisma Postgres if you want setup to create the database for you, or paste your own `DATABASE_URL`.
 
-## What you need
+## Prerequisites
 
 You need:
 
@@ -36,7 +36,7 @@ You need:
 
 If you use your own database, keep the connection string ready before you start.
 
-## Check the database connection
+## 1. Check the database connection
 
 Open `.env` and confirm that `DATABASE_URL` points to the PostgreSQL database you want Prisma Next to use.
 
@@ -46,11 +46,11 @@ DATABASE_URL="postgresql://username:password@host:5432/database?sslmode=require"
 
 If you chose Prisma Postgres during setup, this value is already written for you. If you pasted your own connection string, keep it in `.env` and do not hardcode it in application code.
 
-## Initialize and seed
+## 2. Initialize and seed
 
 `db:init` applies the starter schema to PostgreSQL. `db:seed` inserts sample users so the first query has data to show.
 
-## Run the app
+## 3. Run the app
 
 Use the URL or terminal output shown by your template to confirm the sample query runs successfully. You should see the seeded users returned from PostgreSQL.
 
