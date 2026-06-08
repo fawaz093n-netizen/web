@@ -13,13 +13,11 @@ Create a Prisma Next app backed by Prisma Postgres.
 
 ```npm
 npx create-prisma@next
-cd <project-directory>
-npm run db:init
-npm run db:seed
-npm run dev
 ```
 
-When prompted, choose PostgreSQL and Prisma Postgres. Setup provisions the database, writes `DATABASE_URL`, and adds the scripts used for the first run.
+When prompted, choose PostgreSQL and Prisma Postgres.
+
+Setup provisions the database, writes `DATABASE_URL`, adds a starter contract, creates `prisma-next.md`, installs project-level Prisma Next skills for your coding agent, and adds package scripts for the database steps below.
 
 ## Prerequisites
 
@@ -33,11 +31,29 @@ You need:
 
 Run `create-prisma@next` and choose the minimal template if you want the fastest first run. Choose a framework template when you want the first query wired into an app route or page.
 
-## 2. Initialize and seed
+## 2. Initialize the database
 
-`db:init` applies the starter schema to Prisma Postgres. `db:seed` inserts sample data so the first query returns something immediately.
+From the generated project directory, run `db:init` to apply the starter schema to Prisma Postgres and sign the database.
 
-## 3. Run the app
+```npm
+npm run db:init
+```
+
+## 3. Seed data
+
+`db:seed` inserts sample data so the first query returns something immediately.
+
+```npm
+npm run db:seed
+```
+
+## 4. Run the app
+
+Start the app and confirm the sample query runs successfully.
+
+```npm
+npm run dev
+```
 
 Use the URL or terminal output shown by your template to confirm the sample query runs successfully.
 
