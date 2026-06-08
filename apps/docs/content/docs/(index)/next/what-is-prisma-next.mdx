@@ -1,0 +1,47 @@
+---
+title: What is Prisma Next?
+description: Learn what Prisma Next changes in Prisma ORM.
+url: /next/what-is-prisma-next
+metaTitle: What is Prisma Next?
+metaDescription: Learn what Prisma Next changes in Prisma ORM.
+---
+
+Prisma Next is the next foundation for Prisma ORM. It keeps the familiar Prisma idea of describing your application data in one place, then makes that model more explicit for tools, runtime code, migrations, and agents.
+
+:::warning[Prisma Next is still in development]
+
+Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommended choice for production applications today.
+
+:::
+
+## What changes
+
+Prisma Next introduces an emitted contract that your project can inspect, commit, verify, and load at runtime. That contract becomes the shared source for database setup, generated runtime files, query APIs, and migration checks.
+
+It is designed around:
+
+- contract artifacts that can be generated and verified
+- model-oriented ORM queries alongside lower-level database query builders
+- TypeScript migration plans that can be reviewed before they run
+- extension packs for database capabilities that do not fit cleanly into one global ORM surface
+- project-level Prisma Next skills and `prisma-next.md` guidance for agent-assisted development
+
+## Start here
+
+Create a new Prisma Next project with `create-prisma@next`:
+
+```npm
+npx create-prisma@next
+```
+
+Add Prisma Next to an existing app from the app root:
+
+```npm
+npx prisma-next init
+```
+
+For the guided setup flow, start with [Choose a setup path](/next/getting-started).
+
+## Read the announcement
+
+For the bigger picture behind the rewrite, query APIs, extensibility, migrations, and agent-friendly workflows, read [The Next Evolution of Prisma ORM](https://www.prisma.io/blog/the-next-evolution-of-prisma-orm).

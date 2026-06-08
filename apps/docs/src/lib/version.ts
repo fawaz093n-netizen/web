@@ -23,11 +23,11 @@ const NEXT_CLI_ROOT = "/cli/next";
 const NEXT_GETTING_STARTED_PATHS_BY_LATEST_PATH = new Map<string, string>([
   ["/", NEXT_GETTING_STARTED_ROOT],
   ["/getting-started", "/next/getting-started"],
-  ["/prisma-orm", NEXT_GETTING_STARTED_ROOT],
-  ["/prisma-orm/quickstart/postgresql", "/next/quickstart/postgresql"],
-  ["/prisma-orm/quickstart/mongodb", "/next/quickstart/mongodb"],
-  ["/prisma-orm/add-to-existing-project/postgresql", "/next/add-to-existing-project/postgresql"],
-  ["/prisma-orm/add-to-existing-project/mongodb", "/next/add-to-existing-project/mongodb"],
+  ["/prisma-orm", "/next/what-is-prisma-next"],
+  ["/prisma-orm/quickstart/postgresql", "/next/getting-started"],
+  ["/prisma-orm/quickstart/mongodb", "/next/getting-started"],
+  ["/prisma-orm/add-to-existing-project/postgresql", "/next/getting-started"],
+  ["/prisma-orm/add-to-existing-project/mongodb", "/next/getting-started"],
   ["/prisma-postgres", "/next/prisma-postgres/quickstart/prisma-next"],
   ["/prisma-postgres/quickstart/prisma-orm", "/next/prisma-postgres/quickstart/prisma-next"],
   [
@@ -43,10 +43,7 @@ const NEXT_GETTING_STARTED_PATHS_BY_LATEST_PATH = new Map<string, string>([
 const LATEST_GETTING_STARTED_PATHS_BY_NEXT_PATH = new Map<string, string>([
   [NEXT_GETTING_STARTED_ROOT, "/"],
   ["/next/getting-started", "/getting-started"],
-  ["/next/quickstart/postgresql", "/prisma-orm/quickstart/postgresql"],
-  ["/next/quickstart/mongodb", "/prisma-orm/quickstart/mongodb"],
-  ["/next/add-to-existing-project/postgresql", "/prisma-orm/add-to-existing-project/postgresql"],
-  ["/next/add-to-existing-project/mongodb", "/prisma-orm/add-to-existing-project/mongodb"],
+  ["/next/what-is-prisma-next", "/prisma-orm"],
   ["/next/prisma-postgres/quickstart/prisma-next", "/prisma-postgres/quickstart/prisma-orm"],
   [
     "/next/prisma-postgres/import-from-existing-database-postgresql",
