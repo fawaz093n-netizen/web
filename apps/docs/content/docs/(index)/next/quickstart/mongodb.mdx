@@ -20,17 +20,9 @@ Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommend
 npx create-prisma@next
 ```
 
-When prompted, choose MongoDB. The generated local setup gives you a MongoDB replica set through `db:up`; if you use MongoDB Atlas or another existing deployment, set `DATABASE_URL` and skip `db:up`.
+Run this from a Node.js 24 or newer environment. When prompted, choose MongoDB. The generated local setup gives you a MongoDB replica set through `db:up`; if you use MongoDB Atlas or another existing deployment, set `DATABASE_URL` and skip `db:up`.
 
 Setup gives you the app template, a starter contract, `prisma-next.md`, project-level Prisma Next skills for your coding agent, and package scripts for the database steps below.
-
-## Prerequisites
-
-You need:
-
-- Node.js 24 or newer
-- npm
-- the generated local MongoDB setup, or a MongoDB 6.0 or newer deployment
 
 For local development, use a replica set. MongoDB Atlas already provides one, and the generated `db:up` script starts one for you.
 

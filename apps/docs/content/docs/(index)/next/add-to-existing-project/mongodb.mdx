@@ -8,21 +8,13 @@ metaDescription: Add Prisma Next to an existing MongoDB project.
 
 This guide shows how to add Prisma Next to a project that already uses MongoDB. You will run `prisma-next init`, describe the collections you want to work with, emit the generated artifacts, and run a couple of queries.
 
-Use this path when you already have an application and database. If you want Prisma Next to create a new app for you, use the [MongoDB quickstart](/next/quickstart/mongodb).
+Use this path when you already have an application and database. Make sure the app can already reach its MongoDB deployment and runs on Node.js 24 or newer. If you want Prisma Next to create a new app for you, use the [MongoDB quickstart](/next/quickstart/mongodb).
 
 :::warning[Prisma Next is still in development]
 
 Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommended choice for production applications today.
 
 :::
-
-## Prerequisites
-
-Before you start, make sure you can already reach the MongoDB deployment this project uses today.
-
-- Node.js 24 or newer
-- npm
-- An existing MongoDB 6.0 or newer deployment
 
 For local development, use a replica set. MongoDB Atlas already gives you that.
 
