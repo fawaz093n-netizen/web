@@ -1,63 +1,12 @@
 ---
 title: What is Prisma Next?
-description: Learn the Prisma Next ORM model, from contracts to query APIs, migrations, and extensions.
+description: Prisma Next is the next foundation for Prisma ORM.
 url: /orm/next
 metaTitle: What is Prisma Next?
-metaDescription: Learn the Prisma Next ORM model, from contracts to query APIs, migrations, and extensions.
+metaDescription: Prisma Next is the next foundation for Prisma ORM.
 badge: early-access
 ---
 
-Prisma Next is the next foundation for Prisma ORM. It keeps the familiar idea of modeling application data in one place, then makes that model more explicit: you emit a contract, load that contract at runtime, verify databases against it, and use it from more than one query API.
+Prisma Next is the next foundation for Prisma ORM. It is an early look at the next Prisma ORM workflow, with a TypeScript-first runtime, query APIs, migrations, extensions, and project setup.
 
-:::warning[Prisma Next is still in development]
-
-Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommended choice for production applications today.
-
-:::
-
-## Why Prisma Next exists
-
-Prisma Next is built around a contract that can be checked by both tooling and runtime code. That gives you a clearer path for early-access workflows that need:
-
-- contract artifacts that can be generated, committed, and inspected
-- database verification before code that depends on a contract is deployed
-- model-oriented ORM queries and lower-level SQL plans in the same project
-- extension packs for capabilities such as vector search, geospatial queries, and searchable encrypted columns
-
-## How Prisma Next fits together
-
-The ORM workflow has four main pieces:
-
-| Piece | What it does |
-| --- | --- |
-| Contract | The schema your application expects. You can author it in PSL or TypeScript. |
-| Emitted artifacts | `contract.json` and `contract.d.ts`, generated with `prisma-next contract emit`. |
-| Runtime client | The database-specific client that loads the emitted contract. |
-| Query APIs | `db.orm` for model queries, `db.sql` for PostgreSQL plans, and `db.query` for MongoDB plans. |
-
-Database changes build on the same contract. You can initialize or reconcile a database directly with `db init` and `db update`, or create checked-in migration packages with `migration plan` and `migration apply`.
-
-## How it differs from Prisma ORM 7
-
-| Prisma ORM 7 | Prisma Next |
-| --- | --- |
-| Generates a client from `schema.prisma`. | Emits an explicit contract used by tooling and runtime clients. |
-| Uses Prisma Client as the main query API. | Provides `db.orm` plus lower-level query builders such as `db.sql`. |
-| Migration workflows are centered on Prisma Migrate. | Migration and verification commands operate from the emitted contract. |
-| Preview database capabilities are usually part of the main ORM surface. | Optional capabilities can be composed through extension packs. |
-
-## Typical workflow
-
-1. Define a contract in PSL or TypeScript.
-2. Run `prisma-next contract emit`.
-3. Use `db init`, `db update`, or `migration plan` to align the database.
-4. Query through `db.orm`, `db.sql`, or `db.query`.
-5. Run `db verify` in CI or before deployment to catch drift.
-
-## Start with the right section
-
-Use [Getting Started](/next) when you want setup instructions. The setup flow uses `create-prisma@next` to scaffold a complete application template and add package scripts for contract emission, database initialization, verification, and migrations.
-
-Use the [Prisma Next CLI reference](/cli/next) when you need exact command flags.
-
-For the broader story behind the rewrite, query APIs, extensibility, migrations, and agent-friendly workflows, read [The Next Evolution of Prisma ORM](https://www.prisma.io/blog/the-next-evolution-of-prisma-orm).
+Read [The Next Evolution of Prisma ORM](https://www.prisma.io/blog/the-next-evolution-of-prisma-orm) for the full story.
