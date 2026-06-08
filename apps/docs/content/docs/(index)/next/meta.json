@@ -7,7 +7,8 @@
     "index",
     "getting-started",
     "---Prisma ORM---",
-    "what-is-prisma-next",
+    "quickstart",
+    "add-to-existing-project",
     "---Prisma Postgres---",
     "...prisma-postgres"
   ]
