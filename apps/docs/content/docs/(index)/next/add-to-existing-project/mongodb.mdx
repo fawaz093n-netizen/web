@@ -35,16 +35,15 @@ Later, `prisma-next init` will also add the Node.js types it needs and make sure
 From the root of your existing project, run:
 
 ```npm
-npx prisma-next init
+npx prisma-next init --target mongodb
 ```
 
-This is the existing-project path. It adds Prisma Next files and package scripts to the app you already have; it does not scaffold a new framework project.
+This is the existing-project path. It preselects MongoDB, adds Prisma Next files and package scripts to the app you already have, and does not scaffold a new framework project.
 
 It also adds `prisma-next.md` and project-level Prisma Next skills for Cursor, Claude Code, Codex, and Windsurf so your agent can read the Prisma Next usage, upgrade, and extension-author guidance from the project.
 
-When Prisma Next asks a few setup questions:
+When Prisma Next asks the remaining setup questions:
 
-- choose `MongoDB`
 - choose `PSL`
 - keep the default schema path, `prisma/contract.prisma`
 
