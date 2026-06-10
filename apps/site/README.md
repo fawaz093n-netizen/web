@@ -15,3 +15,4 @@ Runs on `http://localhost:3000`.
 
 - This app is the root host zone.
 - Content-specific routes are expected to be served by dedicated zones.
+- Deploy permission check: harmless no-op note (safe to revert).
