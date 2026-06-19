@@ -6,10 +6,14 @@ const computeEnv = {
   },
 };
 
-const blogComputeEnv = {
+const docsComputeOrigin = "https://cmqkoe8hg0cyt03l79u7thj20.fra.prisma.build";
+const blogComputeOrigin = "https://cmqkpw54o0yp4zndvj3zei5ml.fra.prisma.build";
+
+const siteComputeEnv = {
   vars: {
     ...computeEnv.vars,
-    NEXT_BLOG_ASSET_ORIGIN: "https://www.prisma.io",
+    NEXT_DOCS_ORIGIN: docsComputeOrigin,
+    NEXT_BLOG_ORIGIN: blogComputeOrigin,
   },
 };
 
@@ -20,9 +24,9 @@ export default defineComputeConfig({
       root: "apps/site",
       framework: "nextjs",
       httpPort: 3000,
-      env: computeEnv,
+      env: siteComputeEnv,
       build: {
-        command: "PRISMA_COMPUTE_DEPLOY=true pnpm turbo run build --filter=site...",
+        command: `NEXT_DOCS_ORIGIN=${docsComputeOrigin} NEXT_BLOG_ORIGIN=${blogComputeOrigin} PRISMA_COMPUTE_DEPLOY=true node ../../scripts/compute-build-app.mjs site`,
         outputDirectory: ".next/standalone",
       },
     },
@@ -32,11 +36,9 @@ export default defineComputeConfig({
       framework: "bun",
       entry: ".compute/server.ts",
       httpPort: 3000,
-      env: blogComputeEnv,
+      env: computeEnv,
       build: {
-        command:
-          "PRISMA_COMPUTE_DEPLOY=true pnpm turbo run build --filter=blog... && node ../../scripts/compute-static-snapshot.mjs blog",
-        outputDirectory: ".compute",
+        command: "PRISMA_COMPUTE_DEPLOY=true node ../../scripts/compute-build-static-app.mjs blog",
       },
     },
     docs: {
@@ -47,9 +49,7 @@ export default defineComputeConfig({
       httpPort: 3000,
       env: computeEnv,
       build: {
-        command:
-          "PRISMA_COMPUTE_DEPLOY=true pnpm turbo run build --filter=docs... && node ../../scripts/compute-static-snapshot.mjs docs",
-        outputDirectory: ".compute",
+        command: "PRISMA_COMPUTE_DEPLOY=true node ../../scripts/compute-build-static-app.mjs docs",
       },
     },
   },

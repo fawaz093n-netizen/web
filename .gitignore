@@ -6,6 +6,7 @@ node_modules
 .source
 cache
 .compute
+.compute-pruned-*
 
 # test & build
 /coverage
