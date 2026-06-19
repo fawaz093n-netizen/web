@@ -23,6 +23,7 @@ Verified on 2026-06-19 after deploying the no-proxy Compute configuration.
 | `/postgres` | Postgres product page | `200 text/html` |
 | `/docs/compute/configuration` | Site rewrite to docs Compute app | `200 text/html` |
 | `/blog/launching-prisma-compute-public-beta` | Site rewrite to blog Compute app | `200 text/html` |
+| `/blog/postgres-bloom-index-the-overlooked-postgres-feature` | Site rewrite to reported 2026 blog post | `200 text/html` |
 
 ## Docs
 
@@ -58,13 +59,21 @@ Verified on 2026-06-19 after deploying the no-proxy Compute configuration.
 | `/blog` | Blog index | `200 text/html` |
 | `/blog/launching-prisma-compute-public-beta` | Reported failing blog post | `200 text/html` |
 | `/blog/launching-prisma-compute-public-beta?_gl=...` | Reported failing blog post with tracking query | `200 text/html` |
+| `/blog/postgres-bloom-index-the-overlooked-postgres-feature` | Reported 2026 blog post | `200 text/html` |
+| `/blog/postgres-bloom-index-the-overlooked-postgres-feature?_gl=...` | Reported 2026 blog post with tracking query | `200 text/html` |
 | `/blog/prisma-compute-custom-domains` | Current Compute series post | `200 text/html` |
 | `/blog/bringing-prisma-orm-to-react-native-and-expo` | Current ORM post | `200 text/html` |
+| `/blog/series` | Blog series index | `200 text/html` |
 | `/blog/series/prisma-compute` | Blog series page | `200 text/html` |
+| `/blog/series/postgres-features` | Dependent series page for reported 2026 post | `200 text/html` |
+| `/blog/series/postgres-features?_rsc=...` | Dependent series prefetch regression check | `200 text/html` |
 | `/blog/author/shane-neubauer` | Author page | `200 text/html` |
+| `/blog/author/ankur-datta` | Dependent author page for reported 2026 post | `200 text/html` |
+| `/blog/author/ankur-datta?_rsc=...` | Dependent author prefetch regression check | `200 text/html` |
 | `/blog/rss.xml` | RSS feed | `200 application/rss+xml` |
 | `/blog/favicon.ico` | Favicon route | `200 image/x-icon` |
 | `/blog/launching-prisma-compute-public-beta/imgs/hero.png` | Blog post media asset | `200 image/png` |
+| `/blog/postgres-bloom-index-the-overlooked-postgres-feature/imgs/bloom-filters-in-postgres.png` | Reported 2026 post media asset | `200 image/png` |
 | `/blog/prisma-turso-ea-support-rXGd_Tmy3UXX` | Removed pre-2024 post | `404 text/plain` expected |
 
 ## Notes
@@ -73,3 +82,4 @@ Verified on 2026-06-19 after deploying the no-proxy Compute configuration.
 - Blog content before 2024 was removed from source and media to reduce deployment size.
 - Docs and blog use generated `.compute/server.ts` files that embed the verified routes and required assets during Compute builds.
 - The docs builder now derives a prioritized subset from docs frontmatter URLs. The current deployment verified 181 captured docs HTML routes, including `/docs/compute`, all Compute docs, major section indexes, and representative ORM, Postgres, Guides, Management API, CLI, AI, Accelerate, Studio, and Console pages.
+- The blog builder now derives the 20 newest retained post routes from frontmatter and includes dependent author and series pages for those posts. The current deployment verified 42 generated source routes plus 4 query/rewrite URLs.

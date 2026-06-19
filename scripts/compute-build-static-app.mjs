@@ -17,6 +17,7 @@ const targets = {
       "/blog/launching-prisma-compute-public-beta",
       "/blog/prisma-compute-custom-domains",
       "/blog/bringing-prisma-orm-to-react-native-and-expo",
+      "/blog/series",
       "/blog/series/prisma-compute",
       "/blog/author/shane-neubauer",
       "/blog/rss.xml",
@@ -153,6 +154,46 @@ async function walkMdxFiles(rootDir) {
   return files;
 }
 
+function readFrontmatterValue(contents, key) {
+  return contents.match(new RegExp(`^${key}:\\s*["']?([^"'\\n]+)["']?\\s*$`, "m"))?.[1]?.trim();
+}
+
+function readFrontmatterList(contents, key) {
+  const match = contents.match(new RegExp(`^${key}:\\s*\\n((?:\\s+-\\s*[^\\n]+\\n?)+)`, "m"));
+  if (!match) return [];
+
+  return match[1]
+    .split("\n")
+    .map((line) => line.replace(/^\s*-\s*/, "").trim())
+    .filter(Boolean)
+    .map((value) => {
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
+        return value.slice(1, -1);
+      }
+
+      return value;
+    })
+    .filter(Boolean);
+}
+
+function toBlogAuthorSlug(name) {
+  return name
+    .replace(/[øØ]/g, "o")
+    .replace(/[æÆ]/g, "ae")
+    .replace(/[œŒ]/g, "oe")
+    .replace(/[ß]/g, "ss")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[’']/g, "")
+    .replace(/[^a-zA-Z0-9\s-]/g, " ")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+}
+
 async function collectDocsRoutes() {
   if (targetName !== "docs") return [];
 
@@ -162,10 +203,10 @@ async function collectDocsRoutes() {
 
   for (const filePath of await walkMdxFiles(docsRoot)) {
     const contents = await readFile(filePath, "utf8");
-    const match = contents.match(/^url:\s*["']?([^"'\n]+)["']?\s*$/m);
+    const match = readFrontmatterValue(contents, "url");
     if (!match) continue;
 
-    const frontmatterUrl = match[1];
+    const frontmatterUrl = match;
     const route = frontmatterUrl.startsWith("/docs")
       ? frontmatterUrl
       : `/docs${frontmatterUrl === "/" ? "" : frontmatterUrl}`;
@@ -226,8 +267,53 @@ async function collectDocsRoutes() {
     .sort();
 }
 
+async function collectBlogRoutes() {
+  if (targetName !== "blog") return [];
+
+  const blogRoot = path.join(appDir, "content/blog");
+  const routeLimit = Number(process.env.PRISMA_COMPUTE_BLOG_ROUTE_LIMIT ?? "20");
+  const posts = [];
+
+  for (const filePath of await walkMdxFiles(blogRoot)) {
+    if (path.basename(filePath) !== "index.mdx") continue;
+
+    const contents = await readFile(filePath, "utf8");
+    const slug = readFrontmatterValue(contents, "slug") ?? path.basename(path.dirname(filePath));
+    const date = contents.match(/^date:\s*["']?(\d{4}-\d{2}-\d{2})/m)?.[1];
+
+    if (!date) {
+      throw new Error(`Missing date frontmatter in ${path.relative(repoRoot, filePath)}`);
+    }
+
+    if (Number(date.slice(0, 4)) < 2024) continue;
+
+    posts.push({
+      authors: readFrontmatterList(contents, "authors"),
+      date,
+      series: readFrontmatterValue(contents, "series"),
+      route: `/blog/${slug}`,
+    });
+  }
+
+  const selectedPosts = posts
+    .sort((a, b) => b.date.localeCompare(a.date) || a.route.localeCompare(b.route))
+    .slice(0, routeLimit);
+  const dependentRoutes = [];
+
+  for (const post of selectedPosts) {
+    for (const author of post.authors) {
+      const slug = toBlogAuthorSlug(author);
+      if (slug) dependentRoutes.push(`/blog/author/${slug}`);
+    }
+
+    if (post.series) dependentRoutes.push(`/blog/series/${post.series}`);
+  }
+
+  return [...new Set([...selectedPosts.map((post) => post.route), ...dependentRoutes])].sort();
+}
+
 async function getTargetRoutes() {
-  return [...new Set([...target.routes, ...(await collectDocsRoutes())])];
+  return [...new Set([...target.routes, ...(await collectDocsRoutes()), ...(await collectBlogRoutes())])];
 }
 
 function startStandaloneServer() {
