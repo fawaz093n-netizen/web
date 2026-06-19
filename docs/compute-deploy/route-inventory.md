@@ -7,7 +7,7 @@ Verified on 2026-06-19 after deploying the no-proxy Compute configuration.
 | App | URL | Runtime |
 | --- | --- | --- |
 | Homepage | https://cmqkpxx900dea0ddxaoyu2s8l.fra.prisma.build | Next.js standalone |
-| Docs | https://cmqkoe8hg0cyt03l79u7thj20.fra.prisma.build | Bun static runtime generated from docs Next build |
+| Docs | https://cmqkoe8hg0cyt03l79u7thj20.fra.prisma.build | Bun static runtime generated from docs Next build with a prioritized current-docs route subset |
 | Blog | https://cmqkpw54o0yp4zndvj3zei5ml.fra.prisma.build | Bun static runtime generated from blog Next build |
 
 ## Homepage
@@ -29,10 +29,21 @@ Verified on 2026-06-19 after deploying the no-proxy Compute configuration.
 | Route | Purpose | Result |
 | --- | --- | --- |
 | `/docs` | Docs landing page | `200 text/html` |
+| `/docs/compute` | Compute section index | `200 text/html` |
+| `/docs/compute/getting-started` | Compute getting started guide | `200 text/html` |
+| `/docs/compute/github` | Compute GitHub integration | `200 text/html` |
+| `/docs/compute/deployments` | Compute deployments guide | `200 text/html` |
 | `/docs/prisma-compute/deploy` | Compute quickstart | `200 text/html` |
 | `/docs/compute/configuration` | Compute configuration reference | `200 text/html` |
+| `/docs/orm` | ORM section index | `200 text/html` |
 | `/docs/orm/prisma-client/setup-and-configuration/introduction` | ORM reference page | `200 text/html` |
+| `/docs/orm/prisma-client/queries/crud` | ORM query reference page | `200 text/html` |
+| `/docs/postgres` | Postgres section index | `200 text/html` |
+| `/docs/guides` | Guides section index | `200 text/html` |
 | `/docs/guides/frameworks/nextjs` | Framework guide | `200 text/html` |
+| `/docs/cli` | CLI section index | `200 text/html` |
+| `/docs/ai` | AI section index | `200 text/html` |
+| `/docs/accelerate` | Accelerate section index | `200 text/html` |
 | `/docs/management-api/getting-started` | API reference page | `200 text/html` |
 | `/docs/rss.xml` | RSS feed | `200 text/plain` |
 | `/docs/og/compute/configuration/image.png` | Generated OG image snapshot | `200 image/png` |
@@ -61,3 +72,4 @@ Verified on 2026-06-19 after deploying the no-proxy Compute configuration.
 - No route in this inventory is proxied to `www.prisma.io`.
 - Blog content before 2024 was removed from source and media to reduce deployment size.
 - Docs and blog use generated `.compute/server.ts` files that embed the verified routes and required assets during Compute builds.
+- The docs builder now derives a prioritized subset from docs frontmatter URLs. The current deployment verified 181 captured docs HTML routes, including `/docs/compute`, all Compute docs, major section indexes, and representative ORM, Postgres, Guides, Management API, CLI, AI, Accelerate, Studio, and Console pages.

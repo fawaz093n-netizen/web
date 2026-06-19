@@ -137,6 +137,99 @@ function keyForPathname(pathname) {
   return `routes/${suffix.replace(/[^a-zA-Z0-9._-]+/g, "_")}`;
 }
 
+async function walkMdxFiles(rootDir) {
+  const entries = await readdir(rootDir, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const entryPath = path.join(rootDir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...(await walkMdxFiles(entryPath)));
+    } else if (entry.isFile() && entry.name.endsWith(".mdx")) {
+      files.push(entryPath);
+    }
+  }
+
+  return files;
+}
+
+async function collectDocsRoutes() {
+  if (targetName !== "docs") return [];
+
+  const docsRoot = path.join(appDir, "content/docs");
+  const routes = [];
+  const routeLimit = Number(process.env.PRISMA_COMPUTE_DOCS_ROUTE_LIMIT ?? "180");
+
+  for (const filePath of await walkMdxFiles(docsRoot)) {
+    const contents = await readFile(filePath, "utf8");
+    const match = contents.match(/^url:\s*["']?([^"'\n]+)["']?\s*$/m);
+    if (!match) continue;
+
+    const frontmatterUrl = match[1];
+    const route = frontmatterUrl.startsWith("/docs")
+      ? frontmatterUrl
+      : `/docs${frontmatterUrl === "/" ? "" : frontmatterUrl}`;
+
+    // Keep the Compute proof focused on current docs and avoid embedding the
+    // historical ORM v6 archive into a single static runtime.
+    if (route.startsWith("/docs/orm/v6")) continue;
+
+    routes.push(route);
+  }
+
+  const sectionIndexes = new Set([
+    "/docs",
+    "/docs/accelerate",
+    "/docs/ai",
+    "/docs/cli",
+    "/docs/compute",
+    "/docs/console",
+    "/docs/guides",
+    "/docs/management-api",
+    "/docs/orm",
+    "/docs/postgres",
+    "/docs/query-insights",
+    "/docs/studio",
+  ]);
+
+  function routePriority(route) {
+    if (route === "/docs") return 0;
+    if (route.startsWith("/docs/compute")) return 1;
+    if (route.startsWith("/docs/prisma-compute")) return 2;
+    if (sectionIndexes.has(route)) return 3;
+    if (route.startsWith("/docs/prisma-orm/quickstart")) return 4;
+    if (route.startsWith("/docs/prisma-orm/add-to-existing-project")) return 5;
+    if (route.startsWith("/docs/prisma-postgres")) return 6;
+    if (route.startsWith("/docs/postgres")) return 7;
+    if (route.startsWith("/docs/guides/frameworks")) return 8;
+    if (route.startsWith("/docs/guides/deployment")) return 9;
+    if (route.startsWith("/docs/guides/database")) return 10;
+    if (route.startsWith("/docs/guides/runtimes")) return 11;
+    if (route.startsWith("/docs/orm/prisma-client/setup-and-configuration")) return 12;
+    if (route.startsWith("/docs/orm/prisma-client/queries")) return 13;
+    if (route.startsWith("/docs/orm/prisma-schema")) return 14;
+    if (route.startsWith("/docs/orm/prisma-migrate")) return 15;
+    if (route.startsWith("/docs/orm/reference")) return 16;
+    if (route.startsWith("/docs/management-api")) return 17;
+    if (route.startsWith("/docs/cli")) return 18;
+    if (route.startsWith("/docs/ai")) return 19;
+    if (route.startsWith("/docs/accelerate")) return 20;
+    if (route.startsWith("/docs/console")) return 21;
+    if (route.startsWith("/docs/studio")) return 22;
+    if (route.startsWith("/docs/orm")) return 23;
+    return 24;
+  }
+
+  return routes
+    .sort((a, b) => routePriority(a) - routePriority(b) || a.localeCompare(b))
+    .slice(0, routeLimit)
+    .sort();
+}
+
+async function getTargetRoutes() {
+  return [...new Set([...target.routes, ...(await collectDocsRoutes())])];
+}
+
 function startStandaloneServer() {
   const serverPath = path.join(appDir, ".next/standalone", target.appDir, "server.js");
   const child = spawn("node", [serverPath], {
@@ -304,10 +397,11 @@ async function captureRoutes() {
   const files = new Map();
   const pathMap = new Map();
   const localAssets = new Set();
+  const routes = await getTargetRoutes();
   const child = startStandaloneServer();
 
   try {
-    for (const route of target.routes) {
+    for (const route of routes) {
       const pathname = new URL(route, `http://127.0.0.1:${port}`).pathname;
       if (isLikelyAssetPath(pathname) && !pathname.includes("/og/")) {
         try {
@@ -347,7 +441,7 @@ async function captureRoutes() {
     }
   }
 
-  return { files, pathMap };
+  return { files, pathMap, routeCount: routes.length };
 }
 
 async function assertNoPre2024BlogPosts() {
@@ -450,13 +544,13 @@ if (!standaloneStat?.isFile()) {
   throw new Error(`Expected standalone server at ${path.relative(repoRoot, standaloneServer)}`);
 }
 
-const { files, pathMap } = await captureRoutes();
+const { files, pathMap, routeCount } = await captureRoutes();
 await mkdir(outputDir, { recursive: true });
 await writeFile(path.join(outputDir, "server.ts"), await serverSource(files, pathMap));
 
 const totalBytes = [...files.values()].reduce((sum, file) => sum + Math.floor((file.data.length * 3) / 4), 0);
 console.log(
-  `Prepared ${targetName} Compute static runtime with ${pathMap.size} route(s), ${files.size} embedded file(s), approx ${Math.round(
+  `Prepared ${targetName} Compute static runtime from ${routeCount} source route(s) with ${pathMap.size} served path(s), ${files.size} embedded file(s), approx ${Math.round(
     totalBytes / 1024 / 1024,
   )} MB`,
 );
