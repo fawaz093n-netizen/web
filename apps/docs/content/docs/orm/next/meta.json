@@ -2,5 +2,8 @@
   "title": "Next",
   "defaultOpen": true,
   "root": true,
-  "pages": ["index"]
+  "pages": [
+    "---Introduction---",
+    "index"
+  ]
 }
