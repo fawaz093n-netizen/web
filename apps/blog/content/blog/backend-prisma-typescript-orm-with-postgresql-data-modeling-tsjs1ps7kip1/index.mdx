@@ -17,6 +17,15 @@ This article is part of a series of [live streams](https://www.youtube.com/playl
 
 <Youtube videoId="SvtXgRA7KsE" />
 
+:::note[Part one of four]
+This is the first article in the **Backend with TypeScript, PostgreSQL & Prisma** series:
+
+1. **Data modeling & CRUD** (you're here)
+2. [REST, validation & tests](/backend-prisma-typescript-orm-with-postgresql-rest-api-validation-dcba1ps7kip3)
+3. [Authentication & authorization](/backend-prisma-typescript-orm-with-postgresql-auth-mngp1ps7kip4)
+4. [CI & deployment](/backend-prisma-typescript-orm-with-postgresql-deployment-bbba1ps7kip5)
+:::
+
 ## Introduction
 
 The goal of the series is to explore and demonstrate different patterns, problems, and architectures for a modern backend by solving a concrete problem: **a grading system for online courses.** This is a good example because it features diverse relations types and is complex enough to represent a real-world use-case.
@@ -68,6 +77,10 @@ You should have the following installed:
 If you're using Visual Studio Code, the [Prisma extension](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma) is recommended for syntax highlighting, formatting, and other helpers.
 
 > **Note**: If you don't want to use Docker, you can set up a [local PostgreSQL database](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) or a [hosted PostgreSQL database on Heroku](https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1).
+
+:::ppg[Don't want to run Docker?]
+The tutorial runs Postgres in a local container, which still works. If you'd rather skip that, create a [Prisma Postgres](https://www.prisma.io/postgres) database and use its connection string as your `DATABASE_URL`. Every schema, migration, and query step below is the same either way.
+:::
 
 ## Clone the repository
 
@@ -861,3 +874,9 @@ In the next parts of the series, you'll learn more about:
 - Deployment
 
 **Join for the [the next live stream](https://youtu.be/d9v7umfMNkM) which will be streamed live on YouTube at 6:00 PM CEST August 12th.**
+
+:::tip[A note on versions]
+This series uses an older version of Prisma ORM. The data modeling and query patterns still hold, but the tooling has moved on. [Prisma Next](https://www.prisma.io/blog/the-next-evolution-of-prisma-orm) is where the ORM is going: you describe your data in one contract file, and it generates the client and migrations from there. When you reach deployment in part four, [Prisma Postgres](https://www.prisma.io/postgres) and [Prisma Compute](https://www.prisma.io/compute) (public beta) can handle your database and hosting without leaving Prisma.
+
+Next in the series: [REST, validation & tests](/backend-prisma-typescript-orm-with-postgresql-rest-api-validation-dcba1ps7kip3), then [authentication & authorization](/backend-prisma-typescript-orm-with-postgresql-auth-mngp1ps7kip4) and [CI & deployment](/backend-prisma-typescript-orm-with-postgresql-deployment-bbba1ps7kip5).
+:::

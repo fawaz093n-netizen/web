@@ -62,6 +62,10 @@ This change will come later this year as part of Prisma ORM v7 and only affect t
 - More predictability and no more workarounds due to magical behavior.
 - Compliance with the assumption that `node_modules` can only be modified by package managers.
 
+:::note[Part of a bigger change]
+Getting the generated client out of `node_modules` is one piece of a bigger change. [Prisma Next](https://www.prisma.io/blog/the-next-evolution-of-prisma-orm) takes the idea all the way: you keep a single data contract, and the generated client lands in your source tree as normal code. You can read it, commit it, and bundle it like anything else, never hidden in `node_modules`.
+:::
+
 ### `prisma-client` vs `prisma-client-js` generators
 
 If you've followed our releases, you know that in [v6.6.0](https://github.com/prisma/prisma/releases/tag/6.6.0) we released a new generator, called simply [`prisma-client`](https://www.prisma.io/docs/orm/prisma-schema/overview/generators#prisma-client-early-access):
@@ -108,3 +112,7 @@ Here's a TLDR for what all of this means for you today:
 - **If you experience issues with an `output` path** (regardless of whether you use the new `prisma-client` or the current `prisma-client-js` generator), please [open a new issue](https://github.com/prisma/prisma/issues) so we can help you resolve the problem.
 
 As always, [reach out to us on X](https://pris.ly/x) or [join our Discord](https://pris.ly/discord) if you have any feedback or questions!
+
+:::ppg[Starting a new project?]
+If you're setting an `output` path on a new project as suggested above, the database and hosting can come from the same place. [Prisma Postgres](https://www.prisma.io/postgres) gives you a managed Postgres database, and [Prisma Compute](https://www.prisma.io/compute) (public beta) runs your TypeScript app next to it. The ORM itself is heading toward [Prisma Next](https://www.prisma.io/blog/the-next-evolution-of-prisma-orm).
+:::
