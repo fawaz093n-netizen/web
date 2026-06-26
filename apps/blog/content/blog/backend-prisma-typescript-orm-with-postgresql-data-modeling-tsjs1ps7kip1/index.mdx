@@ -79,7 +79,7 @@ If you're using Visual Studio Code, the [Prisma extension](https://marketplace.v
 > **Note**: If you don't want to use Docker, you can set up a [local PostgreSQL database](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) or a [hosted PostgreSQL database on Heroku](https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1).
 
 :::ppg[Don't want to run Docker?]
-The tutorial runs Postgres in a local container, which still works. If you'd rather skip that, create a [Prisma Postgres](https://www.prisma.io/postgres) database and use its connection string as your `DATABASE_URL`. Every schema, migration, and query step below is the same either way.
+You don't need a local container to follow along. For a database in one command, run [`npx create-db`](https://www.prisma.io/docs/postgres/introduction/npx-create-db): it spins up a [Prisma Postgres](https://www.prisma.io/postgres) instance with no signup and prints a connection string you can drop straight into `DATABASE_URL`. The instance is yours for 24 hours, and you can claim it to your account to keep it. If you'd rather stay fully offline, [run Prisma Postgres locally](https://www.prisma.io/docs/postgres/database/local-development) instead. Every schema, migration, and query step below works the same with any of these.
 :::
 
 ## Clone the repository
