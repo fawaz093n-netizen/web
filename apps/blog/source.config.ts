@@ -2,13 +2,10 @@ import remarkDirective from "remark-directive";
 import {
   remarkDirectiveAdmonition,
   remarkMdxFiles,
+  remarkMdxMermaid,
 } from "fumadocs-core/mdx-plugins";
 import { remarkImage } from "fumadocs-core/mdx-plugins";
-import {
-  defineCollections,
-  defineConfig,
-  frontmatterSchema,
-} from "fumadocs-mdx/config";
+import { defineCollections, defineConfig, frontmatterSchema } from "fumadocs-mdx/config";
 import lastModified from "fumadocs-mdx/plugins/last-modified";
 import { z } from "zod";
 import convert from "npm-to-yarn";
@@ -20,14 +17,14 @@ export const blogPosts = defineCollections({
     authors: z.array(z.string()),
     authorSrc: z.string().optional(),
     date: z.coerce.date(),
+    updatedAt: z.coerce.date().optional(),
     heroImagePath: z.string().optional(),
     metaImagePath: z.string().optional(),
-    series: z
-      .object({
-        title: z.string(),
-      })
-      .optional(),
+    series: z.string().optional(),
     seriesIndex: z.number().int().positive().optional(),
+    pinned: z.boolean().optional(),
+    prev: z.string().optional(),
+    next: z.string().optional(),
     tags: z
       .array(
         z.enum([
@@ -59,37 +56,33 @@ export default defineConfig({
       remarkDirectiveAdmonition,
       [remarkImage, { useImport: false }],
       remarkMdxFiles,
+      remarkMdxMermaid,
     ],
     remarkCodeTabOptions: { parseMdx: true },
     remarkNpmOptions: {
       persist: { id: "package-manager" },
-      // Custom package managers to add --bun flag for bunx commands
       packageManagers: [
         {
-          command: (cmd: string) =>
-            convert(cmd.replace(/^npm init -y$/, "npm init"), "npm"),
-          name: "npm",
+          command: (cmd: string) => {
+            const converted = convert(cmd.replace(/^npm init -y$/, "npm init"), "bun");
+            if (!converted) return undefined;
+            return converted
+              .replace(/^bun x (prisma(?:@\S+)? init\b)/gm, "bunx --bun $1")
+              .replace(/^bun x /gm, "bunx ");
+          },
+          name: "bun",
         },
         {
-          command: (cmd: string) =>
-            convert(cmd.replace(/^npm init -y$/, "npm init"), "pnpm"),
+          command: (cmd: string) => convert(cmd.replace(/^npm init -y$/, "npm init"), "pnpm"),
           name: "pnpm",
         },
         {
-          command: (cmd: string) =>
-            convert(cmd.replace(/^npm init -y$/, "npm init"), "yarn"),
+          command: (cmd: string) => convert(cmd.replace(/^npm init -y$/, "npm init"), "yarn"),
           name: "yarn",
         },
         {
-          command: (cmd: string) => {
-            const converted = convert(
-              cmd.replace(/^npm init -y$/, "npm init"),
-              "bun",
-            );
-            if (!converted) return undefined;
-            return converted.replace(/^bun x /, "bunx --bun ");
-          },
-          name: "bun",
+          command: (cmd: string) => convert(cmd.replace(/^npm init -y$/, "npm init"), "npm"),
+          name: "npm",
         },
       ],
     },

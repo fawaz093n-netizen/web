@@ -6,6 +6,7 @@ import { Hex } from "@/components/Hex";
 import type { MDXComponents } from "mdx/types";
 import { ImageZoom } from "fumadocs-ui/components/image-zoom";
 import * as icons from "lucide-react";
+import { Mermaid } from "@/components/Mermaid";
 import {
   Accordion,
   Accordions,
@@ -27,8 +28,11 @@ import {
 } from "@prisma/eclipse";
 import { Youtube } from "@prisma-docs/ui/components/youtube";
 import { TweetEmbedComp } from "@/components/TweetEmbed";
+import { TweetColumns } from "@/components/TweetColumns";
 import { Meetup, MeetupList } from "@/components/Meetup";
 import { Employee } from "@/components/Employee";
+import { AutoplayYoutubeEmbed } from "@/components/AutoplayYoutubeEmbed";
+import { AgentPrompt } from "@/components/AgentPrompt";
 import { withBlogBasePath, withBlogBasePathForImageSrc } from "@/lib/url";
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   const mdxComponents = {
@@ -54,15 +58,22 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     CodeBlockTabsTrigger,
     CodeBlockTab,
     TweetEmbedComp,
+    TweetColumns,
     Youtube,
     Meetup,
     MeetupList,
     Employee,
+    AutoplayYoutubeEmbed,
+    AgentPrompt,
     Steps,
     Step,
     img: (props: any) => (
       <ImageZoom {...(props as any)} src={withBlogBasePathForImageSrc((props as any).src)} />
     ),
+    video: (props: any) => (
+      <video {...(props as any)} src={withBlogBasePathForImageSrc((props as any).src)} />
+    ),
+    Mermaid,
   };
 
   return {
