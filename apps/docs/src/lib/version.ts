@@ -41,7 +41,8 @@ const NEXT_GETTING_STARTED_PATHS_BY_LATEST_PATH = new Map<string, string>([
   ["/prisma-postgres/from-the-cli", "/next/prisma-postgres/from-the-cli"],
 ]);
 const LATEST_GETTING_STARTED_PATHS_BY_NEXT_PATH = new Map<string, string>([
-  [NEXT_GETTING_STARTED_ROOT, "/"],
+  // Bare "/" redirects to /next, so the Latest getting-started anchor is /getting-started.
+  [NEXT_GETTING_STARTED_ROOT, "/getting-started"],
   ["/next/getting-started", "/getting-started"],
   ["/next/quickstart/postgresql", "/prisma-orm/quickstart/postgresql"],
   ["/next/quickstart/mongodb", "/prisma-orm/quickstart/mongodb"],
@@ -202,7 +203,7 @@ function getGettingStartedSwitchPathname(docsPathname: string, targetVersion: Ve
   }
 
   if (targetVersion === LATEST_VERSION) {
-    return LATEST_GETTING_STARTED_PATHS_BY_NEXT_PATH.get(docsPathname) ?? "/";
+    return LATEST_GETTING_STARTED_PATHS_BY_NEXT_PATH.get(docsPathname) ?? "/getting-started";
   }
 
   return getVersionRoot(targetVersion);
@@ -354,12 +355,14 @@ export function getVersionedNavPathname(targetPathname: string, currentPathname:
     getOrmVersionFromPathname(currentPathname) === "next" ||
     getCliVersionFromPathname(currentPathname) === "next";
 
-  if (!isNextDocsPathname) {
-    return targetPathname;
+  // Bare "/" redirects to /next, so route the Getting Started tab to the reachable
+  // landing for the active version instead of the redirecting root.
+  if (targetDocsPathname === "/") {
+    return isNextDocsPathname ? NEXT_GETTING_STARTED_ROOT : "/getting-started";
   }
 
-  if (targetDocsPathname === "/") {
-    return NEXT_GETTING_STARTED_ROOT;
+  if (!isNextDocsPathname) {
+    return targetPathname;
   }
 
   if (targetDocsPathname === "/orm") {
