@@ -6,7 +6,7 @@ const footerItems = [
     links: [
       {
         title: "ORM",
-        url: "https://prisma.io/orm",
+        url: "https://prisma.io/docs/orm/next",
         _type: "footerLinkType",
       },
       {
