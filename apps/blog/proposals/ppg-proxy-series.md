@@ -37,7 +37,7 @@ A proposal for a series of blogposts showing how we manage prisma postgres conne
     - How a http/ws API could fill the gap (exploring 2 approaches, pg-protocol wrapper and its limitations vs a bespoke api, without anticipating too much)
 
 
-# 2 ppg-proxy for serverless - part 2: HTTP/WS API & driver
+# 3 ppg-proxy for serverless - part 2: HTTP/WS API & driver
 
 1. Where we left: tackling the lack of support for tcp/tls and the need of a HTTP-friendly alternative.
     - How the industry usually handles this: bare-metal pg protocol wrapper vs bespoke HTTP/WS API.
@@ -52,7 +52,7 @@ A proposal for a series of blogposts showing how we manage prisma postgres conne
     - Future state: a driver for every language! Sketching an example of a JDBC driver.
 
 
-# 3 ppg-proxy revamped
+# 4 ppg-proxy revamped
 
 1. How we got here and why
     - Connection Pooler as a dedicated components: current limitations and the impact on serverless connectivity (pgbouncer as a good _quick win_, but now we have to do it seriously). 
