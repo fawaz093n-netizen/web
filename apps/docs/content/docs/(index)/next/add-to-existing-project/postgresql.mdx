@@ -1,26 +1,22 @@
 ---
-title: Postgres
+title: PostgreSQL
 description: Add Prisma Next to an existing PostgreSQL project.
 url: /next/add-to-existing-project/postgresql
-metaTitle: Add Prisma Next to an existing Postgres project
+metaTitle: Add Prisma Next to an existing PostgreSQL project
 metaDescription: Add Prisma Next to an existing PostgreSQL project.
 ---
 
-This guide shows how to add Prisma Next to a project that already uses PostgreSQL. You will initialize Prisma Next, infer a contract from the live schema, sign the database, and run a couple of queries.
+This guide shows how to add Prisma Next to a project that already uses PostgreSQL. You will run `prisma-next init`, infer a contract from the live schema, sign the database, and run a couple of queries.
 
-:::warning[Prisma Next is still in development]
+Use this path when you already have an application and database. Make sure the app can already reach its PostgreSQL database and runs on Node.js 24 or newer. If you want Prisma Next to create a new app for you, use the [PostgreSQL quickstart](/next/quickstart/postgresql).
 
-Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommended choice for production applications today.
+:::note[Prisma Next is in Early Access]
+
+Prisma Next is the next major version of Prisma ORM, available now in Early Access. We strongly recommend trying it out before it becomes generally available, so you can get familiar with the new developer experience and [share feedback](https://pris.ly/discord) while it’s still actively shaping up.
+
+If you want to stay on the current generally available version of Prisma ORM, you can continue with [Prisma 7](/getting-started).
 
 :::
-
-## Prerequisites
-
-Before you start, make sure you can already reach the PostgreSQL database this project uses today.
-
-- Node.js 24 or newer
-- npm
-- An existing PostgreSQL database
 
 ## 1. Make sure you can run the example script
 
@@ -39,12 +35,15 @@ Later, `prisma-next init` will also add the Node.js types it needs and make sure
 From the root of your existing project, run:
 
 ```npm
-npx prisma-next init --write-env
+npx prisma-next init --target postgres
 ```
 
-When Prisma Next asks a few setup questions:
+This is the existing-project path. It preselects PostgreSQL, adds Prisma Next files and package scripts to the app you already have, and does not scaffold a new framework project.
 
-- choose `PostgreSQL`
+It also adds `prisma-next.md` and project-level Prisma Next skills for Cursor, Claude Code, Codex, and Windsurf so your agent can read the Prisma Next usage, upgrade, and extension-author guidance from the project.
+
+When Prisma Next asks the remaining setup questions:
+
 - choose `PSL`
 - keep the default schema path, `prisma/contract.prisma`
 
@@ -166,25 +165,12 @@ Run it again:
 npx tsx script.ts
 ```
 
-## 9. Commands you will use next
+## 9. Next steps
 
-Once Prisma Next is in the project, these are the PostgreSQL commands to remember:
+When you change `prisma/contract.prisma`, emit the contract again:
 
 ```npm
 npx prisma-next contract emit
 ```
 
-Run this after you change `prisma/contract.prisma`.
-
-```npm
-npx prisma-next db update
-```
-
-Use this when you want Prisma Next to update the live database directly so it matches the latest contract.
-
-```npm
-npx prisma-next migration plan --name add-user-bio
-npx prisma-next migration apply
-```
-
-Use these when you want checked-in migration packages instead of a direct database update.
+Use [db update](/cli/next/db-update) for a direct development update, or [migration plan](/cli/next/migration-plan) when you want a checked-in migration.

@@ -9,9 +9,11 @@ badge: early-access
 
 The Prisma Next CLI is exposed as `prisma-next`. It reads your `prisma-next.config.ts`, emits contract artifacts, verifies databases, and manages Prisma Next migrations.
 
-:::warning[Prisma Next is still in development]
+:::note[Prisma Next is in Early Access]
 
-Prisma Next is not ready for production yet. Prisma ORM 7 is still the recommended choice for production applications today.
+Prisma Next is the next major version of Prisma ORM, available now in Early Access. We strongly recommend trying it out before it becomes generally available, so you can get familiar with the new developer experience and [share feedback](https://pris.ly/discord) while it’s still actively shaping up.
+
+If you want to stay on the current generally available version of Prisma ORM, you can continue with [Prisma 7](/getting-started).
 
 :::
 
@@ -28,7 +30,7 @@ npx prisma-next help
 npx prisma-next contract emit
 ```
 
-For a full app scaffold, use [`create-prisma@next`](/next/create-prisma). That path creates the project files and package scripts for you. This CLI reference is for the lower-level commands those scripts call.
+For a full app scaffold, use a [Prisma Next quickstart](/next/quickstart/postgresql). That path creates the project files and package scripts for you. This CLI reference is for the lower-level commands those scripts call.
 
 ## Common workflows
 

@@ -260,22 +260,34 @@ const config = {
       },
       {
         source: "/orm/next/create-prisma",
-        destination: "/next/create-prisma",
+        destination: "/next/getting-started",
+        permanent: false,
+      },
+      {
+        source: "/next/create-prisma",
+        destination: "/next/getting-started",
         permanent: false,
       },
       {
         source: "/next/quickstart",
-        destination: "/next/create-prisma",
+        destination: "/next/quickstart/postgresql",
         permanent: false,
       },
       {
-        source: "/next/quickstart/:path*",
-        destination: "/next/create-prisma",
+        source: "/next/prisma-postgres/quickstart",
+        destination: "/prisma-postgres/quickstart/prisma-next",
+        permanent: false,
+      },
+      // The Prisma Next + Prisma Postgres quickstart now lives in the Prisma Postgres
+      // Quickstart dropdown alongside the other ORMs.
+      {
+        source: "/next/prisma-postgres/quickstart/prisma-next",
+        destination: "/prisma-postgres/quickstart/prisma-next",
         permanent: false,
       },
       {
         source: "/orm/next/quickstart/:path*",
-        destination: "/next/create-prisma",
+        destination: "/next/quickstart/:path*",
         permanent: false,
       },
       {

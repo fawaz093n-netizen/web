@@ -45,7 +45,12 @@ function isGettingStartedVersionNode(node: TreeNode, version: Version) {
   const name = String(node.name ?? "").toLowerCase();
 
   if (version === "next") {
-    return name === "next" || node.index?.url === "/next";
+    return (
+      name === "next" ||
+      name === "prisma next" ||
+      node.url === "/next" ||
+      node.index?.url === "/next"
+    );
   }
 
   return false;

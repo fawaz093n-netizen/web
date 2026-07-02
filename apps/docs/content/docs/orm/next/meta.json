@@ -4,15 +4,6 @@
   "root": true,
   "pages": [
     "---Introduction---",
-    "index",
-
-    "---Core Concepts---",
-    "...concepts",
-
-    "---Guides---",
-    "...guides",
-
-    "---Extensions---",
-    "...extensions"
+    "index"
   ]
 }
