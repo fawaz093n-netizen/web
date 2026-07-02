@@ -64,6 +64,7 @@ A proposal for a series of blogposts showing how we manage prisma postgres conne
     - Step 1: Unifying wire protocol handling: from a mixed pgproto3/bespoke set of utilities to a well designed, cohesive raw pg protocol library with first-class streaming support.
     - Step 2: The core pg-protocol pipeline
     - Step 3: Serverless API & TCP terminal adapters
+    - A detour on fakepg and why we need it (testing connectivity issues, or just sequences of pre-baked messages)
 3. What's next
     - Connection Pooling as a 2-facet system: the protocol sensing and the connection factory
     - The plan to support advanced pooling features (first we do query detection, transaction boundary and then detecting unsupported statement as the last thing)
