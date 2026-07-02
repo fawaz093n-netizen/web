@@ -34,6 +34,13 @@ export function VersionSwitcher({
   const router = useRouter();
   const isGettingStartedVersion = isGettingStartedVersionPathname(pathname);
   const isCliVersion = isCliVersionPathname(pathname);
+
+  // Getting Started no longer has a version toggle: Prisma Next lives inline in the
+  // getting-started sidebar as its own sections, so there is no "Docs version" dropdown.
+  if (isGettingStartedVersion) {
+    return null;
+  }
+
   const detectedVersion =
     getGettingStartedVersionFromPathname(pathname) ??
     getCliVersionFromPathname(pathname) ??

@@ -238,13 +238,6 @@ const config = {
         permanent: true,
         basePath: false,
       },
-      // Default the docs landing to Prisma Next (Early Access). Bare /docs -> /docs/next.
-      // The Prisma 7 (Latest) getting-started stays reachable at /docs/getting-started.
-      {
-        source: "/",
-        destination: "/next",
-        permanent: false,
-      },
       // {
       //   source: "/orm/latest",
       //   destination: "/orm",
@@ -282,7 +275,14 @@ const config = {
       },
       {
         source: "/next/prisma-postgres/quickstart",
-        destination: "/next/prisma-postgres/quickstart/prisma-next",
+        destination: "/prisma-postgres/quickstart/prisma-next",
+        permanent: false,
+      },
+      // The Prisma Next + Prisma Postgres quickstart now lives in the Prisma Postgres
+      // Quickstart dropdown alongside the other ORMs.
+      {
+        source: "/next/prisma-postgres/quickstart/prisma-next",
+        destination: "/prisma-postgres/quickstart/prisma-next",
         permanent: false,
       },
       {

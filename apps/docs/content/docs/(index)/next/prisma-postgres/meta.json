@@ -1,7 +1,6 @@
 {
   "title": "Prisma Postgres",
   "pages": [
-    "quickstart",
     "import-from-existing-database-postgresql",
     "import-from-existing-database-mysql",
     "from-the-cli"
