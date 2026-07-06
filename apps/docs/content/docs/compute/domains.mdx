@@ -18,22 +18,36 @@ You'll need:
 
 Domain commands target the production branch. Pointing them at any other branch fails with `BRANCH_NOT_DEPLOYABLE`.
 
+If your app has only deployed to a preview branch, it doesn't exist on production yet and `domain add` fails with `Selected app does not exist in the resolved project`. Deploy to production first:
+
+```npm
+npx @prisma/cli@latest app deploy --app web --prod --yes
+```
+
 ## Add a domain
 
 ```npm
-npx @prisma/cli@latest app domain add shop.acme.com --app web
+npx @prisma/cli@latest app domain add shop.acme.com --app web --branch main
 ```
 
-The command prints a **CNAME** record. Add it at your DNS provider; it points your hostname at Prisma's routing. Then wait for the domain to go live:
+The CLI resolves the app against your locally active branch, so pass your production branch (usually `main`) explicitly with `--branch`. Without it, the command fails with `Selected app does not exist in the resolved project` whenever your local state points at a preview branch.
+
+The command prints a **CNAME** record, for example:
+
+| Type  | Name   | Value                          | TTL |
+| ----- | ------ | ------------------------------ | --- |
+| CNAME | `shop` | `switchboard.fra.prisma.build` | 300 |
+
+Add it at your DNS provider; it points your hostname at Prisma's routing. The name field takes the subdomain (`shop`), though some providers expect the full hostname (`shop.acme.com`) instead. In `--json` mode, the record is in the `dnsRecords` array. Then wait for the domain to go live:
 
 ```npm
-npx @prisma/cli@latest app domain wait shop.acme.com --app web
+npx @prisma/cli@latest app domain wait shop.acme.com --app web --branch main
 ```
 
 `wait` polls until the domain is active, up to 15 minutes. For a single status check, use `--timeout 0`:
 
 ```npm
-npx @prisma/cli@latest app domain wait shop.acme.com --app web --timeout 0 --json
+npx @prisma/cli@latest app domain wait shop.acme.com --app web --branch main --timeout 0 --json
 ```
 
 In `--json` mode, `wait` streams newline-delimited status events, so an agent can track provisioning as it progresses.
@@ -41,8 +55,8 @@ In `--json` mode, `wait` streams newline-delimited status events, so an agent ca
 ## Check and fix
 
 ```npm
-npx @prisma/cli@latest app domain show shop.acme.com --app web
-npx @prisma/cli@latest app domain retry shop.acme.com --app web
+npx @prisma/cli@latest app domain show shop.acme.com --app web --branch main
+npx @prisma/cli@latest app domain retry shop.acme.com --app web --branch main
 ```
 
 `show` gives you the exact state, certificate details, and any DNS hints. `retry` restarts stuck provisioning; if a domain isn't in a retryable state, it returns `DOMAIN_RETRY_NOT_ELIGIBLE`.
@@ -60,7 +74,7 @@ A domain moves through these states:
 ## Remove a domain
 
 ```npm
-npx @prisma/cli@latest app domain remove shop.acme.com --app web
+npx @prisma/cli@latest app domain remove shop.acme.com --app web --branch main
 ```
 
 Removing detaches the domain from the app; pass `--yes` to skip the confirmation prompt. Prisma can't touch your DNS, so the CNAME record stays behind: delete it at your provider once you no longer need it.
