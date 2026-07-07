@@ -42,7 +42,7 @@ Manage apps and deployments for a project.
 | `app logs`                    | Stream logs for the app's current deployment                              |
 | `app list-deploys`            | List deployments for the app                                              |
 | `app show-deploy <deployment>`| Show a deployment in detail                                               |
-| `app promote <deployment>`    | Promote a deployment to production, rebuilding with production env vars   |
+| `app promote <deployment>`    | Re-promote an earlier deployment of the current branch's app, rebuilding with that branch's env vars. Same-branch only: it can't move a preview deployment to production |
 | `app rollback`                | Roll back production to the previous deployment, without rebuilding       |
 | `app remove`                  | Remove the app from the current branch                                    |
 
@@ -54,7 +54,7 @@ Manage apps and deployments for a project.
 | `--project <id-or-name>`  | Target a specific project                                                    |
 | `--create-project <name>` | Create and link a new project before deploying                               |
 | `--branch <name>`         | Deploy to a specific branch; otherwise your active Git branch, then `main`   |
-| `--framework <name>`      | One of `nextjs`, `nuxt`, `astro`, `hono`, `tanstack-start`, `bun`            |
+| `--framework <name>`      | One of `nextjs`, `nuxt`, `astro`, `hono`, `nestjs`, `tanstack-start`, `custom`, `bun` |
 | `--entry <path>`          | Entry point, required for `bun` and useful when detection needs a hand       |
 | `--http-port <port>`      | HTTP port your app listens on                                                |
 | `--env <KEY=value>`       | Set a one-off variable for this deployment (repeatable)                      |
@@ -62,12 +62,14 @@ Manage apps and deployments for a project.
 
 After the first production deploy, every later production deploy needs `--prod`; without it the deploy fails with `PROD_DEPLOY_REQUIRES_FLAG`. With `--prod`, the CLI asks for confirmation; pass `-y` / `--yes` to accept it up front. In non-interactive mode, a `--prod` deploy without `--yes` fails with `CONFIRMATION_REQUIRED`. The first production deploy is auto-promoted and needs neither flag.
 
+`--prod` confirms production; it doesn't select it. The resolved branch decides the environment, so from a non-default Git branch `app deploy --prod` creates a preview deployment. Pass `--branch main` to target production explicitly. See [How Compute chooses production or preview](/compute/deployments#how-compute-chooses-production-or-preview).
+
 ### `app build` and `app run` options
 
 | Flag                  | Description                                                                  |
 | --------------------- | ----------------------------------------------------------------------------- |
 | `--entry <path>`      | Entry point for Bun apps                                                       |
-| `--build-type <type>` | `app build`: `auto`, `bun`, `nextjs`, `nuxt`, `astro`, `tanstack-start`. `app run`: `auto`, `bun`, `nextjs` |
+| `--build-type <type>` | `app build`: `auto`, `bun`, `nextjs`, `nuxt`, `astro`, `nestjs`, `tanstack-start`, `custom`. `app run`: `auto`, `bun`, `nextjs` |
 | `--port <port>`       | Port for `app run`                                                             |
 
 ### Other `app` options

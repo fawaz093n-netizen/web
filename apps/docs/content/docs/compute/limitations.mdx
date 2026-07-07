@@ -17,14 +17,17 @@ Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta). 
 ## Projects and branches
 
 - Project setup is explicit: `--yes` won't create or choose a project for you.
-- The first branch in a project is production; the rest are preview by default.
+- The production branch is the project's default branch, usually `main`. Every other branch is a preview, regardless of deploy order: a first deploy that targets a non-default branch creates a preview, not production.
+- `app deploy --prod` confirms a production deploy; it doesn't redirect one. From a non-default Git branch it still creates a preview deployment. Pass `--branch main` to target production explicitly.
+- `app promote` works within a single branch and can't move a preview deployment to production. It has no `--branch` flag (neither does `app remove`); their branch context comes from your active Git branch.
 - `branch list` inspects branches; it doesn't create remote state.
 - Deleting a branch on GitHub can tear down the matching platform branch, but production and default branches are always left alone.
 
 ## Frameworks and runtimes
 
-- `app deploy --framework` accepts `nextjs`, `nuxt`, `astro`, `hono`, `tanstack-start`, and `bun`.
-- `app build --build-type` accepts `auto`, `bun`, `nextjs`, `nuxt`, `astro`, and `tanstack-start`.
+- `app deploy --framework` accepts `nextjs`, `nuxt`, `astro`, `hono`, `nestjs`, `tanstack-start`, `custom`, and `bun`. This list is exhaustive: no other framework has dedicated support.
+- Frameworks not on the list (Elysia, Express, Fastify, and anything else that runs as a plain HTTP server) deploy with `--framework bun --entry <server-file>`. They get no framework-specific handling: the server must bind `0.0.0.0`, listen on the deployed port, and bundle any files it reads at runtime.
+- `app build --build-type` accepts `auto`, `bun`, `nextjs`, `nuxt`, `astro`, `nestjs`, `tanstack-start`, and `custom`.
 - `app run --build-type` accepts `auto`, `bun`, and `nextjs`.
 - Use `--entry` for Bun, or whenever detection needs a hand.
 

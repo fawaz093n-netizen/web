@@ -20,6 +20,10 @@ There are three layers:
 
 A preview deploy gets the preview variables, with any branch overrides layered on top. Overrides help when one branch needs a different API key, database URL, or feature flag than the rest.
 
+### Which scope does a deploy use?
+
+The branch the deploy resolves to picks the scope: the production branch gets production variables, and every other branch gets preview variables plus its overrides. This holds regardless of flags — `app deploy --prod` run from a non-default Git branch is still a preview deploy and gets **preview** variables, not production ones. To confirm which scope applied, check the `branch` field in the deploy output: `"kind": "production"` or `"kind": "preview"`. See [How Compute chooses production or preview](/compute/deployments#how-compute-chooses-production-or-preview).
+
 Values are resolved at deploy time and baked into the deployment. Changing a variable doesn't touch deployments that already exist and doesn't trigger a redeploy; the new value applies the next time you deploy.
 
 ## Set a variable

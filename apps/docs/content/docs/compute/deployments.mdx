@@ -40,15 +40,41 @@ npx @prisma/cli@latest app build
 npx @prisma/cli@latest app run --port 3000
 ```
 
-`app build` supports the build types `auto`, `bun`, `nextjs`, `nuxt`, `astro`, and `tanstack-start`. `app run` currently supports `auto`, `bun`, and `nextjs`.
+`app build` supports the build types `auto`, `bun`, `nextjs`, `nuxt`, `astro`, `nestjs`, `tanstack-start`, and `custom`. `app run` currently supports `auto`, `bun`, and `nextjs`.
+
+## How Compute chooses production or preview
+
+The **resolved branch** decides the environment; no flag overrides it. A deploy resolves its branch in this order:
+
+1. `--branch <name>`, if you pass it.
+2. Your active Git branch.
+3. `main`.
+
+If the resolved branch is your project's default branch (usually `main`), the deploy is production. Any other branch is a preview. To confirm which one you got, check the deploy output: it prints the branch and its kind, and in `--json` mode it's the `branch` field:
+
+```json
+"branch": { "name": "main", "kind": "production" }
+```
+
+A `"promoted": true` in the output means the deployment went live *within its branch* — it does not mean it reached production.
 
 ## Deploy to production
 
-Your first deployment is promoted to production automatically. After that, every production deploy needs an explicit `--prod` flag, so you don't ship to production by accident:
+`--prod` confirms a production deploy; it doesn't cause one. Your first deployment to the production branch is promoted automatically. After that, every production deploy needs an explicit `--prod` flag, so you don't ship to production by accident:
 
 ```npm
 npx @prisma/cli@latest app deploy --prod
 ```
+
+:::warning
+
+**Branch context still matters.** Run `app deploy --prod` from a Git feature branch and the deploy resolves to that branch, so it creates a preview deployment — the `--prod` flag has no effect there and the CLI doesn't warn. To deploy production from any checkout, pass the branch explicitly:
+
+```npm
+npx @prisma/cli@latest app deploy --prod --branch main
+```
+
+:::
 
 Without `--prod`, a deploy that resolves to the production branch and already has a live production deployment fails with `PROD_DEPLOY_REQUIRES_FLAG`. With `--prod`, the CLI shows the current live deployment and asks you to confirm before replacing it.
 
@@ -82,15 +108,40 @@ npx @prisma/cli@latest app logs --app web --deployment dep_123
 
 Your app's log lines go to stdout; the CLI's own status and errors go to stderr, so you can pipe them apart. If the platform can't serve logs for the resolved deployment, the command fails with `FEATURE_UNAVAILABLE`.
 
+## The deploy succeeded but the app only serves an error page
+
+A successful deploy means the build produced an artifact and a process started listening; it doesn't prove the app works. If the live URL returns an error page:
+
+- Stream `app logs` and look for startup errors.
+- Bind all interfaces: the server must listen on `0.0.0.0`, not `localhost` or `127.0.0.1`. A loopback-only listener looks ready to the platform but is unreachable from public ingress.
+- Listen on the deployed HTTP port: read `process.env.PORT` when your framework allows it, or pass the matching `--http-port` at deploy time.
+- Ship every file the app reads at runtime. Templates, static assets, and data files must be inside the build output; the runtime has no persistent filesystem and nothing outside the artifact exists at request time. Import assets through your bundler or place them where your framework's build includes them.
+- Reproduce with the exact artifact locally: `app build`, then `app run --port 3000`. If it fails the same way on your machine, the problem is in the build, not the platform.
+
 ## Promote and roll back
 
-Promote an earlier deployment to production:
+Promote an earlier **production** deployment back to live:
 
 ```npm
 npx @prisma/cli@latest app promote dep_123 --app web
 ```
 
-Promotion rebuilds the deployment with your production environment variables. The rebuild is necessary because values are baked in at deploy time: a preview build still carries preview config, so it can't serve production as-is.
+Promotion rebuilds the deployment with your current production environment variables. The rebuild is necessary because values are baked in at deploy time, so an old build can't pick up new config as-is. Because it rebuilds, verify the result serves correctly afterwards — `app logs` or a request to the live URL.
+
+`app promote` works within one branch. It has no `--branch` flag; the branch comes from your active Git branch (or `main` outside a repo), and the deployment id must belong to that branch's app. It cannot move a preview deployment to production:
+
+- From a preview Git branch, promote resolves the *preview* app. Promoting that branch's live deployment succeeds with the warning `The selected deployment is already live for this app` and changes nothing.
+- From the production branch, a preview deployment id fails with `DEPLOYMENT_NOT_FOUND`.
+
+To ship preview work to production, deploy it from source instead:
+
+```npm
+npx @prisma/cli@latest app deploy --prod --branch main
+```
+
+or merge to your default branch with [GitHub integration](/compute/github) connected.
+
+If `promote` appears to do nothing, check three things: the warnings array (`already live for this app` means you promoted within a preview, not to production), your current Git branch (it selects the app), and the deployment list (`app list-deploys` run from the production branch shows the ids promote can use). A transient `DEPLOY_FAILED` internal error can also occur; retrying the same command usually succeeds.
 
 Roll back to the previous deployment, or a specific one. Unlike `promote`, rollback reuses an existing build, so there is no rebuild step between you and a known-good state:
 

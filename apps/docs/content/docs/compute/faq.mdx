@@ -70,6 +70,20 @@ PRISMA_SERVICE_TOKEN=... npx @prisma/cli@latest app deploy \
 
 Passing every target explicitly keeps the run self-contained; `--json` makes the result parseable, and `--no-interactive` turns any would-be prompt into a structured error.
 
+## I ran `app deploy --prod`. Why did I get a preview deployment?
+
+`--prod` confirms a production deploy; it doesn't cause one. The environment comes from the branch the deploy resolves to: `--branch` if passed, then your active Git branch, then `main`. Only the project's default branch is production, so from a feature branch `app deploy --prod` deploys a preview of that branch — silently. Deploy production from any checkout with:
+
+```npm
+npx @prisma/cli@latest app deploy --prod --branch main
+```
+
+The deploy output's `branch` field shows which environment you got: `"kind": "production"` or `"kind": "preview"`. To learn more, see [How Compute chooses production or preview](/compute/deployments#how-compute-chooses-production-or-preview).
+
+## Why did `app promote` do nothing?
+
+`app promote` works within the branch your Git checkout resolves to, and only on deployment ids that belong to that branch's app. Run from a preview branch, it promotes within that preview: promoting the deployment that's already live there succeeds with the warning `The selected deployment is already live for this app` and changes nothing. It cannot move a preview deployment to production — from the production branch, a preview deployment id fails with `DEPLOYMENT_NOT_FOUND`. To ship preview work to production, run `app deploy --prod --branch main`, or merge to your default branch with [GitHub connected](/compute/github).
+
 ## Why did my production deploy fail with `PROD_DEPLOY_REQUIRES_FLAG`?
 
 Your first deploy is promoted to production automatically. After that, deploying to the production branch needs an explicit `--prod` flag. Re-run with `npx @prisma/cli@latest app deploy --prod`, or deploy from a preview branch instead.
@@ -88,7 +102,7 @@ This means your project holds more than one app, so the CLI can't tell which one
 
 ## How do I add a custom domain?
 
-Promote a production app, then:
+Deploy your app to production first, then:
 
 ```npm
 npx @prisma/cli@latest app domain add shop.acme.com --app web

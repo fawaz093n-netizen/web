@@ -16,8 +16,8 @@ A platform branch usually matches a Git branch name, but in Prisma it is a real 
 
 Every branch has a role:
 
-- The **first branch** in a project is your production branch, usually `main`. It's protected and durable: after the first deploy, deploys to it need an explicit `--prod` flag, and automated cleanup never touches it.
-- **Every other branch** is a preview by default: disposable resources for testing changes before they merge. Preview deploys never ask for confirmation.
+- The **production branch** is your project's default branch, usually `main`. It exists from project creation, whether or not you've deployed to it yet. It's protected and durable: after the first deploy, deploys to it need an explicit `--prod` flag, and automated cleanup never touches it.
+- **Every other branch** is a preview: disposable resources for testing changes before they merge. Deploy order doesn't matter: if your first-ever deploy targets a non-default branch, it creates a preview, not production. Preview deploys never ask for confirmation.
 
 To learn more, see the [Deployments docs](/compute/deployments).
 
@@ -34,6 +34,12 @@ Inside a Git repo, deploying from `feature/search` targets the `feature/search` 
 ```npm
 npx @prisma/cli@latest app deploy --branch feature/search
 ```
+
+:::warning
+
+Branch resolution decides production vs preview; flags don't. `app deploy --prod` from a Git feature branch resolves to that branch and creates a **preview** deployment — the `--prod` flag changes nothing there. To deploy production from any checkout, pass the branch explicitly: `app deploy --prod --branch main`. See [How Compute chooses production or preview](/compute/deployments#how-compute-chooses-production-or-preview).
+
+:::
 
 Inspect platform branches:
 

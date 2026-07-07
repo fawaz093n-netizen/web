@@ -89,7 +89,7 @@ npx @prisma/cli@latest project list
 
 ## Pick a framework
 
-The CLI detects your framework automatically. Today there is first-class support for **Next.js**, **Nuxt**, **Astro**, **Hono**, and **TanStack Start**:
+The CLI detects your framework automatically. Dedicated build support exists for exactly these frameworks: **Next.js**, **Nuxt**, **Astro**, **Hono**, **NestJS**, and **TanStack Start**:
 
 ```npm
 npx @prisma/cli@latest app deploy --framework nextjs
@@ -97,11 +97,13 @@ npx @prisma/cli@latest app deploy --framework hono --entry src/index.ts
 npx @prisma/cli@latest app deploy --framework tanstack-start
 ```
 
-Deploy a plain Bun server by pointing `--entry` at your server file:
+Every other framework deploys as a plain Bun server — point `--entry` at the file that starts your HTTP server:
 
 ```npm
 npx @prisma/cli@latest app deploy --framework bun --entry src/server.ts
 ```
+
+This is how you deploy Elysia, Express, Fastify, or any hand-rolled server. There is no framework-specific handling on this path: the server must bind `0.0.0.0` (not `localhost`), listen on the deployed HTTP port (`process.env.PORT`, or pass `--http-port`), and any files it reads at runtime — templates, static assets — must be part of the built output. If a deploy succeeds but the URL serves an error page, see [the troubleshooting steps](/compute/deployments#the-deploy-succeeded-but-the-app-only-serves-an-error-page).
 
 :::note
 
@@ -124,11 +126,17 @@ npx @prisma/cli@latest app run --port 3000
 
 ## Deploy to production
 
-Your first deployment is promoted to production automatically. After that, every production deploy needs an explicit `--prod` flag, so you don't ship to production by accident:
+Production or preview is decided by the branch your deploy resolves to (`--branch`, then your active Git branch, then `main`): the project's default branch is production, everything else is a preview. Your first deployment to the production branch is promoted automatically. After that, every production deploy needs an explicit `--prod` flag, so you don't ship to production by accident:
 
 ```npm
 npx @prisma/cli@latest app deploy --prod
 ```
+
+:::warning
+
+`--prod` confirms a production deploy; it doesn't select one. From a Git feature branch, `app deploy --prod` still creates a **preview** deployment of that branch. To deploy production from any checkout, pass the branch explicitly: `app deploy --prod --branch main`. The deploy output's `branch` field (`"kind": "production"` or `"kind": "preview"`) tells you which environment you got.
+
+:::
 
 Without `--prod`, a deploy that resolves to the production branch and already has a live production deployment fails with the error code `PROD_DEPLOY_REQUIRES_FLAG`. With `--prod`, the CLI shows the current live deployment and asks you to confirm before replacing it.
 
