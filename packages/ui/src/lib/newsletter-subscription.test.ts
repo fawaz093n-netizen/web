@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  NEWSLETTER_SOURCE_ATTRIBUTE,
   NEWSLETTER_WELCOME_TEMPLATE_ID,
   NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE,
   PRISMA_NEWSLETTER_LIST_ID,
@@ -69,6 +70,7 @@ describe("subscribeToPrismaNewsletter", () => {
     assert.equal(contactBody.email, "dev@example.com");
     assert.equal(contactBody.updateEnabled, true);
     assert.equal(contactBody.attributes.EMAIL, "dev@example.com");
+    assert.equal(contactBody.attributes[NEWSLETTER_SOURCE_ATTRIBUTE], "website");
     assert.equal(contactBody.attributes.SOURCE, "website");
     assert.match(contactBody.attributes[NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE], /^[0-9a-f]{64}$/);
     assert.equal(contactBody.emailBlacklisted, false);
@@ -91,7 +93,11 @@ describe("subscribeToPrismaNewsletter", () => {
     const token = "a".repeat(64);
     const { calls, fetcher } = createFetch([
       jsonResponse({
-        attributes: { [NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE]: token },
+        attributes: {
+          [NEWSLETTER_SOURCE_ATTRIBUTE]: "console-signup",
+          [NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE]: token,
+          SOURCE: "console-signup",
+        },
         emailBlacklisted: false,
         listIds: [],
       }),
@@ -108,7 +114,9 @@ describe("subscribeToPrismaNewsletter", () => {
 
     const contactBody = JSON.parse(String(calls[1]?.init?.body));
     const emailBody = JSON.parse(String(calls[2]?.init?.body));
+    assert.equal(contactBody.attributes[NEWSLETTER_SOURCE_ATTRIBUTE], "blog");
     assert.equal(contactBody.attributes[NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE], token);
+    assert.equal(contactBody.attributes.SOURCE, "console-signup");
     assert.equal(
       emailBody.params.unsubscribeUrl,
       `https://www.prisma.io/api/newsletter/unsubscribe?token=${token}`,

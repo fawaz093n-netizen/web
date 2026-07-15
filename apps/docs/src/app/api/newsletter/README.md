@@ -14,9 +14,9 @@ Subscription is immediate and does not require an email confirmation.
 
 ### 2. Configure Brevo List and Template
 
-1. Go to **Contacts** → **Lists** and note your list ID (default is `15`)
-2. Go to **Transactional** → **Templates** and confirm that the newsletter welcome template is active
-3. The shared server helper owns the newsletter list and welcome template IDs
+1. In **Contacts** → **Lists**, verify that the shared helper's newsletter list ID is `15`
+2. In **Transactional** → **Templates**, verify that welcome template `228` is active
+3. These are verification steps; the shared server helper owns both IDs
 
 ### 3. Environment Variables
 
@@ -84,7 +84,7 @@ export default function Page() {
 **Error (400)**
 ```json
 {
-  "error": "Invalid email address"
+  "error": "A valid email address is required"
 }
 ```
 
@@ -104,8 +104,8 @@ Public website subscriptions use this flow:
 3. The route sends the newsletter welcome template once when the contact enters the list.
 4. Existing list members receive no additional welcome email.
 
-Each route supplies a fixed source (`website`, `blog`, or `docs`). Console signup uses a separate
-silent list-sync path and never calls the welcome-email helper.
+Each route supplies a fixed `NEWSLETTER_SOURCE` (`website`, `blog`, or `docs`). Console signup uses
+`console-signup` in a separate silent list-sync path and never calls the welcome-email helper.
 
 ## Troubleshooting
 
@@ -120,25 +120,6 @@ Check the server logs for detailed error messages from Brevo. Common issues:
 - Incorrect list ID in the shared newsletter helper
 - Inactive or incorrect welcome template ID in the shared newsletter helper
 - Brevo API rate limits
-
-### Development Mode Debug Info
-
-In development mode (`NODE_ENV=development`), the API will return additional debug information in the error response:
-
-```json
-{
-  "error": "Failed to subscribe. Please try again later.",
-  "debug": {
-    "status": 400,
-    "brevoError": {
-      "code": "invalid_parameter",
-      "message": "..."
-    }
-  }
-}
-```
-
-Check the browser console for "API Error Debug:" logs.
 
 ### Testing Locally
 

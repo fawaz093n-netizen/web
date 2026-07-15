@@ -1,9 +1,11 @@
 const BREVO_API_BASE_URL = "https://api.brevo.com/v3";
+const BREVO_REQUEST_TIMEOUT_MS = 8_000;
 const NEWSLETTER_UNSUBSCRIBE_URL = "https://www.prisma.io/api/newsletter/unsubscribe";
 
 export const PRISMA_NEWSLETTER_LIST_ID = 15;
 export const NEWSLETTER_WELCOME_TEMPLATE_ID = 228;
 export const NEWSLETTER_UNSUBSCRIBE_COOKIE_NAME = "prisma_newsletter_unsubscribe";
+export const NEWSLETTER_SOURCE_ATTRIBUTE = "NEWSLETTER_SOURCE";
 export const NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE = "NEWSLETTER_UNSUBSCRIBE_TOKEN";
 
 export type NewsletterSource = "blog" | "docs" | "website";
@@ -153,10 +155,11 @@ async function getContact(
   fetcher: typeof fetch,
   apiKey: string,
   email: string,
+  signal: AbortSignal,
 ): Promise<BrevoContact | null> {
   const response = await fetcher(
     `${BREVO_API_BASE_URL}/contacts/${encodeURIComponent(email)}?identifierType=email_id`,
-    { headers: getBrevoHeaders(apiKey) },
+    { headers: getBrevoHeaders(apiKey), signal },
   );
 
   if (response.status === 404) return null;
@@ -174,12 +177,15 @@ async function upsertContact(
   source: NewsletterSource,
   contact: BrevoContact | null,
   unsubscribeToken: string,
+  signal: AbortSignal,
 ): Promise<void> {
+  const originalSource = contact?.attributes.SOURCE;
   const body = {
     attributes: {
       EMAIL: email,
       [NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE]: unsubscribeToken,
-      SOURCE: source,
+      [NEWSLETTER_SOURCE_ATTRIBUTE]: source,
+      SOURCE: typeof originalSource === "string" && originalSource ? originalSource : source,
     },
     emailBlacklisted: false,
     listIds: [PRISMA_NEWSLETTER_LIST_ID],
@@ -190,11 +196,13 @@ async function upsertContact(
         method: "PUT",
         headers: getBrevoHeaders(apiKey),
         body: JSON.stringify(body),
+        signal,
       })
     : await fetcher(`${BREVO_API_BASE_URL}/contacts`, {
         method: "POST",
         headers: getBrevoHeaders(apiKey),
         body: JSON.stringify({ email, updateEnabled: true, ...body }),
+        signal,
       });
 
   const responseBody = await readJson(response);
@@ -218,6 +226,7 @@ async function sendWelcomeEmail(
   apiKey: string,
   email: string,
   unsubscribeToken: string,
+  signal: AbortSignal,
 ): Promise<void> {
   const response = await fetcher(`${BREVO_API_BASE_URL}/smtp/email`, {
     method: "POST",
@@ -233,6 +242,7 @@ async function sendWelcomeEmail(
         "Idempotency-Key": await createWelcomeIdempotencyKey(email),
       },
     }),
+    signal,
   });
 
   const body = await readJson(response);
@@ -246,7 +256,8 @@ export async function subscribeToPrismaNewsletter({
   source,
 }: SubscribeToNewsletterOptions): Promise<NewsletterSubscriptionResult> {
   const normalizedEmail = email.trim().toLowerCase();
-  const contact = await getContact(fetcher, apiKey, normalizedEmail);
+  const signal = AbortSignal.timeout(BREVO_REQUEST_TIMEOUT_MS);
+  const contact = await getContact(fetcher, apiKey, normalizedEmail, signal);
 
   if (contact?.listIds.includes(PRISMA_NEWSLETTER_LIST_ID) && !contact.emailBlacklisted) {
     return { status: "already_subscribed", welcomeSent: false };
@@ -255,10 +266,10 @@ export async function subscribeToPrismaNewsletter({
   const unsubscribeToken =
     getExistingUnsubscribeToken(contact) ?? (await createUnsubscribeToken(apiKey, normalizedEmail));
 
-  await upsertContact(fetcher, apiKey, normalizedEmail, source, contact, unsubscribeToken);
+  await upsertContact(fetcher, apiKey, normalizedEmail, source, contact, unsubscribeToken, signal);
 
   try {
-    await sendWelcomeEmail(fetcher, apiKey, normalizedEmail, unsubscribeToken);
+    await sendWelcomeEmail(fetcher, apiKey, normalizedEmail, unsubscribeToken, signal);
     return { status: "subscribed", welcomeSent: true };
   } catch {
     // The subscription is complete even when the non-essential welcome email fails.
@@ -272,6 +283,7 @@ export async function unsubscribeFromPrismaNewsletter({
   token,
 }: UnsubscribeFromNewsletterOptions): Promise<NewsletterUnsubscribeResult> {
   if (!isValidNewsletterUnsubscribeToken(token)) return { status: "invalid_token" };
+  const signal = AbortSignal.timeout(BREVO_REQUEST_TIMEOUT_MS);
 
   const contactsUrl = new URL(`${BREVO_API_BASE_URL}/contacts`);
   contactsUrl.searchParams.set("limit", "2");
@@ -280,7 +292,10 @@ export async function unsubscribeFromPrismaNewsletter({
     `equals(${NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE},"${token}")`,
   );
 
-  const lookupResponse = await fetcher(contactsUrl, { headers: getBrevoHeaders(apiKey) });
+  const lookupResponse = await fetcher(contactsUrl, {
+    headers: getBrevoHeaders(apiKey),
+    signal,
+  });
   const lookupBody = await readJson(lookupResponse);
   if (!lookupResponse.ok) throw toBrevoError("unsubscribe lookup", lookupResponse, lookupBody);
 
@@ -304,6 +319,7 @@ export async function unsubscribeFromPrismaNewsletter({
       method: "PUT",
       headers: getBrevoHeaders(apiKey),
       body: JSON.stringify({ unlinkListIds: [PRISMA_NEWSLETTER_LIST_ID] }),
+      signal,
     },
   );
   const updateBody = await readJson(updateResponse);
