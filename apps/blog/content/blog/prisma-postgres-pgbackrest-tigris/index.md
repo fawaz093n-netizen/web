@@ -15,9 +15,9 @@ tags:
   - "postgres"
 ---
 
-[Prisma Postgres](https://www.prisma.io/postgres) runs every database as its own lightweight VM on our fleet of bare metal servers. That gives us strong isolation, and VMs can restore from memory snapshots in milliseconds. But it also means everything we build has to work at fleet scale. Anything we build runs across hundreds of thousands of databases, every day, and backups are a good example.
+[Prisma Postgres](https://www.prisma.io/postgres) runs every database as its own lightweight VM on our fleet of bare metal servers. That gives us strong isolation, and VMs can restore from memory snapshots in milliseconds. But it also means everything we build has to work at fleet scale, running across hundreds of thousands of databases every day. Backups are a good example.
 
-We recently replaced our backup system end to end. We swapped the backup tool from [pg_basebackup](https://www.postgresql.org/docs/current/app-pgbasebackup.html) to [pgBackRest](https://pgbackrest.org/). We also changed the storage layer to a new object storage layout on [Tigris](https://www.tigrisdata.com/), where every database gets a dedicated, isolated bucket. This post drives into how the new system works, why we built the storage layer this way, and what it unlocks.
+We recently replaced our backup system end to end. We swapped the backup tool from [pg_basebackup](https://www.postgresql.org/docs/current/app-pgbasebackup.html) to [pgBackRest](https://pgbackrest.org/). We also changed the storage layer to a new object storage layout on [Tigris](https://www.tigrisdata.com/), where every database gets a dedicated, isolated bucket. This post dives into how the new system works, why we built the storage layer this way, and what it unlocks.
 
 TL;DR
 
@@ -50,7 +50,7 @@ Postgres writes every change to its write-ahead log, or WAL, before it applies t
 
 The recovery point drops from up to twelve hours to about one WAL segment. In practice that's seconds to a few minutes of exposure, depending on how much the database is writing, instead of half a day.
 
-We still take base backups, since WAL replay needs a starting point, but now a scheduler on the host triggers them against the running instance. Every database VM already runs a Postgres extension that handles a handful of operational concerns, like metrics reporting and scale-to-zero, and the pgBackRest binary was already embedded in the VM image for WAL archiving. So we extended that same extension with a few SQL functions to trigger backups, using regular SQL as our orchestration protocol. The extension gives our orchestrator functions to start a full, differential, or incremental backup and to check backup status. The result is that pgBackRest runs right inside the database VM, triggered over SQL, while a central service coordinates the whole fleet. No extra VM, no sidecar API, minimal complexity.
+We still take base backups, since WAL replay needs a starting point, but now a scheduler on the host triggers them against the running instance. Every database VM already runs a Postgres extension that handles a handful of operational concerns, like metrics reporting and scale-to-zero, and the pgBackRest binary was already embedded in the VM image for WAL archiving. So we added a few SQL functions to that extension to trigger backups, using regular SQL as our orchestration protocol. The extension exposes functions our orchestrator calls to start a full, differential, or incremental backup, and to check backup status. The result is that pgBackRest runs right inside the database VM, triggered over SQL, while a central service coordinates the whole fleet. No extra VM, no sidecar API, no added complexity.
 
 ### Point-in-time recovery
 
@@ -62,7 +62,7 @@ The new system supports three restore modes:
 2. Fork at a backup: create a new database from a specific base backup
 3. Fork at a timestamp: create a new database at any point in time, real PITR
 
-We will soon expose the ability to restore just before that point of a bad migration or accidental data delete.
+We'll soon expose the ability to restore to just before a bad migration or an accidental deletion.
 
 ### Restore is a single VM now
 
@@ -88,7 +88,7 @@ Isolation is built into the shape of the system. The common alternative is a sha
 
 ## Why Tigris
 
-This is where [Tigris](https://www.tigrisdata.com/) became a differentiating choice for us. Tigris is an S3‑compatible blob storage backend that supports creating unlimited buckets programmatically.
+This is where [Tigris](https://www.tigrisdata.com/) became a differentiating choice for us. Tigris is an S3-compatible blob storage backend that supports creating unlimited buckets programmatically.
 
 ### Cheap, unlimited buckets
 
@@ -102,9 +102,9 @@ Every time a VM boots, we mint a fresh access key scoped to that one bucket. The
 
 This is the one that unlocked a real product feature. Tigris can fork a bucket from a point-in-time snapshot, and the fork shares the same underlying data as the original. Forking a 500 GB backup repository takes the same time as forking a 500 MB one, and it costs nothing until the two copies start to diverge.
 
-Forking a Prisma Postgres database means forking the bucket, booting a new VM, and running pgBackRest restore from that forked bucket onto the new VM's volume. That restore step still moves real data onto a real volume, so it isn't instant, and its cost still scales with the size of the database. This is necessary because all Prisma Postgres databases operate from NVMe disks directly attached to our bare‑metal machines. We don't use network storage for database data.
+Forking a Prisma Postgres database means forking the bucket, booting a new VM, and running pgBackRest restore from that forked bucket onto the new VM's volume. That restore step still moves real data onto a real volume, so it isn't instant, and its cost still scales with the size of the database. This is necessary because all Prisma Postgres databases operate from NVMe disks directly attached to our bare-metal machines. We don't use network storage for database data.
 
-What the bucket fork buys us is history. The new database gets its own full, independent backup history, every base backup and every WAL segment of the original, without copying any of it at fork time, and it can restore from any point in that history. Without bucket forking, giving a fork its own complete history would mean copying the entire backup repository up front. It also simplified our permission structure for restores since the new VM only needs credentials to the forked bucket, not the original.
+What the bucket fork buys us is history. The new database gets its own full, independent backup history, every base backup and every WAL segment of the original, without copying any of it at fork time, and it can restore from any point in that history. Without bucket forking, giving a fork its own complete history would mean copying the entire backup repository up front. It also simplified our permission structure for restores since the new VM only needs credentials for the forked bucket, not the original.
 
 ### S3-compatible
 
@@ -114,7 +114,7 @@ pgBackRest talks to S3 out of the box. Pointing a database at its backup reposit
 
 The infrastructure story is fun for us to build, but the reason we did any of this is what it makes possible in the product.
 
-Disaster recovery from a hardware failure has a significantly reduced amount of data loss. WAL archiving to Tigris ensures we at most lose one WAL segment per database if an disaster were to occur. Full, differential, and incremental backups enable faster restoration by composing the fewest number of files to reach the desired recovery state.
+Disaster recovery from a hardware failure loses a lot less data now. WAL archiving to Tigris ensures we lose at most one WAL segment per database if a disaster occurs. Full, differential, and incremental backups also enable faster restoration, since pgBackRest only has to replay the fewest files needed to reach the desired recovery state.
 
 Forks get more useful. A fork can start from right now, or from a point in the database's history, and it comes with that entire history already attached, so there's no separate backup chain to bootstrap first. That's useful for staging environments, preview databases for pull requests, testing against a copy of production data, or recovering from a bad SQL script.
 
