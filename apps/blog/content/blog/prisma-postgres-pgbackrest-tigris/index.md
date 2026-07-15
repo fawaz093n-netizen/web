@@ -50,7 +50,7 @@ Postgres writes every change to its write-ahead log, or WAL, before it applies t
 
 The recovery point drops from up to twelve hours to about one WAL segment. In practice that's seconds to a few minutes of exposure, depending on how much the database is writing, instead of half a day.
 
-We still take base backups, since WAL replay needs a starting point, but now a scheduler on the host triggers them against the running instance. We install a Postgres extension that exposes SQL functions for this, so pgBackRest runs right inside the database VM while a central service coordinates the whole fleet. No extra VM, no capacity poll, no contention with the databases the backups are supposed to protect.
+We still take base backups, since WAL replay needs a starting point, but now a scheduler on the host triggers them against the running instance. Every database VM already runs a Postgres extension that handles a handful of operational concerns, like metrics reporting and scale-to-zero, and the pgBackRest binary was already embedded in the VM image for WAL archiving. So we extended that same extension with a few SQL functions to trigger backups, using regular SQL as our orchestration protocol. The extension gives our orchestrator functions to start a full, differential, or incremental backup and to check backup status. The result is that pgBackRest runs right inside the database VM, triggered over SQL, while a central service coordinates the whole fleet. No extra VM, no sidecar API, minimal complexity.
 
 ### Point-in-time recovery
 
