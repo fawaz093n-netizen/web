@@ -1,6 +1,7 @@
 # Newsletter API
 
-This API endpoint handles newsletter subscriptions via Brevo (formerly Sendinblue) with double opt-in.
+This API endpoint subscribes public website visitors to the Prisma newsletter through Brevo.
+Subscription is immediate and does not require an email confirmation.
 
 ## Setup
 
@@ -14,8 +15,8 @@ This API endpoint handles newsletter subscriptions via Brevo (formerly Sendinblu
 ### 2. Configure Brevo List and Template
 
 1. Go to **Contacts** → **Lists** and note your list ID (default is `15`)
-2. Go to **Campaigns** → **Templates** and create a double opt-in template
-3. Note your template ID (default is `36`)
+2. Go to **Transactional** → **Templates** and confirm that the newsletter welcome template is active
+3. The shared server helper owns the newsletter list and welcome template IDs
 
 ### 3. Environment Variables
 
@@ -59,7 +60,7 @@ export default function Page() {
 
 ### Response Codes
 
-- **200**: Successfully added to list (confirmation email sent) or already subscribed
+- **200**: Successfully subscribed (welcome email requested) or already subscribed
 - **400**: Invalid email or missing email
 - **500**: Server error or missing configuration
 
@@ -68,7 +69,7 @@ export default function Page() {
 **Success (200)**
 ```json
 {
-  "message": "Please check your email to confirm subscription"
+  "message": "Subscribed to the Prisma newsletter"
 }
 ```
 
@@ -94,16 +95,17 @@ export default function Page() {
 }
 ```
 
-## Double Opt-In
+## Subscription Flow
 
-This implementation uses Brevo's double opt-in feature:
+Public website subscriptions use this flow:
 
-1. User submits their email
-2. Brevo sends a confirmation email using the configured template
-3. User clicks the confirmation link
-4. Subscription is confirmed and user is redirected to https://prisma.io
+1. The route looks up the contact in Brevo.
+2. New or unsubscribed contacts are added to newsletter list `15` immediately.
+3. The route sends the newsletter welcome template once when the contact enters the list.
+4. Existing list members receive no additional welcome email.
 
-This ensures compliance with GDPR and other privacy regulations.
+Each route supplies a fixed source (`website`, `blog`, or `docs`). Console signup uses a separate
+silent list-sync path and never calls the welcome-email helper.
 
 ## Troubleshooting
 
@@ -115,8 +117,8 @@ Check that the `BREVO_API_KEY` environment variable is set correctly.
 
 Check the server logs for detailed error messages from Brevo. Common issues:
 - Invalid API key
-- Incorrect list ID (update line 60 in route.ts if different from `15`)
-- Incorrect template ID (update line 61 in route.ts if different from `36`)
+- Incorrect list ID in the shared newsletter helper
+- Inactive or incorrect welcome template ID in the shared newsletter helper
 - Brevo API rate limits
 
 ### Development Mode Debug Info
@@ -150,19 +152,13 @@ Restart your development server after adding environment variables.
 
 ## Customization
 
-To customize the list ID or template ID, edit the API route:
-
-```typescript
-// In route.ts, around line 60-61
-includeListIds: [15],  // Change to your list ID
-templateId: 36,        // Change to your template ID
-```
+List membership, source attribution, one-time welcome dispatch, and template selection live in
+`packages/ui/src/lib/newsletter-subscription.ts`.
 
 ## CORS Configuration
 
 The API is configured to allow requests from:
 - https://prisma.io
 - https://www.prisma.io
-- https://prisma.io/docs
 
-To add more origins, update the `corsHeaders` in `route.ts`.
+To add more origins, update the route's `allowedOrigins`.
