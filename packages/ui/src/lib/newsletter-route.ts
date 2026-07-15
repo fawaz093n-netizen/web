@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   NewsletterSubscriptionError,
+  isValidNewsletterEmail,
   subscribeToPrismaNewsletter,
   type NewsletterSource,
 } from "./newsletter-subscription";
@@ -9,8 +10,6 @@ type NewsletterRouteOptions = {
   allowedOrigins: readonly string[];
   source: NewsletterSource;
 };
-
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function getCorsHeaders(request: Request, allowedOrigins: readonly string[]) {
   const origin = request.headers.get("origin") ?? "";
@@ -53,7 +52,7 @@ export function createNewsletterRoute({ allowedOrigins, source }: NewsletterRout
       const email =
         typeof body === "object" && body !== null && "email" in body ? body.email : undefined;
 
-      if (typeof email !== "string" || !emailPattern.test(email.trim())) {
+      if (typeof email !== "string" || !isValidNewsletterEmail(email.trim())) {
         return NextResponse.json(
           { error: "A valid email address is required" },
           { status: 400, headers: corsHeaders },

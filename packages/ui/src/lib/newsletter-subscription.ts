@@ -56,6 +56,21 @@ type UnsubscribeFromNewsletterOptions = {
 
 const unsubscribeTokenPattern = /^[0-9a-f]{64}$/;
 
+export function isValidNewsletterEmail(email: string): boolean {
+  if (email.length === 0 || email.length > 254 || /\s/.test(email)) return false;
+
+  const atIndex = email.indexOf("@");
+  if (atIndex <= 0 || atIndex !== email.lastIndexOf("@")) return false;
+
+  const localPart = email.slice(0, atIndex);
+  const domainParts = email.slice(atIndex + 1).split(".");
+  return (
+    localPart.length <= 64 &&
+    domainParts.length >= 2 &&
+    domainParts.every((part) => part.length > 0 && part.length <= 63)
+  );
+}
+
 function getBrevoHeaders(apiKey: string) {
   return {
     accept: "application/json",

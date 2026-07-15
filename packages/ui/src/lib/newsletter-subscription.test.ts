@@ -5,9 +5,23 @@ import {
   NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE,
   PRISMA_NEWSLETTER_LIST_ID,
   NewsletterSubscriptionError,
+  isValidNewsletterEmail,
   subscribeToPrismaNewsletter,
   unsubscribeFromPrismaNewsletter,
 } from "./newsletter-subscription";
+
+describe("isValidNewsletterEmail", () => {
+  it("accepts a normal address and rejects malformed or oversized input", () => {
+    assert.equal(isValidNewsletterEmail("dev@example.com"), true);
+    assert.equal(isValidNewsletterEmail("dev@@example.com"), false);
+    assert.equal(isValidNewsletterEmail("dev@example"), false);
+    assert.equal(isValidNewsletterEmail(`dev@${"a".repeat(250)}.com`), false);
+  });
+
+  it("handles repeated punctuation without a backtracking expression", () => {
+    assert.equal(isValidNewsletterEmail(`!@!${"!.".repeat(10_000)}`), false);
+  });
+});
 
 type FetchCall = {
   input: string;
