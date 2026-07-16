@@ -56,19 +56,9 @@ Once a project is connected:
 
 Connecting doesn't deploy anything on its own; it wires up automation for *future* events. To deploy right now, run `app deploy` yourself.
 
-## CI and monorepos
+## Monorepos
 
-Auto-deploy handles [monorepos that declare their apps in `prisma.compute.ts`](/compute/monorepos): one pushed commit fans out into a targeted build per app. For custom pipelines, or anywhere you want full control, set `PRISMA_SERVICE_TOKEN` and `PRISMA_PROJECT_ID`, then name the config target positionally:
-
-```bash title="CI"
-PRISMA_SERVICE_TOKEN=... PRISMA_PROJECT_ID=... \
-  npx @prisma/cli@latest app deploy web \
-  --branch "${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" \
-  --json \
-  --no-interactive
-```
-
-This keeps deploys deterministic and gives agents a structured result to read.
+A connected repository can deploy several Compute apps from each push. See [Deploy a monorepo](/compute/monorepos) for the root `prisma.compute.ts` config, build fan-out, target selection, and custom CI commands.
 
 ## What's not in beta
 
