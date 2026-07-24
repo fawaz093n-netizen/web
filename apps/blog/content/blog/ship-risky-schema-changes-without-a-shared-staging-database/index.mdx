@@ -160,6 +160,8 @@ model User {
   email       String @unique
   displayName String // was String?
   name        String // still here until step 3
+
+  @@map("user")
 }
 ```
 
@@ -278,7 +280,7 @@ jobs:
           DATABASE_URL: ${{ secrets.BRANCH_DB_URL }}
 ```
 
-One piece of wiring is yours to choose: how the migrate and test steps get the branch database's connection string (`BRANCH_DB_URL` above). Create a connection for the branch database with `npx @prisma/cli@latest database connection create`, and keep the value in your own secret store; Compute's [environment variables](https://www.prisma.io/docs/compute/environment-variables) are write-only in beta, so CI can't read them back.
+One piece of wiring is yours to choose: how the migrate and test steps get the branch database's connection string (`BRANCH_DB_URL` above). A single repository secret only serves one branch at a time; for concurrent pull requests, have the job create a connection for its own branch database with `npx @prisma/cli@latest database connection create <database>` using the service token it already holds. Keep any stored value in your own secret store; Compute's [environment variables](https://www.prisma.io/docs/compute/environment-variables) are write-only in beta, so CI can't read them back.
 
 If you [connect the project to GitHub](https://www.prisma.io/docs/compute/github), Compute also creates and tears down platform branches on push and branch-delete events automatically.
 
