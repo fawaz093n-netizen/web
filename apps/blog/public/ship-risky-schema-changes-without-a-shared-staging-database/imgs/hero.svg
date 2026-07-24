@@ -41,7 +41,7 @@
   <!-- Badge / eyebrow -->
   <g id="badge">
     <line x1="72" y1="84" x2="102" y2="84" stroke="#5EEAD4" stroke-width="3" stroke-linecap="round"/>
-    <text x="116" y="90" font-family="Geist Mono, monospace" font-weight="600" font-size="16" letter-spacing="2.7" fill="#5EEAD4">PRISMA NEXT</text>
+    <text x="116" y="90" font-family="Geist Mono, monospace" font-weight="600" font-size="16" letter-spacing="2.7" fill="#5EEAD4">PRISMA COMPUTE</text>
   </g>
 
   <!-- Headline -->
