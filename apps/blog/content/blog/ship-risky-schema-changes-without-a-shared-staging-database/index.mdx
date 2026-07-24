@@ -1,0 +1,230 @@
+---
+title: "Ship risky schema changes without a shared staging database"
+slug: "ship-risky-schema-changes-without-a-shared-staging-database"
+date: "2026-07-24"
+authors:
+  - "Shane Neubauer"
+draft: true
+metaTitle: "Ship risky schema changes without a shared staging database"
+metaDescription: "Per-branch databases on Prisma Compute eliminate migration conflicts by giving every pull request its own database. Walk through expand-and-contract migrations without a shared staging environment."
+tags:
+  - "platform"
+  - "orm"
+---
+
+Every team that runs Prisma Migrate in production eventually hits the same wall: a shared staging database. You open a PR that adds a column, someone else opens a PR that drops one, and CI becomes a lottery. One branch's migration conflicts with another's, and the only fix is to rebase, re-resolve, and pray.
+
+The real problem isn't the conflict itself — it's that the unit of review is wrong. You're reviewing app code in isolation from the schema it depends on. Per-branch databases on Prisma Compute fix that by giving every pull request its own database, its own migration history, and its own deploy. Once you can rehearse a migration in isolation, you can afford to run destructive changes through an expand-and-contract cycle — and that's what makes rollback survivable.
+
+This post walks through the full workflow: why shared staging breaks Prisma Migrate's linear history, how per-branch databases restore it, and how to ship a risky rename using expand-and-contract without a shared staging environment in sight.
+
+## Why shared staging databases break Prisma Migrate
+
+Prisma Migrate enforces a single, linear migration history. Each migration builds on the one before it, and the `prisma/migrations` directory is the source of truth. That's the feature that makes migrations safe — but it turns into a bottleneck when multiple developers share one staging database.
+
+Here's the scenario:
+
+1. Alice branches off `main`, creates `add-display-name` migration, and deploys it to the shared staging database.
+2. Bob branches off `main`, creates `remove-legacy-field` migration, and deploys it to the same staging database.
+3. Alice merges first. Her migration becomes the new baseline on `main`.
+4. Bob tries to merge. His migration was created against the old baseline, so the migration history diverges. `prisma migrate deploy` fails because the applied migrations don't match the expected state.
+
+The conventional fixes are all bad:
+
+- **Rebase and regenerate**: Bob rebases, regenerates his migration, and hopes it still does what he intended. This works for simple changes but gets fragile with data migrations.
+- **Reset staging on every merge**: Blow away the shared database and re-apply all migrations from scratch. This works technically but kills any integration testing that relied on that data.
+- **Sequential merges only**: Only one person can touch the schema at a time. This is the de facto standard, and it's slow.
+
+None of these solve the root cause: the staging database has one migration history, but multiple branches need different ones.
+
+## Per-branch databases on Prisma Compute
+
+Prisma Compute gives each branch its own isolated Postgres database. When you push a branch, Compute creates a new database (or reuses an existing one for that branch name). When you deploy, `prisma migrate deploy` runs against that branch's database — not a shared one.
+
+This means:
+
+- Alice's branch gets its own database with its own migration history.
+- Bob's branch gets a different database with a different migration history.
+- Neither conflicts with the other, because they're not sharing state.
+
+When Alice merges, her migration lands on `main` and the production database. When Bob rebases and merges after her, his migration is regenerated against the updated baseline — but he can test it against his own branch database first, not against a contaminated shared staging environment.
+
+The workflow looks like this:
+
+```bash
+# Create a branch
+git checkout -b remove-legacy-field
+
+# Make your schema change
+# (edit prisma/schema.prisma)
+
+# Create and apply the migration on your branch's database
+npx prisma migrate dev --name remove-legacy-field
+
+# Deploy the branch to Compute (creates/updates the branch database)
+npx prisma compute deploy --branch remove-legacy-field --db
+
+# Open a PR. Reviewers can hit the branch's deployed URL and its database.
+```
+
+No conflicts. No rebasing until you're ready to merge. No shared staging database.
+
+## Expand-and-contract: shipping destructive changes safely
+
+Per-branch databases solve the concurrency problem. But they don't solve the production safety problem — what happens when you need to rename a column, change a type, or drop a field that production code still reads?
+
+The answer is expand-and-contract. Instead of one big migration that breaks everything, you split the change into three steps:
+
+1. **Expand**: Add the new schema alongside the old. Both old and new code paths work.
+2. **Migrate**: Backfill data from the old structure to the new, in batches.
+3. **Contract**: Remove the old schema. Only new code paths remain.
+
+This pattern is well-known but rarely practiced, because it requires running multiple migrations against a shared database where other developers are also deploying changes. Per-branch databases remove that friction.
+
+### Step 1: Expand — add the new column
+
+```prisma
+model User {
+  id          Int    @id @default(autoincrement())
+  email       String @unique
+  displayName String? // ← new field, nullable so old code still works
+  name        String // ← old field, kept for now
+}
+```
+
+```bash
+npx prisma migrate dev --name add-display-name
+```
+
+Deploy this branch. Old code still reads `name`. New code can start writing to `displayName`.
+
+### Step 2: Migrate — backfill data
+
+Write a TypeScript script that copies `name` into `displayName` in batches:
+
+```typescript
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+async function backfill() {
+  const BATCH_SIZE = 500;
+  let cursor = 0;
+
+  while (true) {
+    const users = await prisma.user.findMany({
+      where: { displayName: null },
+      skip: cursor,
+      take: BATCH_SIZE,
+      orderBy: { id: "asc" },
+    });
+
+    if (users.length === 0) break;
+
+    await Promise.all(
+      users.map((u) =>
+        prisma.user.update({
+          where: { id: u.id },
+          data: { displayName: u.name },
+        })
+      )
+    );
+
+    cursor += BATCH_SIZE;
+    console.log(`Backfilled ${cursor} users`);
+  }
+
+  await prisma.$disconnect();
+}
+
+backfill();
+```
+
+Run this as a one-off job against your branch database. You can test it in isolation, verify the data, and only then promote to production.
+
+### Step 3: Contract — remove the old column
+
+Once all production code reads `displayName` and the backfill is complete:
+
+```prisma
+model User {
+  id          Int    @id @default(autoincrement())
+  email       String @unique
+  displayName String // ← now required
+  // name removed
+}
+```
+
+```bash
+npx prisma migrate dev --name remove-name-field
+```
+
+Deploy. The old column is gone. If something goes wrong, you can re-expand: add `name` back and re-run the backfill in reverse. You never need to "roll back" a migration — you move forward.
+
+## Why you can't just "roll back" a Prisma migration
+
+This is the part that surprises people: promoting an older deploy on Prisma Compute does **not** roll back your schema. The database keeps the schema from the most recent `prisma migrate deploy`. The app code reverts, but the database doesn't.
+
+This is by design. Prisma Migrate's migration history is append-only. Rolling back a migration would require generating and applying an inverse migration, which is unsafe for production data — you can't un-drop a column.
+
+This is exactly why expand-and-contract matters. If you need to "undo" a schema change, you don't roll back — you deploy a new forward migration that re-adds the old structure. It's more work upfront, but it's safe. And per-branch databases make it practical, because you can rehearse the entire cycle on an isolated database before touching production.
+
+## CI: making it automatic
+
+The manual workflow is fine for getting started. For teams with CI, here's what an automated version looks like:
+
+```yaml
+# .github/workflows/compute-deploy.yml
+name: Compute Branch Deploy
+
+on:
+  pull_request:
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Deploy branch database
+        run: npx prisma compute deploy --branch ${{ github.head_ref }} --db
+
+      - name: Run migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.COMPUTE_BRANCH_DB_URL_${{ github.head_ref }} }}
+
+      - name: Smoke test
+        run: node scripts/smoke-test.mjs
+        env:
+          DATABASE_URL: ${{ secrets.COMPUTE_BRANCH_DB_URL_${{ github.head_ref }} }}
+```
+
+Every PR gets its own database, its own migration run, and its own smoke test — without touching any other branch.
+
+## When per-branch databases are overkill
+
+Not every team needs this. If you're a solo developer or a small team that rarely touches the schema, shared staging is fine — the conflict rate is low enough that the occasional rebase isn't painful.
+
+Per-branch databases shine when:
+
+- Multiple developers ship schema changes in the same sprint
+- You're running expand-and-contract migrations that span multiple deploys
+- Your CI pipeline runs integration tests against a real database
+- You've ever had a migration conflict block a release
+
+If any of those sound familiar, the isolation is worth the infrastructure cost — especially during Compute's beta period, where branch databases are free.
+
+## The takeaway
+
+Shared staging databases create a structural conflict with Prisma Migrate's linear history. Per-branch databases on Prisma Compute eliminate that conflict by giving every branch its own migration timeline.
+
+Once you have isolated databases per branch, expand-and-contract stops being theoretical and starts being practical. You can add, backfill, and remove columns across multiple deploys without worrying about what's happening on someone else's branch.
+
+And when things go wrong in production, you don't roll back — you move forward with a corrective migration. That's the workflow that per-branch databases and Prisma Compute make easy.
