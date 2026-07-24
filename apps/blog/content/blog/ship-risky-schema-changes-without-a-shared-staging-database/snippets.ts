@@ -51,7 +51,9 @@ export const contractContractAfter = `model User {
 export const contractTerminalLines = [
   "✔ Planned 1 operation(s)",
   "│",
-  '└─ Drop column "name" from "user"',
+  '└─ Drop column "name" from "user" (destructive)',
+  "",
+  "⚠ This migration contains destructive operations that may cause data loss.",
   "",
   "DDL preview",
   "",
