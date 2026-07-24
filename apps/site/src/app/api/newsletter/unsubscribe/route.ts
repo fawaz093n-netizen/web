@@ -1,5 +1,5 @@
 import {
-  NewsletterSubscriptionError,
+  NewsletterServiceError,
   NEWSLETTER_UNSUBSCRIBE_COOKIE_NAME,
   isValidNewsletterUnsubscribeToken,
   unsubscribeFromPrismaNewsletter,
@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
     return clearUnsubscribeCookie(NextResponse.redirect(unsubscribePageUrl(request, status), 303));
   } catch (error) {
     const details =
-      error instanceof NewsletterSubscriptionError
-        ? { code: error.code, status: error.status }
+      error instanceof NewsletterServiceError
+        ? { code: error.code, status: error.status, providerCode: error.providerCode }
         : { code: "unexpected_error" };
     console.error("Newsletter unsubscribe failed", details);
     return NextResponse.redirect(unsubscribePageUrl(request, "error"), 303);

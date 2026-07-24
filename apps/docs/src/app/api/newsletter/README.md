@@ -18,7 +18,16 @@ Subscription is immediate and does not require an email confirmation.
 2. In **Transactional** → **Templates**, verify that welcome template `228` is active
 3. These are verification steps; the shared server helper owns both IDs
 
-### 3. Environment Variables
+### 3. Contact Attributes
+
+These contact attributes must exist in **Contacts** → **Settings** → **Contact attributes**
+before the routes deploy — Brevo rejects payloads that reference unknown attributes:
+
+- `NEWSLETTER_SOURCE` (text): the path that triggered the newest (re)subscription
+- `NEWSLETTER_UNSUBSCRIBE_TOKEN` (text): random token backing the unsubscribe link
+- `NEWSLETTER_CONSENT_AT` (text): ISO 8601 consent timestamp, refreshed on every (re)subscription
+
+### 4. Environment Variables
 
 Add this variable to your Vercel project or `.env.local` file:
 
@@ -26,7 +35,7 @@ Add this variable to your Vercel project or `.env.local` file:
 BREVO_API_KEY=your_api_key_here
 ```
 
-### 4. Vercel Environment Variables
+### 5. Vercel Environment Variables
 
 In your Vercel project settings:
 
@@ -104,8 +113,9 @@ Public website subscriptions use this flow:
 3. The route sends the newsletter welcome template once when the contact enters the list.
 4. Existing list members receive no additional welcome email.
 
-Each route supplies a fixed `NEWSLETTER_SOURCE` (`website`, `blog`, or `docs`). Console signup uses
-`console-signup` in a separate silent list-sync path and never calls the welcome-email helper.
+Each route supplies a fixed `NEWSLETTER_SOURCE` (`website`, `blog`, or `docs`), and every
+(re)subscription refreshes the `NEWSLETTER_CONSENT_AT` timestamp as consent evidence. Console signup
+uses `console-signup` in a separate silent list-sync path and never calls the welcome-email helper.
 
 ## Troubleshooting
 

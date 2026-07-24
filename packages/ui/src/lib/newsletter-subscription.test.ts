@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it, mock } from "node:test";
 import {
+  NEWSLETTER_CONSENT_AT_ATTRIBUTE,
   NEWSLETTER_SOURCE_ATTRIBUTE,
   NEWSLETTER_WELCOME_TEMPLATE_ID,
   NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE,
   PRISMA_NEWSLETTER_LIST_ID,
-  NewsletterSubscriptionError,
+  NewsletterServiceError,
   isValidNewsletterEmail,
   subscribeToPrismaNewsletter,
   unsubscribeFromPrismaNewsletter,
@@ -36,16 +37,21 @@ function jsonResponse(body: unknown, status = 200) {
   });
 }
 
-function createFetch(responses: Response[]) {
+function createFetch(responses: (Response | Error)[]) {
   const calls: FetchCall[] = [];
   const fetcher = (async (input: string | URL | Request, init?: RequestInit) => {
     calls.push({ input: String(input), init });
     const response = responses.shift();
     assert.ok(response, "Unexpected Brevo request");
+    if (response instanceof Error) throw response;
     return response;
   }) as typeof fetch;
 
   return { calls, fetcher };
+}
+
+function silenceWarn() {
+  return mock.method(console, "warn", () => {});
 }
 
 describe("subscribeToPrismaNewsletter", () => {
@@ -73,6 +79,10 @@ describe("subscribeToPrismaNewsletter", () => {
     assert.equal(contactBody.attributes[NEWSLETTER_SOURCE_ATTRIBUTE], "website");
     assert.equal(contactBody.attributes.SOURCE, "website");
     assert.match(contactBody.attributes[NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE], /^[0-9a-f]{64}$/);
+    assert.match(
+      contactBody.attributes[NEWSLETTER_CONSENT_AT_ATTRIBUTE],
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+    );
     assert.equal(contactBody.emailBlacklisted, false);
     assert.deepEqual(contactBody.listIds, [PRISMA_NEWSLETTER_LIST_ID]);
 
@@ -87,6 +97,52 @@ describe("subscribeToPrismaNewsletter", () => {
       emailBody.headers["Idempotency-Key"],
       /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
     );
+  });
+
+  it("rejects an invalid email inside the service without calling Brevo", async () => {
+    const { calls, fetcher } = createFetch([]);
+
+    await assert.rejects(
+      subscribeToPrismaNewsletter({
+        apiKey: "test-key",
+        email: " not an email ",
+        fetcher,
+        source: "website",
+      }),
+      (error: unknown) => {
+        assert.ok(error instanceof NewsletterServiceError);
+        assert.equal(error.code, "invalid_email");
+        return true;
+      },
+    );
+    assert.equal(calls.length, 0);
+  });
+
+  it("issues an unpredictable unsubscribe token for each new contact", async () => {
+    const tokens: string[] = [];
+
+    for (let run = 0; run < 2; run += 1) {
+      const { calls, fetcher } = createFetch([
+        jsonResponse({}, 404),
+        jsonResponse({ id: run }, 201),
+        jsonResponse({ messageId: `welcome-${run}` }, 201),
+      ]);
+
+      await subscribeToPrismaNewsletter({
+        apiKey: "test-key",
+        email: "dev@example.com",
+        fetcher,
+        source: "website",
+      });
+
+      tokens.push(
+        JSON.parse(String(calls[1]?.init?.body)).attributes[NEWSLETTER_UNSUBSCRIBE_TOKEN_ATTRIBUTE],
+      );
+    }
+
+    assert.match(tokens[0], /^[0-9a-f]{64}$/);
+    assert.match(tokens[1], /^[0-9a-f]{64}$/);
+    assert.notEqual(tokens[0], tokens[1]);
   });
 
   it("keeps an existing unsubscribe token when a contact resubscribes", async () => {
@@ -158,21 +214,132 @@ describe("subscribeToPrismaNewsletter", () => {
     assert.equal(calls.length, 3);
   });
 
-  it("keeps a completed subscription when the welcome send fails", async () => {
+  it("reuses one idempotency key per address so duplicate welcomes collapse", async () => {
+    const keys: string[] = [];
+
+    for (const email of ["dev@example.com", "dev@example.com", "other@example.com"]) {
+      const { calls, fetcher } = createFetch([
+        jsonResponse({}, 404),
+        jsonResponse({ id: 1 }, 201),
+        jsonResponse({ messageId: "welcome" }, 201),
+      ]);
+
+      await subscribeToPrismaNewsletter({ apiKey: "test-key", email, fetcher, source: "website" });
+      keys.push(JSON.parse(String(calls[2]?.init?.body)).headers["Idempotency-Key"]);
+    }
+
+    assert.equal(keys[0], keys[1]);
+    assert.notEqual(keys[0], keys[2]);
+  });
+
+  it("keeps a completed subscription and surfaces the reason when the welcome send fails", async () => {
+    const warn = silenceWarn();
+    try {
+      const { fetcher } = createFetch([
+        jsonResponse({}, 404),
+        jsonResponse({ id: 123 }, 201),
+        jsonResponse({ code: "temporary_failure" }, 503),
+      ]);
+
+      const result = await subscribeToPrismaNewsletter({
+        apiKey: "test-key",
+        email: "dev@example.com",
+        fetcher,
+        source: "website",
+      });
+
+      assert.deepEqual(result, {
+        status: "subscribed",
+        welcomeSent: false,
+        welcomeFailure: {
+          code: "brevo_request_failed",
+          status: 503,
+          providerCode: "temporary_failure",
+        },
+      });
+
+      assert.equal(warn.mock.callCount(), 1);
+      const logged = JSON.stringify(warn.mock.calls[0]?.arguments);
+      assert.doesNotMatch(logged, /dev@example\.com/);
+      assert.match(logged, /temporary_failure/);
+    } finally {
+      warn.mock.restore();
+    }
+  });
+
+  it("reports a timed-out welcome send distinctly from other failures", async () => {
+    const warn = silenceWarn();
+    try {
+      const { fetcher } = createFetch([
+        jsonResponse({}, 404),
+        jsonResponse({ id: 123 }, 201),
+        new DOMException("The operation timed out", "TimeoutError"),
+      ]);
+
+      const result = await subscribeToPrismaNewsletter({
+        apiKey: "test-key",
+        email: "dev@example.com",
+        fetcher,
+        source: "website",
+      });
+
+      assert.deepEqual(result, {
+        status: "subscribed",
+        welcomeSent: false,
+        welcomeFailure: { code: "brevo_request_timed_out" },
+      });
+    } finally {
+      warn.mock.restore();
+    }
+  });
+
+  it("maps aborted and failed Brevo requests to service errors without PII", async () => {
+    for (const [thrown, expectedCode] of [
+      [new DOMException("The operation timed out", "TimeoutError"), "brevo_request_timed_out"],
+      [new DOMException("The operation was aborted", "AbortError"), "brevo_request_timed_out"],
+      [new TypeError("fetch failed"), "brevo_request_failed"],
+    ] as const) {
+      const { fetcher } = createFetch([thrown]);
+
+      await assert.rejects(
+        subscribeToPrismaNewsletter({
+          apiKey: "test-key",
+          email: "private@example.com",
+          fetcher,
+          source: "website",
+        }),
+        (error: unknown) => {
+          assert.ok(error instanceof NewsletterServiceError);
+          assert.equal(error.code, expectedCode);
+          assert.doesNotMatch(error.message, /private@example\.com/);
+          return true;
+        },
+      );
+    }
+  });
+
+  it("rejects an invalid Brevo response body as invalid_brevo_response", async () => {
     const { fetcher } = createFetch([
-      jsonResponse({}, 404),
-      jsonResponse({ id: 123 }, 201),
-      jsonResponse({ code: "temporary_failure" }, 503),
+      new Response("<html>gateway error</html>", {
+        status: 200,
+        headers: { "content-type": "text/html" },
+      }),
     ]);
 
-    const result = await subscribeToPrismaNewsletter({
-      apiKey: "test-key",
-      email: "dev@example.com",
-      fetcher,
-      source: "website",
-    });
-
-    assert.deepEqual(result, { status: "subscribed", welcomeSent: false });
+    await assert.rejects(
+      subscribeToPrismaNewsletter({
+        apiKey: "test-key",
+        email: "dev@example.com",
+        fetcher,
+        source: "website",
+      }),
+      (error: unknown) => {
+        assert.ok(error instanceof NewsletterServiceError);
+        assert.equal(error.code, "invalid_brevo_response");
+        assert.equal(error.status, 200);
+        return true;
+      },
+    );
   });
 
   it("does not include the subscriber email in subscription errors", async () => {
@@ -186,8 +353,10 @@ describe("subscribeToPrismaNewsletter", () => {
         source: "website",
       }),
       (error: unknown) => {
-        assert.ok(error instanceof NewsletterSubscriptionError);
-        assert.equal(error.code, "unauthorized");
+        assert.ok(error instanceof NewsletterServiceError);
+        assert.equal(error.code, "brevo_request_failed");
+        assert.equal(error.providerCode, "unauthorized");
+        assert.equal(error.status, 401);
         assert.doesNotMatch(error.message, /private@example\.com/);
         return true;
       },
@@ -236,6 +405,26 @@ describe("unsubscribeFromPrismaNewsletter", () => {
     });
 
     assert.deepEqual(result, { status: "already_unsubscribed" });
+    assert.equal(calls.length, 1);
+  });
+
+  it("treats a token matching more than one contact as invalid", async () => {
+    const { calls, fetcher } = createFetch([
+      jsonResponse({
+        contacts: [
+          { email: "one@example.com", listIds: [PRISMA_NEWSLETTER_LIST_ID] },
+          { email: "two@example.com", listIds: [PRISMA_NEWSLETTER_LIST_ID] },
+        ],
+      }),
+    ]);
+
+    const result = await unsubscribeFromPrismaNewsletter({
+      apiKey: "test-key",
+      fetcher,
+      token: "d".repeat(64),
+    });
+
+    assert.deepEqual(result, { status: "invalid_token" });
     assert.equal(calls.length, 1);
   });
 

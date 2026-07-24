@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import {
-  NewsletterSubscriptionError,
+  NewsletterServiceError,
   isValidNewsletterEmail,
   subscribeToPrismaNewsletter,
   type NewsletterSource,
@@ -72,7 +72,10 @@ export function createNewsletterRoute({ allowedOrigins, source }: NewsletterRout
         const result = await subscribeToPrismaNewsletter({ apiKey, email, source });
 
         if (!result.welcomeSent && result.status === "subscribed") {
-          console.warn("Newsletter subscription completed without welcome email", { source });
+          console.warn("Newsletter subscription completed without welcome email", {
+            source,
+            ...result.welcomeFailure,
+          });
         }
 
         if (result.status === "already_subscribed") {
@@ -88,8 +91,8 @@ export function createNewsletterRoute({ allowedOrigins, source }: NewsletterRout
         );
       } catch (error) {
         const details =
-          error instanceof NewsletterSubscriptionError
-            ? { code: error.code, status: error.status, source }
+          error instanceof NewsletterServiceError
+            ? { code: error.code, status: error.status, providerCode: error.providerCode, source }
             : { code: "unexpected_error", source };
         console.error("Newsletter subscription failed", details);
 
