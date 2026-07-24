@@ -1,0 +1,39 @@
+---
+title: "From Local Development to Production with Prisma Postgres"
+slug: "from-local-to-production-with-prisma-postgres"
+date: "2026-07-24"
+authors:
+  - "Søren Bramer Schmidt"
+metaTitle: "From Local Development to Production with Prisma Postgres"
+metaDescription: "The checklist for taking a Prisma app from local Postgres, Docker or prisma dev, to hosted Prisma Postgres: create, configure, migrate, import, validate."
+heroImagePath: "/from-local-to-production-with-prisma-postgres/imgs/hero.svg"
+heroImageAlt: "From Local Development to Production with Prisma Postgres"
+metaImagePath: "/from-local-to-production-with-prisma-postgres/imgs/meta.png"
+tags:
+  - "prisma-postgres"
+  - "education"
+---
+
+Prototyping against a local Postgres is the easy part; the awkward step is moving that working app to a hosted database. This post is the exact checklist for that move: from Docker Postgres or a local `prisma dev` instance to [Prisma Postgres](https://www.prisma.io/docs/postgres), with your schema, data, and config arriving intact.
+
+## The local-to-production gap
+
+_Write about the problem here: the app works against a database on your machine, and the path to a hosted one feels undocumented. List what actually has to change (connection URL, migration workflow, the data itself) and preview the five-step checklist the rest of the post walks through._
+
+## Start local: `prisma dev` or Docker
+
+_Show both starting points here. Contrast a [Docker](https://www.docker.com) setup (compose file, port mapping, volumes for persistence, waiting on a healthcheck) with `npx prisma dev` printing a ready-to-use connection string, per the [local development guide](https://www.prisma.io/docs/postgres/database/local-development). Explain why `prisma dev` is the easier default: no Docker daemon or compose file to maintain, instant startup on an embedded [PGlite](https://pglite.dev) engine, named per-project instances, a built-in lifecycle (`--detach`, `dev ls`, `dev stop`, `dev rm`), and direct Postgres connections so any GUI or driver works. Be honest about the trade-offs (one connection at a time, local use only), and note that both paths end at the same place: a migration history ready to replay in production._
+
+## Create the hosted database and update your config
+
+_Walk through provisioning here: create a Prisma Postgres database from the Console with `npx prisma init --db`, or grab a throwaway one with [`npx create-db`](https://www.prisma.io/docs/postgres/npx-create-db) and claim it later. Then make the one config change that matters: swap `DATABASE_URL` in `.env` for the hosted connection string. No application-logic changes, same schema, same client._
+
+## Run migrations and move your data
+
+_Cover the two transfer steps here. First replay the schema: `npx prisma migrate deploy` applies the existing migration history to the hosted database, the same split between dev and production commands described in the [migration workflows docs](https://www.prisma.io/docs/orm/prisma-migrate/workflows/development-and-production). Then move the data: `pg_dump` from the local database and `pg_restore` into Prisma Postgres over a [direct connection](https://www.prisma.io/docs/postgres/database/connecting-to-your-database), following the [PostgreSQL import guide](https://www.prisma.io/docs/prisma-postgres/import-from-existing-database-postgresql). Mention the Postgres 17 tooling requirement and the VS Code extension's push-to-cloud shortcut for local `prisma dev` instances._
+
+## Validate the cutover
+
+_Close the checklist here: compare row counts and spot-check queries in Prisma Studio, run the app against the hosted URL, confirm `prisma migrate status` is clean, then retire the local container or instance. End state: local for iteration, hosted for production, one env var apart._
+
+_Wrap up with the takeaway (the whole move is five steps and the config change is one line) and a clear next step for the reader._
