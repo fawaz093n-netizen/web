@@ -1,0 +1,535 @@
+---
+title: "You Don't Need to Trust Every Query, Postgres Already Has Row-Level Security"
+slug: "you-dont-need-to-trust-every-query-postgres-already-has-row-level-security"
+date: "2026-07-28"
+authors:
+  - "Nurul Sundarani"
+metaTitle: "Postgres Row-Level Security for Multi-Tenant Apps"
+metaDescription: "Tenant isolation with Postgres Row-Level Security on Prisma Postgres: one policy, per-transaction tenant context, and the role split that makes it enforceable."
+heroImagePath: "/you-dont-need-to-trust-every-query-postgres-already-has-row-level-security/imgs/hero.svg"
+heroImageAlt: "You Don't Need to Trust Every Query, Postgres Already Has Row-Level Security"
+metaImagePath: "/you-dont-need-to-trust-every-query-postgres-already-has-row-level-security/imgs/meta.png"
+tags:
+  - "prisma-postgres"
+  - "education"
+series: postgres-features
+seriesIndex: 6
+prev: you-dont-need-elasticsearch-postgres-already-has-full-text-search
+---
+
+Every query in a multi-tenant app carries the same silent assumption: someone remembered the `WHERE "tenantId" = ...` clause. Postgres can enforce that rule in the table itself with [Row-Level Security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html). In this post, you'll put a tenant fence around your data on [Prisma Postgres](https://www.prisma.io/docs/postgres), a managed PostgreSQL service, with one policy per table and two lines of transaction context. Inside that fence, the query that forgets its `WHERE` clause returns one tenant's rows instead of everyone's, and a fenced request with no tenant set gets nothing at all.
+
+This is the sixth post in the [Postgres features series](https://www.prisma.io/blog/series/postgres-features), after [Pub/Sub with `LISTEN` and `NOTIFY`](https://www.prisma.io/blog/you-dont-need-redis-postgres-already-has-pub-sub), [the bloom index](https://www.prisma.io/blog/postgres-bloom-index-the-overlooked-postgres-feature), [pgvector](https://www.prisma.io/blog/you-dont-need-a-vector-database-postgres-already-has-pgvector), [the SKIP LOCKED job queue](https://www.prisma.io/blog/you-dont-need-a-job-queue-postgres-already-has-skip-locked), and [full-text search](https://www.prisma.io/blog/you-dont-need-elasticsearch-postgres-already-has-full-text-search).
+
+Multi-tenancy usually starts with a familiar question: how do you guarantee tenant A never sees tenant B's rows?
+
+The usual answer is discipline. A filter in every query, a helper that adds it for you, a code reviewer who catches the one that slipped through. Discipline works until it doesn't, and in a multi-tenant app "doesn't" means one customer reading another customer's data. Postgres has shipped a better answer in the core server since 2016. The part most developers miss is that turning it on is the easy half; knowing which database role your queries actually run as is the half that decides whether it works.
+
+## Why tenant filtering breaks down
+
+In a shared-schema multi-tenant app, every table has a `tenant_id` column and every query is supposed to filter on it. That "supposed to" is carried entirely by application code:
+
+- The `WHERE` clause is repeated in every query, and every new endpoint adds more of them
+- A query helper or middleware injects the filter, until someone writes a raw query that goes around it
+- Code review catches missing filters, when the reviewer notices
+
+The failure mode is what makes this dangerous: a query with a missing tenant filter is not an error. It compiles, it passes tests that only seed one tenant, and it returns rows. It ships green and leaks quietly, and you find out from a customer instead of a stack trace.
+
+Coding agents raise the stakes. An agent writing your queries reproduces the patterns it was asked for, and a rules file like the one from [our AGENTS.md for databases post](/agents-md-for-databases) can hand it your team's database workflow. But a rules file is guidance, not enforcement. Nothing in the toolchain stops a syntactically perfect, logically wrong query from reaching production, whether a human wrote it or an agent did.
+
+Row-Level Security moves the rule out of every query and into the table. The policy is defined once per table, and Postgres applies it to every `SELECT`, `INSERT`, `UPDATE`, and `DELETE` that reaches that table from a role policies bind, including the queries nobody remembered to filter. The trade is explicit: the correctness burden moves from every query ever written to a short, reviewable list of structural rules: a policy on each table, a fence the traffic runs through, and the escape hatches named as such. The rest of this post is about making that list real.
+
+## What Row-Level Security does, and who it applies to
+
+Row-Level Security (RLS) is a PostgreSQL feature that attaches a filtering policy directly to a table: queries from any role the policy applies to are checked against it, rows that fail are invisible to reads, and writes that fail are rejected. Postgres has shipped it in the core server since version 9.5, released in 2016, with no extension required. Two statements do the work:
+
+```sql
+ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_isolation ON invoices
+  USING (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid)
+  WITH CHECK (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid);
+```
+
+`ENABLE ROW LEVEL SECURITY` tells Postgres to filter this table through policies. [`CREATE POLICY`](https://www.postgresql.org/docs/current/sql-createpolicy.html) defines the rule, in two halves:
+
+- **`USING` filters what queries can see.** Rows where the expression is not true are invisible to `SELECT`, and can't be hit by `UPDATE` or `DELETE`. Not "return an error": invisible, as if they don't exist.
+- **`WITH CHECK` rejects writes that don't belong.** An `INSERT` or `UPDATE` whose new row fails the expression errors out instead of landing in another tenant's data.
+
+The expression compares the row's `tenant_id` to `current_setting('app.tenant_id')`, a session variable your application sets. The two guards around it make the policy **fail closed**: passing `true` as the second argument makes `current_setting` return `NULL` instead of raising an error when the variable was never set, and `NULLIF(..., '')` turns the empty string (what you get after a context has been cleared) into `NULL` too. `tenant_id = NULL` is never true in SQL, so a fenced request that forgot to set its tenant context sees an empty table, not everybody's rows.
+
+That is the mechanism. The part most RLS tutorials skip is who the policy applies *to*, and it is the part that decides whether your fence exists at all:
+
+- **Superusers bypass every policy, always.** No setting changes this, including `FORCE ROW LEVEL SECURITY`.
+- **Roles with the `BYPASSRLS` attribute** bypass every policy too.
+- **The table's owner** bypasses policies on its own tables by default; `ALTER TABLE ... FORCE ROW LEVEL SECURITY` closes that gap for non-superuser owners.
+- **Views and `SECURITY DEFINER` functions check policies as their owner, not their caller.** A view created by your migrations belongs to the migration role, and a fence that holds on the table can leak through the view. In our runs on Prisma Postgres, a plain view over the fenced `invoices` table returned both tenants' totals to `prisma_application` while the table itself returned zero rows; the same view created `WITH (security_invoker = true)` (PostgreSQL 15 and later) stayed fenced. Give views that read tenant data the `security_invoker` option.
+- **Everyone else** gets policies applied to direct table access the moment RLS is enabled.
+
+So before trusting any RLS setup, ask the question the next section answers for Prisma Postgres: which role do my queries actually run as?
+
+## The role split that makes it enforceable
+
+Connect to a Prisma Postgres database and look at `pg_roles`, and the split RLS asks for is already in place (verified in July 2026 on PostgreSQL 17.2; the roles are provisioning behavior you can check, not yet a documented contract, and the demo below prints them from your own database):
+
+| Role                 | Superuser        | `BYPASSRLS` | Used for                                   |
+| -------------------- | ---------------- | ----------- | ------------------------------------------ |
+| `prisma_migration`   | Yes (restricted) | No          | DDL: migrations, creating tables, policies |
+| `prisma_application` | No               | No          | Application queries                        |
+
+The direct connection string (what [`create-db`](https://www.prisma.io/docs/postgres/npx-create-db) returns, and what every run in this post used) logs in as `prisma_migration`. It is a superuser with platform guardrails on top: `rolsuper` reports `true`, but run `CREATE ROLE` and the server answers `restricted superuser cannot create roles`. The guardrails don't change the RLS math. As a superuser, it bypasses every policy you write, which makes it the right role for migrations and exactly the wrong role for application queries. Run your app on it and your RLS fence is decorative.
+
+`prisma_application` is the role your queries should run as. It is not a superuser, has no `BYPASSRLS`, and doesn't own the tables (the migration role created them), so policies apply to it with plain `ENABLE ROW LEVEL SECURITY`, no `FORCE` needed. Its table privileges are already granted by the platform: everything the demo below runs as `prisma_application` works without a single `GRANT` statement.
+
+Switching costs two lines at the start of each transaction:
+
+```sql
+BEGIN;
+SET LOCAL ROLE prisma_application;
+SELECT set_config('app.tenant_id', '11111111-1111-1111-1111-111111111111', true);
+-- every query in this transaction is fenced to that tenant
+COMMIT;
+```
+
+`SET LOCAL ROLE` switches the role for this transaction only, and `set_config(..., true)` is the function form of `SET LOCAL` for the tenant variable. Both revert automatically at `COMMIT` or `ROLLBACK`, so a reused connection never carries one request's tenant into the next. (Our runs used the direct connection string; the connection note in the ORM section covers what to verify before trusting the pooled one.) What a transaction *without* those two lines runs as is a different question, and it's the next paragraph.
+
+Be clear-eyed about what this pattern changes and what it doesn't. The connection itself still authenticates as the superuser, so the **resting state of a connection is unfenced**: a query that runs outside the wrapper (a bare client someone imported, a one-off script against the same string) sees everything again. The discipline doesn't disappear; it shrinks, from a `WHERE` clause in every query to a short structural list: tenant-facing code gets the fenced client, every new table gets its policy, and anything that touches the bare client (migrations, the cross-tenant admin paths covered below) is an explicit, reviewed exception. Structure the code so the bare client isn't exportable outside the module that builds the fence. And know what the fence is for: it stops your own buggy queries, not an attacker who can already execute arbitrary SQL on the connection, since that attacker can simply `RESET ROLE`. RLS here is a guardrail under your code, not a replacement for input handling. The per-table half of the list is the easiest to automate: a migration that adds a table without enabling RLS ships an unfenced table, and a CI check that fails on any tenant-scoped table with `pg_class.relrowsecurity = false` turns that habit into a gate (keep an allowlist for global tables like `_prisma_migrations`).
+
+Self-hosting Postgres lets you go one step further: connect application traffic directly as a dedicated non-superuser role, and the resting state itself fails closed. That takes the grants the platform handled for you here, plus `FORCE ROW LEVEL SECURITY` if that role owns its tables:
+
+```sql
+CREATE ROLE app_user LOGIN;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_user;
+```
+
+## Watch it stop a leaking query
+
+Let's watch the fence go up on real data, including the superuser trap. We'll build a script that does six things:
+
+1. Creates a temporary Prisma Postgres database
+2. Creates an `invoices` table with RLS enabled and one policy, then seeds two tenants
+3. Queries as the default connection and gets **all rows back**, policy or not
+4. Prints the provisioned roles, then switches to `prisma_application` with tenant A's context and runs the exact query that forgot its `WHERE` clause
+5. Runs the same query with no tenant context at all and gets zero rows
+6. Tries a cross-tenant insert and watches `WITH CHECK` reject it
+
+We'll use:
+
+- Bun to run the TypeScript script
+- `pg` to connect to Postgres
+- `create-db` to create a temporary Prisma Postgres database
+
+The [`create-db`](https://www.prisma.io/docs/postgres/npx-create-db) CLI creates a temporary Prisma Postgres database (auto-deleted after 24 hours unless you claim it) and supports JSON output, which makes it useful from scripts. Prisma Postgres also works with PostgreSQL-compatible clients like `pg`.
+
+Everything below was run against PostgreSQL 17.2, Bun 1.3, and pg 8.22.
+
+### Step 1: Create a new Bun project
+
+Create a new folder:
+
+```bash
+mkdir postgres-rls-demo
+cd postgres-rls-demo
+```
+
+Initialize the project and install `pg`:
+
+```bash
+bun init -y
+bun add pg
+bun add -d @types/pg
+```
+
+### Step 2: Add the script
+
+Create a file called `index.ts`:
+
+```typescript
+import { $ } from "bun";
+import { Client } from "pg";
+
+const TENANT_A = "11111111-1111-1111-1111-111111111111";
+const TENANT_B = "22222222-2222-2222-2222-222222222222";
+
+async function createDatabase() {
+  console.log("Creating a temporary Prisma Postgres database...");
+
+  const output = await $`bunx create-db@latest --region eu-central-1 --json`
+    .quiet()
+    .json();
+
+  const connectionString = output.connectionString;
+
+  if (!connectionString) {
+    throw new Error("Could not find a connection string.");
+  }
+
+  const url = new URL(connectionString);
+  url.searchParams.set("sslmode", "verify-full");
+
+  await waitUntilReady(url.toString());
+
+  console.log("Database created.");
+
+  return url.toString();
+}
+
+async function waitUntilReady(connectionString: string) {
+  for (let attempt = 1; attempt <= 10; attempt++) {
+    const probe = new Client({ connectionString });
+    probe.on("error", () => {});
+
+    try {
+      await probe.connect();
+      await probe.query("SELECT 1");
+      await probe.end();
+      return;
+    } catch {
+      await probe.end().catch(() => {});
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
+
+  throw new Error("Database was not ready after 10 attempts.");
+}
+
+const SETUP_SQL = `
+  CREATE TABLE invoices (
+    id        bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    tenant_id uuid NOT NULL,
+    customer  text NOT NULL,
+    amount    numeric(10,2) NOT NULL
+  );
+  CREATE INDEX invoices_tenant_idx ON invoices (tenant_id);
+
+  ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
+
+  CREATE POLICY tenant_isolation ON invoices
+    USING (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid)
+    WITH CHECK (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid);
+`;
+
+const INVOICES: [string, string, string][] = [
+  [TENANT_A, "Acme Corp", "1200.00"],
+  [TENANT_A, "Bluewater Ltd", "340.50"],
+  [TENANT_A, "Nimbus GmbH", "89.99"],
+  [TENANT_B, "Vertex Inc", "5400.00"],
+  [TENANT_B, "Quarry & Sons", "760.25"],
+  [TENANT_B, "Halcyon SA", "120.00"],
+];
+
+async function showInvoices(db: Client, label: string) {
+  const { rows } = await db.query(
+    "SELECT customer, amount FROM invoices ORDER BY id",
+  );
+
+  console.log(`\n${label}`);
+
+  if (rows.length === 0) {
+    console.log("(no rows)");
+  } else {
+    console.table(rows);
+  }
+
+  return rows;
+}
+
+async function asTenant<T>(
+  db: Client,
+  tenantId: string,
+  fn: () => Promise<T>,
+): Promise<T> {
+  await db.query("BEGIN");
+  await db.query("SET LOCAL ROLE prisma_application");
+  await db.query("SELECT set_config('app.tenant_id', $1, true)", [tenantId]);
+
+  try {
+    const result = await fn();
+    await db.query("COMMIT");
+    return result;
+  } catch (error) {
+    await db.query("ROLLBACK");
+    throw error;
+  }
+}
+
+async function main() {
+  const connectionString = await createDatabase();
+
+  const db = new Client({ connectionString });
+  await db.connect();
+
+  await db.query(SETUP_SQL);
+
+  const {
+    rows: [me],
+  } = await db.query(
+    "SELECT current_user, rolsuper FROM pg_roles WHERE rolname = current_user",
+  );
+  console.log(`Connected as ${me.current_user} (superuser: ${me.rolsuper}).`);
+
+  for (const [tenantId, customer, amount] of INVOICES) {
+    await db.query(
+      "INSERT INTO invoices (tenant_id, customer, amount) VALUES ($1, $2, $3)",
+      [tenantId, customer, amount],
+    );
+  }
+
+  console.log(`Seeded ${INVOICES.length} invoices across two tenants.`);
+
+  await showInvoices(
+    db,
+    "RLS enabled, policy in place, and the default connection still sees:",
+  );
+
+  const { rows: roles } = await db.query(
+    "SELECT rolname, rolsuper, rolbypassrls FROM pg_roles WHERE rolname NOT LIKE 'pg\\_%' ORDER BY rolname",
+  );
+  console.log("\nThe roles Prisma Postgres provisions:");
+  console.table(roles);
+
+  await asTenant(db, TENANT_A, async () => {
+    await showInvoices(
+      db,
+      "As prisma_application with tenant A's context, the query that forgot its WHERE clause:",
+    );
+  });
+
+  await db.query("BEGIN");
+  await db.query("SET LOCAL ROLE prisma_application");
+  await showInvoices(db, "As prisma_application with no tenant context:");
+  await db.query("ROLLBACK");
+
+  try {
+    await asTenant(db, TENANT_A, async () => {
+      await db.query(
+        "INSERT INTO invoices (tenant_id, customer, amount) VALUES ($1, $2, $3)",
+        [TENANT_B, "Sneaky Corp", "1.00"],
+      );
+    });
+    console.log("\nCross-tenant insert: succeeded (this would be a bug)");
+  } catch (error) {
+    console.log(`\nCross-tenant insert rejected: ${(error as Error).message}`);
+  }
+
+  await db.end();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+```
+
+The `asTenant` helper is the whole integration pattern: `BEGIN`, switch to the application role, set the tenant, run the work, `COMMIT`. One piece of scaffolding deserves a note: `waitUntilReady` retries the first connection because a freshly created database can take a few seconds before it accepts one.
+
+Run it:
+
+```bash
+bun index.ts
+```
+
+You should see output similar to this:
+
+```text
+Creating a temporary Prisma Postgres database...
+Database created.
+Connected as prisma_migration (superuser: true).
+Seeded 6 invoices across two tenants.
+
+RLS enabled, policy in place, and the default connection still sees:
+┌───┬───────────────┬─────────┐
+│   │ customer      │ amount  │
+├───┼───────────────┼─────────┤
+│ 0 │ Acme Corp     │ 1200.00 │
+│ 1 │ Bluewater Ltd │ 340.50  │
+│ 2 │ Nimbus GmbH   │ 89.99   │
+│ 3 │ Vertex Inc    │ 5400.00 │
+│ 4 │ Quarry & Sons │ 760.25  │
+│ 5 │ Halcyon SA    │ 120.00  │
+└───┴───────────────┴─────────┘
+
+The roles Prisma Postgres provisions:
+┌───┬────────────────────┬──────────┬──────────────┐
+│   │ rolname            │ rolsuper │ rolbypassrls │
+├───┼────────────────────┼──────────┼──────────────┤
+│ 0 │ postgres           │ true     │ true         │
+│ 1 │ prisma_application │ false    │ false        │
+│ 2 │ prisma_migration   │ true     │ false        │
+└───┴────────────────────┴──────────┴──────────────┘
+
+As prisma_application with tenant A's context, the query that forgot its WHERE clause:
+┌───┬───────────────┬─────────┐
+│   │ customer      │ amount  │
+├───┼───────────────┼─────────┤
+│ 0 │ Acme Corp     │ 1200.00 │
+│ 1 │ Bluewater Ltd │ 340.50  │
+│ 2 │ Nimbus GmbH   │ 89.99   │
+└───┴───────────────┴─────────┘
+
+As prisma_application with no tenant context:
+(no rows)
+
+Cross-tenant insert rejected: new row violates row-level security policy for table "invoices"
+```
+
+Each moment tells its own story.
+
+The first table is the trap this post exists to flag. RLS is enabled, the policy is live, and the connection still reads all six rows across both tenants, because `prisma_migration` is a superuser and **superusers bypass every policy**. This is what an RLS tutorial ships when it skips the role question and the connection happens to hold superuser or owner powers: a fence that looks finished and stops nobody. If you check one thing after enabling RLS, make it `SELECT current_user` next to that roles table.
+
+The second table is why the fix is two lines instead of a support ticket: `prisma_application` is already there, non-superuser, no `BYPASSRLS`, ready to be the role your queries run as. (The platform's own `postgres` role is the one carrying `BYPASSRLS`; every connection in our runs authenticated as `prisma_migration`.)
+
+The third result is the payoff. The query inside `asTenant` is `SELECT customer, amount FROM invoices` with no `WHERE` clause, the exact query that leaks in the application-discipline world. Under the policy it returns tenant A's three rows: for this transaction, the other three don't exist.
+
+The fourth result is the fail-closed guarantee for fenced traffic: same role, no tenant context, empty table. A request that reaches the table as the application role without a tenant doesn't see everything, it sees nothing: an empty page instead of a breach. Empty is not always noisy, a background job with no context just no-ops, but it is recoverable in a way a leak never is.
+
+And the rejected insert shows `WITH CHECK` guarding the write path: tenant A's context cannot create rows for tenant B, no matter what the application sends.
+
+## Using RLS with Prisma ORM
+
+The same pattern drops into Prisma ORM as a [client extension](https://www.prisma.io/docs/orm/prisma-client/client-extensions/query), so the role switch and tenant context wrap every model operation automatically instead of being copy-pasted into route handlers. The model maps onto the demo's table, with the generated client emitted to `./generated/prisma`:
+
+```prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Invoice {
+  id       BigInt  @id @default(autoincrement())
+  tenantId String  @map("tenant_id") @db.Uuid
+  customer String
+  amount   Decimal @db.Decimal(10, 2)
+
+  @@map("invoices")
+}
+```
+
+The extension runs each operation inside a batch transaction that establishes the fence first:
+
+```typescript
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Prisma, PrismaClient } from "./generated/prisma/client";
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
+
+const forTenant = (tenantId: string) =>
+  Prisma.defineExtension((client) =>
+    client.$extends({
+      query: {
+        $allModels: {
+          async $allOperations({ args, query }) {
+            const [, , result] = await client.$transaction([
+              client.$executeRaw`SET LOCAL ROLE prisma_application`,
+              client.$queryRaw`SELECT set_config('app.tenant_id', ${tenantId}, true)`,
+              query(args),
+            ]);
+            return result;
+          },
+        },
+      },
+    }),
+  );
+
+export const clientForTenant = (tenantId: string) =>
+  prisma.$extends(forTenant(tenantId));
+```
+
+At the edge of each request, derive a tenant-scoped client from the session through the factory the fence module exports, and use it like any other Prisma Client:
+
+```typescript
+const db = clientForTenant(session.tenantId);
+
+// Fenced automatically: only this tenant's invoices, no `where` needed
+const invoices = await db.invoice.findMany();
+
+// Rejected by the policy, even though the application asked for it
+await db.invoice.create({
+  data: { tenantId: someOtherTenantId, customer: "Sneaky Corp", amount: "1.00" },
+});
+```
+
+Run against the demo database above (Prisma ORM 7.9.1 with the `@prisma/adapter-pg` driver adapter), the `findMany` with no `where` returns tenant A's three invoices, and the cross-tenant `create` fails with the same policy error as the raw SQL version:
+
+```text
+Database error. Code: `42501`. Message: `new row violates row-level security policy for table "invoices"`
+```
+
+Three boundaries to respect. First, the extension intercepts model operations (`findMany`, `create`, and the rest of `$allModels`), so raw escape hatches like `$queryRaw` are not wrapped: route them through the same transaction-plus-context pattern when you need them. Second, writes that must commit together need one explicit transaction instead of the extension's per-operation wrapping. Keep the helper in the same module as `forTenant`, so the bare client still never leaves the fence module:
+
+```typescript
+const fencedTransaction = <T>(
+  tenantId: string,
+  fn: (tx: Prisma.TransactionClient) => Promise<T>,
+) =>
+  prisma.$transaction(async (tx) => {
+    await tx.$executeRaw`SET LOCAL ROLE prisma_application`;
+    await tx.$queryRaw`SELECT set_config('app.tenant_id', ${tenantId}, true)`;
+    return fn(tx);
+  });
+
+await fencedTransaction(session.tenantId, async (tx) => {
+  await tx.invoice.create({ data: { tenantId: session.tenantId, customer: "Acme Corp", amount: "1200.00" } });
+  await tx.invoice.create({ data: { tenantId: session.tenantId, customer: "Acme Corp", amount: "89.99" } });
+});
+```
+
+Every operation inside shares the fence, and the group commits or rolls back together: in our runs, a cross-tenant write inside the group aborted the whole group, first write included. Third, migrations keep running as `prisma_migration`, which is the point of the role split: `prisma migrate` needs DDL powers, your application traffic doesn't.
+
+One production note on connections: every run in this post used the direct connection string that `create-db` returns, which is the right string for scripts and migrations. For application traffic, the [connection docs](https://www.prisma.io/docs/postgres/database/connecting-to-your-database) say to use the pooled connection string from the Console instead. The fence is transaction-scoped state, and the [connection pooling docs](https://www.prisma.io/docs/postgres/database/connection-pooling) state that session state does not persist between transactions, which is the property the fence needs. We have not run this post's checks on the pooled string, so before trusting it in production, repeat them there: `SELECT current_user`, the no-context query, and the cross-tenant insert.
+
+## When you actually need more than RLS
+
+RLS enforces row visibility. It is not a permission system, and it's worth knowing where the boundary is before you lean on it:
+
+| Authorization need                          | Row-Level Security                     | The alternative                            |
+| ------------------------------------------- | -------------------------------------- | ------------------------------------------ |
+| Tenant isolation in a shared schema         | Built in, one policy per table         | A `WHERE` clause in every query            |
+| Fail-closed for fenced traffic with no context | One guarded expression in the policy | Hand-rolled discipline, fails open         |
+| Roles, permissions, "can this user edit?"   | Wrong tool                             | Application authorization (Oso, Cerbos)    |
+| Relationship rules ("managers see reports") | Policies grow unreadable fast          | Purpose-built policy engines               |
+| Hard compliance isolation per tenant        | Shared instance                        | Database-per-tenant, separate encryption   |
+| Cross-tenant admin and analytics            | Needs an explicit unfenced path        | A separate admin role or service           |
+
+Where the lines actually sit:
+
+- **Permission models.** "Which tenant's rows" is RLS territory. "Can this user approve this invoice" is a permission model with roles, grants, and hierarchies, and encoding it in SQL policies turns your schema into an authorization engine nobody can read. That is the job of application-level authorization like [Oso](https://www.osohq.com) or [Cerbos](https://www.cerbos.dev), layered on top of RLS, not instead of it.
+- **Hard isolation requirements.** Some compliance regimes and enterprise contracts require a tenant's data to live in its own database, with its own encryption keys and its own blast radius. RLS is logical isolation inside a shared instance; when the requirement is physical separation, provision separate databases.
+- **Policy performance.** The policy expression runs as part of every query on the table, so keep it cheap and indexable: a comparison against an indexed `tenant_id` column adds little, a subquery per row adds a lot. `EXPLAIN` shows the policy's condition folded into the plan, and [Query Insights](https://www.prisma.io/docs/query-insights) in the Prisma Console surfaces the queries that turned slow, so you know where to point `EXPLAIN` first.
+- **Cross-tenant surfaces.** Admin dashboards and analytics legitimately need to see across tenants, and there are two explicit ways to grant it. The one to prefer keeps admin traffic on the application role: a second, read-only policy that opens under an admin context the fence module sets deliberately. In our runs, `CREATE POLICY admin_read ON invoices FOR SELECT TO prisma_application USING (current_setting('app.is_admin', true) = 'true')` let the application role read across tenants when that flag was set, stayed fenced without it, and left writes governed by the tenant policy throughout. The alternative is the unwrapped superuser connection inside admin-only code paths; it carries DDL powers (on Prisma Postgres there is no third role to mint: in our runs, `CREATE ROLE` comes back with `restricted superuser cannot create roles`), which is the reason to prefer the policy route. On self-hosted Postgres, a dedicated role carrying `BYPASSRLS` with its own audit logging is the cleaner split.
+
+The rule of thumb: RLS is the floor, not the whole building. Put tenant isolation in the database where a forgotten filter can't repeal it, and build user-facing permissions in the application where they can stay expressive.
+
+## Frequently asked questions
+
+<Accordions type="single">
+  <Accordion title="Does Row-Level Security work on Prisma Postgres?">
+Yes. RLS is a core PostgreSQL feature, so `ENABLE ROW LEVEL SECURITY` and `CREATE POLICY` work on Prisma Postgres with no extension. The detail that matters is the role. In our July 2026 runs (provisioning behavior, not yet a documented contract, so check `pg_roles` in your own database): the default connection ran as `prisma_migration`, a superuser that bypasses every policy, right for migrations and wrong for app traffic, and every database also carried a non-superuser `prisma_application` role. Start each transaction with `SET LOCAL ROLE prisma_application` and policies apply.
+  </Accordion>
+  <Accordion title="Does Prisma ORM support Row-Level Security?">
+Yes, through query extensions. A `Prisma.defineExtension` wrapper runs every model operation in a batch transaction that first switches to the application role and sets the tenant context with `set_config`, building on the batch-transaction wrapping the [client extensions docs](https://www.prisma.io/docs/orm/prisma-client/client-extensions/query) describe for RLS. This post validated the pattern on the direct connection string; verify it on the pooled string before production. Deriving one extended client per request from the fence module's factory (`clientForTenant(session.tenantId)`) fences every model operation made through it. Raw queries via `$queryRaw` bypass the model extension, so wrap those in the same transaction pattern explicitly.
+  </Accordion>
+  <Accordion title="What does Row-Level Security cost in performance?">
+The policy expression is added to every query against the table, as visible in `EXPLAIN` output. A simple comparison against an indexed column, like `tenant_id = current_setting(...)::uuid` with an index on `tenant_id`, is cheap: it behaves much like the `WHERE` clause your queries should have had anyway, with one planner nuance: Postgres treats policy conditions as a security barrier, so functions it can't prove leakproof are not pushed below them, which can change a plan relative to a hand-written filter. The wrapper pattern adds its own overhead too: two extra statements and a transaction around each model operation, paid on every operation, so batch hot paths into one fenced transaction to pay it once. Keep policies to indexed comparisons and measure with `EXPLAIN ANALYZE` when in doubt.
+  </Accordion>
+  <Accordion title="Is Row-Level Security enough, or do I still need application-level authorization?">
+They solve different layers and compose well. RLS answers "which tenant's rows can this connection touch" and enforces it even against buggy queries, which makes it the right floor. Application-level authorization answers "what can this user do", with roles, permissions, and relationships that would be unreadable as SQL policies. Most production setups want both: RLS for tenant isolation, an authorization layer like Oso or Cerbos for user-facing permissions.
+  </Accordion>
+</Accordions>
+
+## Recap
+
+Tenant isolation by convention lives in every query, and every query is a chance to get it wrong. Row-Level Security moves it into the table: one policy defines which rows exist for a given tenant context, and Postgres applies it to every query, including the ones that forgot their `WHERE` clause. With `NULLIF(current_setting(...), '')`, the policy fails closed for fenced queries: missing context inside the fence means an empty result instead of a leak.
+
+The role decides everything. Superusers and `BYPASSRLS` roles skip policies entirely, which is why the fence only exists once your queries run as a role without those powers. On Prisma Postgres the split is already provisioned (behavior you can check in `pg_roles`, not yet a documented contract): `prisma_migration` for DDL, `prisma_application` for traffic, two lines at the start of each transaction to use it. With Prisma ORM, a query extension makes those two lines automatic. The connection's resting state stays unfenced, so the remaining discipline is structural and short: the fenced client for tenant traffic, a policy for every new table, the same fence for raw queries and views, and a rerun of the checks when you move to the pooled connection string.
+
+RLS is the floor, not the whole building: keep permission models in the application, give admin surfaces an explicit unfenced path, and reach for database-per-tenant only when compliance demands physical separation.
+
+The policy is one migration away, and the first fenced query is two lines more; the rest is the short list above. Spin up a database with `npx create-db@latest`, add the policy, switch the role, and try to leak your own data before your next code review has to catch it by eye.

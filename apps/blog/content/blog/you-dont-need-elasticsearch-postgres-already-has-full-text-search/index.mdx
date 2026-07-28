@@ -15,6 +15,7 @@ tags:
 series: postgres-features
 seriesIndex: 5
 prev: you-dont-need-a-job-queue-postgres-already-has-skip-locked
+next: you-dont-need-to-trust-every-query-postgres-already-has-row-level-security
 ---
 
 Postgres ships full-text search in the core server: `tsvector` for indexing text, `websearch_to_tsquery` for parsing what users type, and `ts_rank` for ordering results. For most applications, that is exactly the job [Elasticsearch](https://www.elastic.co/elasticsearch) gets deployed to do. In this post, you'll build ranked, typo-tolerant search on [Prisma Postgres](https://www.prisma.io/docs/postgres), a managed PostgreSQL service, with one generated column, two indexes, and no search cluster to deploy, sync, or pay for.
