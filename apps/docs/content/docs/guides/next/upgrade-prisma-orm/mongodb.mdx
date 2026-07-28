@@ -42,7 +42,7 @@ Scaffold the project:
 npx prisma-next init --yes --target mongodb --authoring psl
 ```
 
-`init` writes a `prisma-next.config.ts` at the repo root. MongoDB is selected by importing the `@prisma-next/mongo` façade, not by a `provider` string in the schema. Point the connection at the **same database** your v6 app uses.
+`init` writes a `prisma-next.config.ts` at the repo root. MongoDB is selected by importing the `@prisma-next/mongo` facade, not by a `provider` string in the schema. Point the connection at the **same database** your v6 app uses.
 
 ```typescript tab="After"
 // prisma-next.config.ts
@@ -73,7 +73,7 @@ Run `npx prisma-next contract emit` to generate `contract.json` from your `.pris
 
 ### Import the client
 
-The way to instantiate the Prisma client now is from the emitted contract:
+The way to instantiate the Prisma client now is from the emitted contract. Replace `my-app-db` with the database name your v6 connection string uses; if the connection URL already carries the database name in its path, omit `dbName` and the client reads it from the URL:
 
 ```typescript tab="After"
 // src/prisma/db.ts
