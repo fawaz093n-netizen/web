@@ -115,8 +115,8 @@ Four read-only commands, each answering a different question:
 The Prisma Next repo ships example graphs (a diamond, a wide fan-out, converging branches, rollback chains) as ready-to-render fixtures:
 
 ```bash
-git clone https://github.com/prisma/prisma-next
-cd prisma-next && pnpm install && pnpm -w build && pnpm install
+git clone https://github.com/prisma/prisma
+cd prisma && pnpm install && pnpm -w build && pnpm install
 cd examples/prisma-next-demo
 npx prisma-next migration graph --config fixtures/showcase/prisma-next.config.ts --legend
 ```
