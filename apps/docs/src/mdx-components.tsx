@@ -2,6 +2,7 @@ import defaultMdxComponents from "fumadocs-ui/mdx";
 import { Youtube } from "@prisma-docs/ui/components/youtube";
 import { APIPage } from "@/components/api-page";
 import { ConceptAnimation } from "@/components/concept-animation";
+import { DeployButtonGenerator } from "@/components/deploy-button-generator";
 import {
   AgentPrompt,
   GetStartedTabs,
@@ -121,6 +122,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     APIPage,
     AgentPrompt,
     ConceptAnimation,
+    DeployButtonGenerator,
     GetStartedTabs,
     HeroGrid,
     HeroPitch,

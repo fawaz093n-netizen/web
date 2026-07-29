@@ -1,0 +1,110 @@
+---
+title: Deploy Button
+description: Let anyone deploy a Prisma template to Prisma Compute in one click — the button copies the code into their GitHub account, provisions a Prisma Postgres database, and starts the first deployment.
+url: /compute/deploy-button
+metaTitle: Deploy Button | Prisma Compute
+metaDescription: Add a Deploy with Prisma button to your README or website. One click copies a template into the user's GitHub account, provisions Prisma Postgres, and deploys it on Prisma Compute.
+---
+
+The Deploy Button lets anyone go from a template to a running app in one click. Clicking it opens the Prisma Console, where the user picks a GitHub account and a region — Prisma then copies the template's code into a new repository they own, creates a project with a [Prisma Postgres](/postgres) database, and starts the first deployment on [Prisma Compute](/compute).
+
+Add it to a README, a blog post, or your own site:
+
+[![Deploy with Prisma](/img/deploy-button.svg)](https://console.prisma.io/templates/hono?utm_source=docs)
+
+:::note
+The Deploy Button is in early access. It currently supports official Prisma templates; support for your own repositories is planned.
+:::
+
+## How it works
+
+1. **Click the button.** The user lands on the template's page in the Prisma Console. If they're signed out, they sign in (or sign up) first and return to the same page automatically.
+2. **Choose where it goes.** They pick a GitHub account or organization, a repository name and visibility, and a deployment region. If the Prisma GitHub App isn't installed yet, the flow walks them through installing it.
+3. **Authorize once.** GitHub asks the user to authorize the repository creation. This authorization is used for that single deployment and is not stored.
+4. **Prisma sets everything up.** A new repository is created under the user's account with the template's code, a project with a Prisma Postgres database is provisioned, the database connection is configured automatically, and the first deployment starts.
+5. **Push to deploy.** The repository is connected to the project, so every later push deploys through the normal Git workflow.
+
+The user owns the repository and the project. Prisma adds no credentials or platform files to the repository — database connection settings are managed in the Console, not committed to code.
+
+## Supported templates
+
+The button works with official Prisma templates:
+
+| Template | ID | Description |
+| --- | --- | --- |
+| Hono API | `hono` | A lightweight API server with Prisma ORM and Prisma Postgres |
+| Next.js | `nextjs` | A full-stack Next.js app with Prisma ORM and Prisma Postgres |
+| TanStack Start | `tanstack-start` | A TanStack Start app with Prisma ORM and Prisma Postgres |
+
+Arbitrary repositories are not supported yet — the button can only point at templates from the official catalog.
+
+## Requirements
+
+For the developer adding the button: none. The button is a link — no registration, API key, or configuration is needed.
+
+For the user clicking it:
+
+- A [Prisma Data Platform account](https://pris.ly/pdp) (free to create during the flow).
+- A GitHub account. The Prisma GitHub App must be installed on the account or organization that will own the new repository — the flow offers the installation step when it's missing.
+- Permission to create repositories under the selected account or organization.
+
+No environment variables need to be configured up front: the database connection is provisioned and wired automatically. Anything app-specific can be added in the Console after the first deployment — see [environment variables](/compute/environment-variables).
+
+## URL format
+
+A Deploy Button is a link to:
+
+```text
+https://console.prisma.io/templates/<template-id>
+```
+
+| Parameter | Where | Required | Description |
+| --- | --- | --- | --- |
+| `<template-id>` | path | Yes | The ID of an official template, for example `hono`, `nextjs`, or `tanstack-start`. |
+| `utm_source` | query | No | Attribution for where the click came from, for example `github-readme`. |
+| `utm_medium` | query | No | Attribution for the kind of placement, for example `button`. |
+| `utm_campaign` | query | No | Attribution for a specific campaign or launch. |
+
+Example with attribution:
+
+```text
+https://console.prisma.io/templates/nextjs?utm_source=github-readme&utm_campaign=launch
+```
+
+## Create your button
+
+Pick a template, optionally add attribution, and copy the generated snippet:
+
+<DeployButtonGenerator />
+
+## Snippets
+
+A complete Markdown example for a README:
+
+```md
+[![Deploy with Prisma](https://www.prisma.io/docs/img/deploy-button.svg)](https://console.prisma.io/templates/hono?utm_source=github-readme)
+```
+
+The same button in HTML:
+
+```html
+<a href="https://console.prisma.io/templates/hono?utm_source=github-readme">
+  <img src="https://www.prisma.io/docs/img/deploy-button.svg" alt="Deploy with Prisma" width="172" height="36" />
+</a>
+```
+
+Both render as: [![Deploy with Prisma](/img/deploy-button.svg)](https://console.prisma.io/templates/hono?utm_source=docs)
+
+## Troubleshooting
+
+**"Template not found" or a 404 page.** Check the template ID in the URL against the [supported templates](#supported-templates) table. During early access, the templates gallery may also not be enabled for every account yet.
+
+**"A repository with this name already exists."** The user already has a repository with the chosen name. Pick a different repository name in the form and deploy again.
+
+**GitHub authorization was canceled or expired.** The authorization step must be completed within a few minutes. Returning to the template page and clicking Deploy again starts a fresh attempt.
+
+**The GitHub account isn't listed.** The Prisma GitHub App isn't installed on that account or organization. Use the "Install GitHub App" option in the deploy form, complete the installation on GitHub, and continue from the template page.
+
+**The repository was created, but the deployment didn't start.** The repository and project are preserved — nothing is deleted on a partial failure. Pushing any commit to the repository's default branch triggers a deployment through the normal Git flow. See [deployments](/compute/deployments) for how builds and deployments are surfaced.
+
+**The app deployed but shows an error page.** Check the build and runtime logs on the project's deployment page, and confirm the database finished provisioning in the Console. The [FAQ](/compute/faq) covers common runtime issues.
