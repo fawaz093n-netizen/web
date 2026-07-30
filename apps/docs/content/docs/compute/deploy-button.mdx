@@ -21,26 +21,34 @@ The Deploy Button is in early access. It supports public GitHub repositories; su
 Any public GitHub repository works with the Deploy Button when it meets this minimal contract:
 
 - **Public GitHub repository.** The button deploys the repository's default branch.
-- **A `prisma.compute.json` file at the repository root.** This is the same file Prisma Compute reads for any connected repository — it names the app and sets its HTTP port. Don't set a region in it; the person deploying picks the region, and it's used for both the database and the app. See [configuration](/compute/configuration).
-- **A TypeScript project with a `package.json` and a lockfile** (`bun.lock`, `package-lock.json`, `pnpm-lock.yaml`, or `yarn.lock`) at the root. If it builds on Prisma Compute, it deploys.
+- **A `prisma.compute.json` file at the repository root.** This is the same file Prisma Compute reads for any connected repository — it names the app and sets its HTTP port. It must describe a single app, and it must not set a `region`: the person deploying picks the region, which is used for both the database and the app. See [configuration](/compute/configuration).
+- **A TypeScript project with a `package.json` and a lockfile** (`bun.lock`, `package-lock.json`, `pnpm-lock.yaml`, or `yarn.lock`) at the root.
 
-That's it — no registration, API key, or approval process. A minimal working example you can copy is [`prisma/compute-deploy-example`](https://github.com/prisma/compute-deploy-example), whose README carries its own Deploy Button.
+The repository is validated before it is copied, so a few shapes are rejected:
+
+- More than 100 files, a file over 5 MB, or more than 25 MB in total.
+- GitHub Actions workflows (anything under `.github/workflows/`).
+- Symlinks or Git submodules.
+
+There is no registration, API key, or approval process. A minimal working example you can copy is [`prisma/compute-deploy-example`](https://github.com/prisma/compute-deploy-example), whose README carries its own Deploy Button.
 
 A minimal `prisma.compute.json`:
 
 ```json
 {
-  "name": "my-app",
-  "port": 3000
+  "app": {
+    "name": "my-app",
+    "httpPort": 3000
+  }
 }
 ```
 
 ## How it works
 
-1. **Click the button.** The user lands on the clone page in the Prisma Console, which always shows exactly what will be deployed: your repository's name and the resolved commit, linked back to the source on GitHub. If they're signed out, they sign in first and return to the same page automatically.
-2. **Choose where it goes.** They pick a GitHub account or organization, a name and visibility for their new repository, and a deployment region. If the Prisma GitHub App isn't installed yet, the flow walks them through installing it.
+1. **Click the button.** The user lands on the clone page in the Prisma Console, which shows what will be deployed: your repository's name — and, once a GitHub account is connected, the resolved commit — linked back to the source on GitHub. If they're signed out, they sign in first and return to the same page automatically.
+2. **Choose where it goes.** They pick a workspace (when they have more than one), a GitHub account or organization, a name and visibility for their new repository (private by default), and a deployment region. If the Prisma GitHub App isn't installed yet, the flow walks them through installing it.
 3. **Authorize once.** GitHub asks the user to authorize the repository creation. This authorization is used for that single deployment and is not stored.
-4. **Prisma sets everything up.** Your code is copied — at the exact commit shown on the clone page — into a new repository under the user's account. A project with a Prisma Postgres database is provisioned, the database connection is configured automatically, and the first deployment starts.
+4. **Prisma sets everything up.** Your code is copied — pinned to the default-branch commit resolved when they click Deploy — into a new repository under the user's account. A project with a Prisma Postgres database is provisioned, the database connection is configured automatically, and the first deployment starts.
 5. **Push to deploy.** The new repository is connected to the project, so every later push deploys through the normal Git workflow.
 
 The user owns the copy and the project. Prisma adds no credentials or platform files to the repository — database connection settings are managed in the Console, not committed to code.
@@ -69,9 +77,9 @@ https://console.prisma.io/new/clone?repository-url=<your repository URL>
 | --- | --- | --- |
 | `repository-url` | Yes | The public GitHub repository to deploy, in the form `https://github.com/owner/repo`. URL-encode it when composing the link. |
 | `project-name` | No | Prefills the name of the repository the user creates (they can change it). Defaults to your repository's name. |
-| `utm_source` | No | Attribution for where the click came from, for example `github-readme`. |
-| `utm_medium` | No | Attribution for the kind of placement, for example `button`. |
-| `utm_campaign` | No | Attribution for a specific campaign or launch. |
+| `utm_source` | No | Attribution for where the click came from, for example `github-readme`. This is the value Prisma's own funnel reporting records. |
+| `utm_medium` | No | Attribution for the kind of placement, for example `button`. Carried on the link for your own analytics. |
+| `utm_campaign` | No | Attribution for a specific campaign or launch. Carried on the link for your own analytics. |
 
 Example with a project name and attribution:
 
@@ -96,7 +104,7 @@ A complete Markdown example for a README:
 The same button in HTML:
 
 ```html
-<a href="https://console.prisma.io/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Facme%2Fshop-api&utm_source=github-readme">
+<a href="https://console.prisma.io/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Facme%2Fshop-api&amp;utm_source=github-readme">
   <img src="https://www.prisma.io/docs/img/deploy-button.svg" alt="Deploy with Prisma" width="172" height="36" />
 </a>
 ```
@@ -107,12 +115,12 @@ The same button in HTML:
 
 **The clone page says the repository must be public.** The button only supports public source repositories today. The user's *copy* can still be private — that's their choice in the deploy form.
 
-**"A repository with this name already exists."** The user already has a repository with the chosen name. They can pick a different name in the form and deploy again.
+**"The repository changed before Prisma could copy the template. Choose another repository name and try again."** The chosen name usually collides with a repository the user already has. Picking a different name in the form and deploying again resolves it.
 
-**GitHub authorization was canceled or expired.** The authorization step must be completed within a few minutes. Returning to the clone page and clicking Deploy again starts a fresh attempt.
+**GitHub authorization was canceled or expired.** The authorization step must be completed within 15 minutes. Returning to the clone page and clicking Deploy again starts a fresh attempt.
 
 **The GitHub account isn't listed.** The Prisma GitHub App isn't installed on that account or organization. The "Connect GitHub" option in the deploy form starts the installation; after completing it on GitHub, the user continues from the clone page.
 
-**The repository was created, but the deployment didn't start.** The repository and project are preserved — nothing is deleted on a partial failure. Pushing any commit to the new repository's default branch triggers a deployment through the normal Git flow. See [deployments](/compute/deployments).
+**The repository was created, but the deployment didn't start.** Nothing is deleted on a partial failure. If the Prisma project was created and connected to the repository, pushing any commit to the new repository's default branch triggers a deployment through the normal Git flow. If the failure happened before the project existed, return to the clone page and deploy again with a different repository name. See [deployments](/compute/deployments).
 
 **The app deployed but shows an error page.** Check the build and runtime logs on the project's deployment page, confirm the database finished provisioning in the Console, and verify the app listens on the port declared in `prisma.compute.json`. The [FAQ](/compute/faq) covers common runtime issues.

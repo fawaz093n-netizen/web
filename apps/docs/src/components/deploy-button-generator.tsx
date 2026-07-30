@@ -33,13 +33,13 @@ function parseRepositoryUrl(raw: string): { owner: string; repo: string } | null
   return { owner, repo };
 }
 
-function CopyButton({ value }: { value: string }) {
+function CopyButton({ value, label }: { value: string; label: string }) {
   const [checked, onClick] = useCopyButton(() => navigator.clipboard.writeText(value));
 
   return (
     <button
       type="button"
-      aria-label="Copy to clipboard"
+      aria-label={`Copy ${label}`}
       className={cn(
         buttonVariants({ color: "secondary", size: "sm", className: "shrink-0 gap-2" }),
       )}
@@ -59,10 +59,14 @@ function Snippet({ label, value }: { label: string; value: string }) {
         <pre className="min-w-0 flex-1 overflow-x-auto rounded-lg border bg-fd-secondary/50 p-3 text-xs leading-relaxed">
           <code>{value}</code>
         </pre>
-        <CopyButton value={value} />
+        <CopyButton value={value} label={`${label} snippet`} />
       </div>
     </div>
   );
+}
+
+function escapeHtmlAttribute(value: string): string {
+  return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
 }
 
 const fieldClassName =
@@ -97,10 +101,15 @@ export function DeployButtonGenerator() {
             className={fieldClassName}
             placeholder="https://github.com/owner/repo"
             value={repositoryUrl}
+            aria-invalid={repositoryUrl.trim() !== "" && !parsed}
+            aria-describedby="deploy-button-repository-url-hint"
             onChange={(event) => setRepositoryUrl(event.target.value)}
           />
           {repositoryUrl.trim() !== "" && !parsed ? (
-            <span className="text-xs text-fd-muted-foreground">
+            <span
+              id="deploy-button-repository-url-hint"
+              className="text-xs text-fd-muted-foreground"
+            >
               Enter a public GitHub repository URL like https://github.com/owner/repo.
             </span>
           ) : null}
@@ -113,8 +122,15 @@ export function DeployButtonGenerator() {
             className={fieldClassName}
             placeholder="my-app"
             value={projectName}
+            aria-invalid={!projectNameValid}
+            aria-describedby="deploy-button-project-name-hint"
             onChange={(event) => setProjectName(event.target.value)}
           />
+          {!projectNameValid ? (
+            <span id="deploy-button-project-name-hint" className="text-xs text-fd-muted-foreground">
+              Use up to 100 letters, numbers, dots, dashes, or underscores.
+            </span>
+          ) : null}
         </label>
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium">
@@ -161,7 +177,7 @@ export function DeployButtonGenerator() {
           />
           <Snippet
             label="HTML"
-            value={`<a href="${url}"><img src="${BUTTON_IMAGE_URL}" alt="Deploy with Prisma" width="172" height="36" /></a>`}
+            value={`<a href="${escapeHtmlAttribute(url)}"><img src="${BUTTON_IMAGE_URL}" alt="Deploy with Prisma" width="172" height="36" /></a>`}
           />
         </>
       ) : (
