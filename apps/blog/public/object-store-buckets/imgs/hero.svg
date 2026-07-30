@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Cover for /blog/object-store-buckets: an agent provisions an Object Store bucket via two Management API calls and writes its first file. -->
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none" role="img" aria-labelledby="cover-title cover-desc">
-  <title id="cover-title">Your Agent Can Provision File Storage Now: Object Store Buckets in Every Prisma Project</title>
+  <title id="cover-title">Give Your Agent File Storage: Object Store Buckets</title>
   <desc id="cover-desc">An agent chip issues two Management API calls that create a bucket and mint a key, then writes hello/first-upload.txt, 44 bytes, into the bucket.</desc>
   <defs>
   <style>
