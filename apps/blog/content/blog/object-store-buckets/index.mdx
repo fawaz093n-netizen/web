@@ -20,7 +20,7 @@ This post covers what shipped, then walks the exact path an agent takes: create 
 
 ## The step where an agent had to stop
 
-An app that stores anything beyond rows has always needed a second vendor. User avatars, PDF exports, uploaded CSVs, generated images: the data lived in an S3 bucket or an R2 account with its own signup, its own credential dance, and its own bill, stitched to the rest of the stack by hand. For a human that is an afternoon of setup. For a coding agent it is usually a hard stop, because the agent cannot open a new vendor account or complete a checkout flow.
+An app that stores anything beyond rows has always needed a second vendor. User avatars, PDF exports, uploaded CSVs, generated images: the data lived in an S3 bucket or an R2 account with its own signup, its own credential dance, and its own bill, stitched to the rest of the stack by hand. For a human, that is an afternoon of setup. For a coding agent, it is usually a hard stop, because the agent cannot open a new vendor account or complete a checkout flow.
 
 Object Store buckets remove that stop: storage is now a resource inside a Prisma project, next to the database, under the same account, on the same API surface.
 
@@ -184,7 +184,7 @@ The served file is real. The presigned URL answered an unauthenticated `GET` wit
 
 The role on a key is enforced at the storage layer, not by convention: the `read` key read the object fine and got `AccessDenied` the moment it tried to write.
 
-And the teardown deleted a bucket that still had an object in it. Deleting a bucket takes its contents and its access keys with it in one call: no empty-the-bucket-first ritual, which cuts both ways, as the next section says.
+And the teardown deleted a bucket that still had an object in it. Deleting a bucket takes its contents and its access keys with it in one call: no empty-the-bucket-first ritual, which cuts both ways, as the next section says. (The script tears down on the success path; if a step fails partway, one `DELETE /v1/buckets/{bucketId}` cleans up whatever it left.)
 
 ## Wiring it into your agent
 
