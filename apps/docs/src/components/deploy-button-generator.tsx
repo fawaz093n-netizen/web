@@ -5,18 +5,33 @@ import { buttonVariants } from "@prisma-docs/ui/components/button";
 import { cn } from "@prisma-docs/ui/lib/cn";
 import { withDocsBasePath } from "@/lib/urls";
 
-const CONSOLE_TEMPLATES_URL = "https://console.prisma.io/templates";
+const CONSOLE_CLONE_URL = "https://console.prisma.io/new/clone";
 const BUTTON_IMAGE_URL = "https://www.prisma.io/docs/img/deploy-button.svg";
 
-const TEMPLATES = [
-  { id: "hono", label: "Hono API" },
-  { id: "nextjs", label: "Next.js" },
-  { id: "tanstack-start", label: "TanStack Start" },
-];
+const OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$/;
+const REPO_PATTERN = /^[A-Za-z0-9._-]{1,100}$/;
+const PROJECT_NAME_PATTERN = /^[A-Za-z0-9._-]{1,100}$/;
 
-const CUSTOM_TEMPLATE = "__custom";
-
-const TEMPLATE_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+function parseRepositoryUrl(raw: string): { owner: string; repo: string } | null {
+  const value = raw.trim();
+  if (value.length === 0 || value.length > 300) return null;
+  let url: URL;
+  try {
+    url = new URL(value.includes("://") ? value : `https://${value}`);
+  } catch {
+    return null;
+  }
+  if (url.protocol !== "https:" || url.hostname !== "github.com" || url.port) return null;
+  if (url.username || url.password || url.search || url.hash) return null;
+  const segments = url.pathname.split("/").filter(Boolean);
+  if (segments.length !== 2) return null;
+  const owner = segments[0];
+  let repo = segments[1];
+  if (repo.endsWith(".git")) repo = repo.slice(0, -4);
+  if (!OWNER_PATTERN.test(owner) || !REPO_PATTERN.test(repo)) return null;
+  if (repo === "." || repo === "..") return null;
+  return { owner, repo };
+}
 
 function CopyButton({ value }: { value: string }) {
   const [checked, onClick] = useCopyButton(() => navigator.clipboard.writeText(value));
@@ -54,53 +69,53 @@ const fieldClassName =
   "w-full rounded-lg border bg-fd-background px-3 py-2 text-sm text-fd-foreground outline-none focus-visible:ring-2 focus-visible:ring-fd-ring";
 
 export function DeployButtonGenerator() {
-  const [selectedTemplate, setSelectedTemplate] = useState(TEMPLATES[0].id);
-  const [customTemplateId, setCustomTemplateId] = useState("");
+  const [repositoryUrl, setRepositoryUrl] = useState("");
+  const [projectName, setProjectName] = useState("");
   const [utmSource, setUtmSource] = useState("");
   const [utmCampaign, setUtmCampaign] = useState("");
 
-  const templateId =
-    selectedTemplate === CUSTOM_TEMPLATE ? customTemplateId.trim() : selectedTemplate;
-  const templateIdValid = TEMPLATE_ID_PATTERN.test(templateId) && templateId.length <= 64;
+  const parsed = useMemo(() => parseRepositoryUrl(repositoryUrl), [repositoryUrl]);
+  const projectNameValid =
+    projectName.trim() === "" || PROJECT_NAME_PATTERN.test(projectName.trim());
 
   const url = useMemo(() => {
-    if (!templateIdValid) return null;
+    if (!parsed || !projectNameValid) return null;
     const search = new URLSearchParams();
+    search.set("repository-url", `https://github.com/${parsed.owner}/${parsed.repo}`);
+    if (projectName.trim()) search.set("project-name", projectName.trim());
     if (utmSource.trim()) search.set("utm_source", utmSource.trim());
     if (utmCampaign.trim()) search.set("utm_campaign", utmCampaign.trim());
-    const query = search.toString();
-    return `${CONSOLE_TEMPLATES_URL}/${templateId}${query ? `?${query}` : ""}`;
-  }, [templateIdValid, templateId, utmSource, utmCampaign]);
+    return `${CONSOLE_CLONE_URL}?${search.toString()}`;
+  }, [parsed, projectNameValid, projectName, utmSource, utmCampaign]);
 
   return (
     <div className="not-prose flex flex-col gap-5 rounded-xl border p-5">
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium">Template</span>
-          <select
+        <label className="flex flex-col gap-1.5 sm:col-span-2">
+          <span className="text-sm font-medium">Repository URL</span>
+          <input
             className={fieldClassName}
-            value={selectedTemplate}
-            onChange={(event) => setSelectedTemplate(event.target.value)}
-          >
-            {TEMPLATES.map((template) => (
-              <option key={template.id} value={template.id}>
-                {template.label} ({template.id})
-              </option>
-            ))}
-            <option value={CUSTOM_TEMPLATE}>Custom template ID…</option>
-          </select>
+            placeholder="https://github.com/owner/repo"
+            value={repositoryUrl}
+            onChange={(event) => setRepositoryUrl(event.target.value)}
+          />
+          {repositoryUrl.trim() !== "" && !parsed ? (
+            <span className="text-xs text-fd-muted-foreground">
+              Enter a public GitHub repository URL like https://github.com/owner/repo.
+            </span>
+          ) : null}
         </label>
-        {selectedTemplate === CUSTOM_TEMPLATE && (
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium">Template ID</span>
-            <input
-              className={fieldClassName}
-              placeholder="my-template"
-              value={customTemplateId}
-              onChange={(event) => setCustomTemplateId(event.target.value)}
-            />
-          </label>
-        )}
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium">
+            Project name <span className="font-normal text-fd-muted-foreground">(optional)</span>
+          </span>
+          <input
+            className={fieldClassName}
+            placeholder="my-app"
+            value={projectName}
+            onChange={(event) => setProjectName(event.target.value)}
+          />
+        </label>
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium">
             Source <span className="font-normal text-fd-muted-foreground">(optional)</span>
@@ -151,8 +166,8 @@ export function DeployButtonGenerator() {
         </>
       ) : (
         <p className="text-sm text-fd-muted-foreground">
-          Enter a template ID using lowercase letters, numbers, and hyphens (for example{" "}
-          <code>tanstack-start</code>) to generate your button.
+          Enter your repository's GitHub URL to generate the button. The repository must be public
+          and contain a <code>prisma.compute.json</code> file at its root.
         </p>
       )}
     </div>
