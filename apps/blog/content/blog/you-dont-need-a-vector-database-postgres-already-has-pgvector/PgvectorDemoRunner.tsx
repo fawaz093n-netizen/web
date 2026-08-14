@@ -46,8 +46,8 @@ model Movie {
     filename: "prisma-next.config.ts",
     lang: "typescript",
     source: `import "dotenv/config";
-import pgvector from "@prisma-next/extension-pgvector/control";
-import { defineConfig } from "@prisma-next/postgres/config";
+import pgvector from "@prisma/orm-extension-pgvector/control";
+import { defineConfig } from "@prisma/orm-postgres/config";
 
 export default defineConfig({
   contract: "./src/prisma/contract.prisma",
@@ -64,9 +64,9 @@ export default defineConfig({
     title: "Migrate",
     filename: "terminal",
     lang: "bash",
-    source: `bunx prisma-next contract emit
-bunx prisma-next migration plan
-bunx prisma-next db init`,
+    source: `bunx @prisma/cli@next contract emit
+bunx @prisma/cli@next migration plan
+bunx @prisma/cli@next db init`,
     caption:
       "migration plan copies the pgvector pack's own baseline migration into your repo; db init applies both spaces. You never run CREATE EXTENSION by hand.",
     output: [
